@@ -6,6 +6,7 @@ module.exports = {
         .setName('ping')
         .setDescription('Return my ping!'),
     async execute(interaction, client) {
+
         const message = await interaction.deferReply({
             fetchReply: true
         });
