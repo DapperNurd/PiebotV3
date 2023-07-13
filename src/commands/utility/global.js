@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Embed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
 const GlobalCount = require('../../schemas/globalCount');
 const chalk = require('chalk');
 
@@ -7,17 +7,21 @@ module.exports = {
         .setName('global')
         .setDescription('Display the global stats!'),
     async execute(interaction, client) {
+
+        // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
-        let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches databse for the globalProfile
+        // Database handling
+        let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
         if(!globalProfile) {
             console.log(chalk.red("[Bot Status]: Error finding global database!"));
-            return await interaction.reply({
-                content: `I don't feel so good... something's not right. Where's ${author.username}??`,
+            return await interaction.reply({ // We do not build a new global profile because there is only ever one.
+                content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`,
                 ephemeral: true
             });
         }
 
+        // Builds the embed message
         const statsEmbed = new EmbedBuilder()
             .setColor('#FFFFFF')
             .setAuthor({
@@ -46,6 +50,7 @@ module.exports = {
                 text: `PiebotV3 by ${author.username}`
             });
         
+        // Sends the embed message
         await interaction.reply({
             embeds: [statsEmbed]
         });

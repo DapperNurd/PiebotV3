@@ -1,6 +1,6 @@
 module.exports = {
     name: 'messageCreate',
-    async execute(message) {
+    async execute(message, client) {
         if(message.author.bot) return;
 
         // Running message commands directly in this file as opposed to in separate files because

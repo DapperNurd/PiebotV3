@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Embed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const User = require('../../schemas/user');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
@@ -12,22 +12,22 @@ module.exports = {
         ),
     async execute(interaction, client) {
 
+        // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
+        // Database handling
         let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches databse for a userProfile with a matching userID to id
         if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
 
-        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
-
-        const user = await interaction.guild.members.fetch(targetedUser); // Doing this because names are weird right now with discord, this allows for displayNames
-
+        // Builds the embed message
         const statsEmbed = new EmbedBuilder()
             .setColor('#FFFFFF')
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.username} Stats`
             })
-            .setTitle(`${user.displayName }'s User Stats`)
+            .setTitle(`${targetedUser.username }'s User Stats`)
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([
                 { name: 'Pie Count',         value: userProfile.pieCount.toString(),      inline: true },
@@ -51,6 +51,7 @@ module.exports = {
 
         if(targetedUser.id == "189510396569190401") statsEmbed.setDescription("Bot creator"); // Adds a small comment on my (nurd) stats showing that I am the creator
         
+        // Sends the embed message
         await interaction.reply({
             embeds: [statsEmbed]
         });

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Embed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Guild = require('../../schemas/guild');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
@@ -8,11 +8,14 @@ module.exports = {
         .setDescription('Display a server\'s stats!'),
     async execute(interaction, client) {
 
+        // Extra misc variables
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        // Database Handling
         let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches databse for a guildProfile with a matching userID to id
         if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
 
-        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
-
+        // Builds the embed message
         const statsEmbed = new EmbedBuilder()
             .setColor('#FFFFFF')
             .setAuthor({
@@ -41,6 +44,7 @@ module.exports = {
                 text: `PiebotV3 by ${author.username}`
             });
         
+        // Sends the embed message
         await interaction.reply({
             embeds: [statsEmbed]
         });
