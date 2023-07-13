@@ -6,12 +6,15 @@ module.exports = {
         .setDescription('Return my ping!'),
     async execute(interaction, client) {
 
+        // Sending a deferred message
         const message = await interaction.deferReply({
             fetchReply: true
         });
 
+        // Building the message to send
         const newMessage = `*Pong!*\nAPI Latency: **${client.ws.ping}ms**\nClient Ping: **${message.createdTimestamp - interaction.createdTimestamp}ms**`
 
+        // Sending the message by editing the deferred
         await interaction.editReply({
             content: newMessage
         });

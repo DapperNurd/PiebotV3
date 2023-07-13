@@ -19,6 +19,7 @@ module.exports = {
         ),
     async execute(interaction, client) {
 
+        // No input scenario handling
         if(!interaction.options.getString("question")) { // If there is no question asked (an empty command)
             return await interaction.reply({
                 content: "What?",
@@ -26,25 +27,17 @@ module.exports = {
             });
         }
 
-        // Math.floor(Math.random() * (max - min) + min)
-        const randomNum = Math.floor(Math.random() * (100 - 1) + 1); // generates a number from 1 to 100
+        // Response rarity calculation and assigning
+        const randomNum = Math.floor(Math.random() * (100 - 1) + 1); // generates a number from 1 to 100 ... Math.floor(Math.random() * (max - min) + min)
+        if (randomNum < 80)         response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];  // 79% chance
+        else if (randomNum < 92)    response = middleResponses[Math.floor(Math.random() * middleResponses.length)];    // 12% chance
+        else if (randomNum <= 100)  response = oddResponses[Math.floor(Math.random() * oddResponses.length)];          // 9% chance
+        else                        response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];  // Should never run, but just in case
 
-        switch (true) {
-            case (randomNum < 80): // ~79% chance
-                response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];
-                break;
-            case (randomNum < 92): // ~12% chance
-                response = middleResponses[Math.floor(Math.random() * middleResponses.length)];
-                break;
-            case (randomNum <= 100): // 9% chance
-                response = oddResponses[Math.floor(Math.random() * oddResponses.length)];
-                break;
-            default: // Should never run, but just in case
-                response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];
-        }
+        // Building the final message
+        const msg = `**|**  *${interaction.options.getString("question")}*\n${response}` // Formatting for the final message, including the question asked
 
-        const msg = `**|**  *${interaction.options.getString("question")}*\n\n${response}` // Formatting for the final message, including the question asked
-
+        // Sending the final message
         await interaction.reply({
             content: msg
         });

@@ -15,15 +15,22 @@ module.exports = {
                   .setMinValue(1)
         ),
     async execute(interaction, client) {
+
+        // Extra misc variables
+        const user = userMention(interaction.user.id); // Converts user id into a mention for the string
+
+        // Initializes the min and max variables
         const min = interaction.options.getInteger("minimum") ?? 1; // The same as min = interaction.options.getInteger("minimum") ? interaction.options.getInteger("minimum") : 1
         var max = Number(interaction.options.getString("maximum"));
 
-        // So basically this command could have been a lot cleaner if I had just used an integer instead of a string for max,
-        // but there were a few reasons I did it with string:
-        // - Allows me to be able to have "next" as an option for it without it being super janky with parameter fields
-        // - Allows me to have a maximum greater than like 100000000 or whatever it was, with it going all the way to Infinity now like before
+            // So basically this command could have been a lot cleaner if I had just used an integer instead of a string for max,
+            // but there were a few reasons I did it with string:
+            // - Allows me to be able to have "next" as an option for it without it being super janky with parameter fields
+            // - Allows me to have a maximum greater than like 100000000 or whatever it was, with it going all the way to Infinity now like before
 
+        // Roll input handling (whether "next" is entered, or a number, or otherwise to error)
         if(isNaN(max)) {
+            // Roll Next handling
             if(interaction.options.getString("maximum").toLowerCase() == 'next') {
                 const messages = await interaction.channel.messages.fetch({ limit: 50 }); // gets a collection of messages from the channel, with length of limit
 
@@ -63,13 +70,15 @@ module.exports = {
             }
         }
 
-        const rolledNum = Math.floor(Math.random() * ((max+1) - min) + min); // Calculation for roll command
+        // Calculation for roll command
+        const rolledNum = Math.floor(Math.random() * ((max+1) - min) + min);
 
-        const user = userMention(interaction.user.id); // Converts user id into a mention for the string
+        // Building final message
+        var msg = (min == 1) // Changes message based on whether there is a minimum or not (to clarify for death rolls)
+            ? `${user} rolled a ${rolledNum} out of ${max}!` 
+            : `${user} rolled a ${rolledNum} (${min} to ${max})!` // Formatted like this because it is a long line
 
-        // Changes message based on whether there is a minimum or not (to clarify for death rolls)
-        var msg = (min == 1) ? `${user} rolled a ${rolledNum} out of ${max}!` : `${user} rolled a ${rolledNum} (${min} to ${max})!`
-
+        // Sending final message
         await interaction.reply({
             content: msg
         });
