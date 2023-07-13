@@ -56,7 +56,7 @@ module.exports = {
         if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
 
         let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
-        if(!globalProfile) {
+        if(!globalProfile) { // Should hopefully never happen
             console.log(chalk.red("[Bot Status]: Error finding global database!"));
             return await interaction.reply({ // We do not build a new global profile because there is only ever one.
                 content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`,
