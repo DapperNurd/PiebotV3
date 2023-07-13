@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const { execute } = require('../../events/client/ready');
 
 module.exports = {
     data: new SlashCommandBuilder()

@@ -1,0 +1,14 @@
+    // For getting user information //
+
+const interactionUser = await interaction.guild.members.fetch(interaction.user.id)
+
+const nickName = interactionUser.nickname
+const userName = interactionUser.user.username
+const userId = interactionUser.id
+
+*can also just use interaction.user.username, not sure what the above is for
+
+    // For getting a random number in a range //
+
+Math.floor(Math.random() * (max - min) + min)
+

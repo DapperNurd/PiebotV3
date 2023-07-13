@@ -1,6 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
+const chalk = require('chalk');
 
 module.exports = (client) => {
     client.handleCommands = async () => {
@@ -22,7 +23,7 @@ module.exports = (client) => {
         const guildId = '347828515858546688';
         const rest = new REST({ version: '9' }).setToken(process.env.token);
         try {
-            console.log("Started refreshing application (/) commands.");
+            console.log(chalk.hex("#94cc50")("[Bot Status]: Started refreshing application (/) commands."));
 
             // Might be weird with multiple guilds, check YT video
             await rest.put(
@@ -30,7 +31,7 @@ module.exports = (client) => {
                 { body: client.commandArray },
             );
 
-            console.log("Successfully reloaded application (/) commands.");
+            console.log(chalk.hex("#94cc50")("[Bot Status]: Successfully reloaded application (/) commands."));
         } catch (error) {
             console.error(error);
         }

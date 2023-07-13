@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { connection } = require('mongoose');
 
 module.exports = (client) => {
     client.handleEvents = async () => {
@@ -9,11 +10,20 @@ module.exports = (client) => {
                 .filter(file => file.endsWith('.js')); // Going through events folder, finding files of type .js
             switch (folder) {
                 case "client": // If client folder
-                    for(const file of eventFiles) {
+                    for (const file of eventFiles) {
                         const event = require(`../../events/${folder}/${file}`)
-                        if(event.once) client.once(event.name, (...args) => event.execute(...args, client)); // runs client.once events
+                        if (event.once) client.once(event.name, (...args) => event.execute(...args, client)); // runs client.once events
                         else client.on(event.name, (...args) => event.execute(...args, client)); // runs client.on events
                     }
+                    break;
+                case "mongo":
+                    for (const file of eventFiles) {
+                        const event = require(`../../events/${folder}/${file}`);
+                        if (event.once) connection.once(event.name, (...args) => event.execute(...args, client));
+                        else connection.on(event.name, (...args) => event.execute(...args, client));
+                    }
+                    break;
+                default:
                     break;
             }
         }

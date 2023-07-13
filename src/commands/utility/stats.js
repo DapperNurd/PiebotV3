@@ -1,0 +1,58 @@
+const { SlashCommandBuilder, EmbedBuilder, Embed } = require('discord.js');
+const User = require('../../schemas/user');
+const schemaBuildingFunctions = require('../../schemaBuilding.js');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('stats')
+        .setDescription('Display a user\'s stats!')
+        .addUserOption(option =>
+            option.setName('user')
+                  .setDescription('User to display stats for')
+        ),
+    async execute(interaction, client) {
+
+        const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
+
+        let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches databse for a userProfile with a matching userID to id
+        if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
+
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        const user = await interaction.guild.members.fetch(targetedUser); // Doing this because names are weird right now with discord, this allows for displayNames
+
+        const statsEmbed = new EmbedBuilder()
+            .setColor('#FFFFFF')
+            .setAuthor({
+                iconURL: client.user.displayAvatarURL(),
+                name: `${client.user.username} Stats`
+            })
+            .setTitle(`${user.displayName }'s User Stats`)
+            .setThumbnail(targetedUser.displayAvatarURL())
+            .addFields([
+                { name: 'Pie Count',         value: userProfile.pieCount.toString(),      inline: true },
+                { name: 'Muffin Count',      value: userProfile.muffinCount.toString(),   inline: true },
+                { name: 'Potato Count',      value: userProfile.potatoCount.toString(),   inline: true },
+                { name: 'Ice Cream Count',   value: userProfile.iceCreamCount.toString(), inline: true },
+                { name: 'Pizza Count',       value: userProfile.pizzaCount.toString(),    inline: true },
+                { name: 'Pasta Count',       value: userProfile.pastaCount.toString(),    inline: true },
+                { name: 'Cake Count',        value: userProfile.cakeCount.toString(),     inline: true },
+                { name: 'Cookie Count',      value: userProfile.cookieCount.toString(),   inline: true },
+                { name: 'Sandwich Count',    value: userProfile.sandwichCount.toString(), inline: true },
+                { name: 'Brownie Count',     value: userProfile.brownieCount.toString(),  inline: true },
+                { name: 'Fish Fillet Count', value: userProfile.fishCount.toString(),     inline: true },
+                { name: 'Trash Count',       value: userProfile.trashCount.toString(),    inline: true }
+            ])
+            .setTimestamp()
+            .setFooter({
+                iconURL: author.displayAvatarURL(),
+                text: `PiebotV3 by ${author.username}`
+            });
+
+        if(targetedUser.id == "189510396569190401") statsEmbed.setDescription("Bot creator"); // Adds a small comment on my (nurd) stats showing that I am the creator
+        
+        await interaction.reply({
+            embeds: [statsEmbed]
+        });
+    }
+}
