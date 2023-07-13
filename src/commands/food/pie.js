@@ -73,11 +73,9 @@ module.exports = {
         await guildProfile.updateOne({ pieCount: guildCount });     // Updates the database variables with the new ones (added one)
         await globalProfile.updateOne({ pieCount: globalCount });   //
         
-        // Food Rarity calculation
+        // Food Rarity calculation and assigning
         var food;
         const rarityNum = Math.floor(Math.random() * (100 - 1) + 1) // Random from 1 to 100
-        
-        // Food assigning
         if (rarityNum < 51)        food = common[Math.floor(Math.random() * common.length)];       // 50% (1 to 50 )
         else if (rarityNum < 91)   food = uncommon[Math.floor(Math.random() * uncommon.length)];   // 40% ( 51 to 90 )
         else if (rarityNum < 100)  food = rare[Math.floor(Math.random() * rare.length)];           // 9% ( 91 to 99 )
