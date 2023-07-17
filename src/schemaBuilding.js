@@ -23,7 +23,10 @@ async function generateNewUser(id, username) {
         pastaCount: 0,
         sandwichCount: 0,
         trashCount: 0,
-        brownieCount: 0
+        brownieCount: 0,
+        foodGiven: 0,
+        foodReceived: 0,
+        okCount: 0
     });
 
     await userProfile.save().catch(console.error);
@@ -49,7 +52,10 @@ async function generateNewGuild(id, name) {
         pastaCount: 0,
         sandwichCount: 0,
         trashCount: 0,
-        brownieCount: 0
+        brownieCount: 0,
+        foodGiven: 0,
+        foodReceived: 0,
+        okCount: 0
     });
 
     await guildProfile.save().catch(console.error);

@@ -17,8 +17,11 @@ module.exports = {
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         // Database handling
-        let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches databse for a userProfile with a matching userID to id
+        let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
         if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
+
+        // Total calculation
+        const total = userProfile.pieCount + userProfile.muffinCount + userProfile.potatoCount + userProfile.iceCreamCount + userProfile.pizzaCount + userProfile.pastaCount + userProfile.cakeCount + userProfile.cookieCount + userProfile.sandwichCount + userProfile.brownieCount + userProfile.fishCount + userProfile.trashCount;
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
@@ -30,18 +33,24 @@ module.exports = {
             .setTitle(`${targetedUser.username }'s User Stats`)
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([
-                { name: 'Pie Count',         value: userProfile.pieCount.toString(),      inline: true },
-                { name: 'Muffin Count',      value: userProfile.muffinCount.toString(),   inline: true },
-                { name: 'Potato Count',      value: userProfile.potatoCount.toString(),   inline: true },
-                { name: 'Ice Cream Count',   value: userProfile.iceCreamCount.toString(), inline: true },
-                { name: 'Pizza Count',       value: userProfile.pizzaCount.toString(),    inline: true },
-                { name: 'Pasta Count',       value: userProfile.pastaCount.toString(),    inline: true },
-                { name: 'Cake Count',        value: userProfile.cakeCount.toString(),     inline: true },
-                { name: 'Cookie Count',      value: userProfile.cookieCount.toString(),   inline: true },
-                { name: 'Sandwich Count',    value: userProfile.sandwichCount.toString(), inline: true },
-                { name: 'Brownie Count',     value: userProfile.brownieCount.toString(),  inline: true },
-                { name: 'Fish Fillet Count', value: userProfile.fishCount.toString(),     inline: true },
-                { name: 'Trash Count',       value: userProfile.trashCount.toString(),    inline: true }
+                { name: 'Pie Count',             value: userProfile.pieCount.toString(),             inline: true },
+                { name: 'Muffin Count',          value: userProfile.muffinCount.toString(),          inline: true },
+                { name: 'Potato Count',          value: userProfile.potatoCount.toString(),          inline: true },
+                { name: 'Ice Cream Count',       value: userProfile.iceCreamCount.toString(),        inline: true },
+                { name: 'Pizza Count',           value: userProfile.pizzaCount.toString(),           inline: true },
+                { name: 'Pasta Count',           value: userProfile.pastaCount.toString(),           inline: true },
+                { name: 'Cake Count',            value: userProfile.cakeCount.toString(),            inline: true },
+                { name: 'Cookie Count',          value: userProfile.cookieCount.toString(),          inline: true },
+                { name: 'Sandwich Count',        value: userProfile.sandwichCount.toString(),        inline: true },
+                { name: 'Brownie Count',         value: userProfile.brownieCount.toString(),         inline: true },
+                { name: 'Fish Fillet Count',     value: userProfile.fishCount.toString(),            inline: true },
+                { name: 'Trash Count',           value: userProfile.trashCount.toString(),           inline: true },
+                { name: 'Total Count',           value: total.toString(),                            inline: true },
+                { name: 'Total (without gifts)', value: (total-userProfile.foodReceived).toString(), inline: true },
+                { name: '\n',                    value: '\n' },
+                { name: 'Food Gifted',           value: userProfile.foodGiven.toString(),            inline: true },
+                { name: 'Food Received',         value: userProfile.foodReceived.toString(),         inline: true },
+
             ])
             .setTimestamp()
             .setFooter({

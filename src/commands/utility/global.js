@@ -21,6 +21,9 @@ module.exports = {
             });
         }
 
+        // Total calculation
+        const total = globalProfile.pieCount + globalProfile.muffinCount + globalProfile.potatoCount + globalProfile.iceCreamCount + globalProfile.pizzaCount + globalProfile.pastaCount + globalProfile.cakeCount + globalProfile.cookieCount + globalProfile.sandwichCount + globalProfile.brownieCount + globalProfile.fishCount + globalProfile.trashCount;
+
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
             .setColor('#FFFFFF')
@@ -42,7 +45,11 @@ module.exports = {
                 { name: 'Sandwich Count',    value: globalProfile.sandwichCount.toString(), inline: true },
                 { name: 'Brownie Count',     value: globalProfile.brownieCount.toString(),  inline: true },
                 { name: 'Fish Fillet Count', value: globalProfile.fishCount.toString(),     inline: true },
-                { name: 'Trash Count',       value: globalProfile.trashCount.toString(),    inline: true }
+                { name: 'Trash Count',       value: globalProfile.trashCount.toString(),    inline: true },
+                { name: 'Total Count',       value: total.toString()},
+                { name: '\n',                  value: '\n'},
+                { name: 'Food Gifted',       value: globalProfile.foodGiven.toString(),     inline: true },
+                { name: 'Food Received',     value: globalProfile.foodReceived.toString(),  inline: true },
             ])
             .setTimestamp()
             .setFooter({

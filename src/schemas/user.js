@@ -15,7 +15,10 @@ const userSchema = new Schema({
     pastaCount: Number,
     sandwichCount: Number,
     trashCount: Number,
-    brownieCount: Number
+    brownieCount: Number,
+    foodGiven: Number,
+    foodReceived: Number,
+    okCount: Number
 });
 
 module.exports = model('User', userSchema, 'users');

@@ -12,8 +12,11 @@ module.exports = {
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         // Database Handling
-        let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches databse for a guildProfile with a matching userID to id
+        let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches database for a guildProfile with a matching userID to id
         if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
+
+        // Total calculation
+        const total = guildProfile.pieCount + guildProfile.muffinCount + guildProfile.potatoCount + guildProfile.iceCreamCount + guildProfile.pizzaCount + guildProfile.pastaCount + guildProfile.cakeCount + guildProfile.cookieCount + guildProfile.sandwichCount + guildProfile.brownieCount + guildProfile.fishCount + guildProfile.trashCount;
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
@@ -36,7 +39,11 @@ module.exports = {
                 { name: 'Sandwich Count',    value: guildProfile.sandwichCount.toString(), inline: true },
                 { name: 'Brownie Count',     value: guildProfile.brownieCount.toString(),  inline: true },
                 { name: 'Fish Fillet Count', value: guildProfile.fishCount.toString(),     inline: true },
-                { name: 'Trash Count',       value: guildProfile.trashCount.toString(),    inline: true }
+                { name: 'Trash Count',       value: guildProfile.trashCount.toString(),    inline: true },
+                { name: 'Total Count',       value: total.toString()},
+                { name: '\n',                  value: '\n'},
+                { name: 'Food Gifted',       value: guildProfile.foodGiven.toString(),     inline: true },
+                { name: 'Food Received',     value: guildProfile.foodReceived.toString(),  inline: true },
             ])
             .setTimestamp()
             .setFooter({
