@@ -13,10 +13,10 @@ const uncommon = ["molasses cookie", "shortbread cookie", "peanut butter cookie"
 const rare = ["biscotti cookie", "cookie dough", "fortune cookie", "peanut butter chocolate chip cookie", "macaron", "thin mint", "samoa"
 ];
 
-const legendary = ["double stuff oreo"];
+const legendary = ["double stuff oreo™️"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
-const adjectivesBad = ["day-old", "overcooked"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
 const phrases = ["Here, [USER]! GoTHFuLGirL wants you to have [PLURAL] [ADJ] [FOOD]!"];
 

@@ -22,7 +22,7 @@ module.exports = {
         // No input scenario handling
         if(!interaction.options.getString("question")) { // If there is no question asked (an empty command)
             return await interaction.reply({
-                content: "What?",
+                content: "What are you asking?",
                 ephemeral: true
             });
         }

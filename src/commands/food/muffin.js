@@ -15,14 +15,14 @@ const rare = ["chocolate chunk muffin", "apple cinnamon muffin", "snickerdoodle 
 
 const legendary = [`Kecatas' "special" muffin`, "drudanae muffin", "muffin time"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
-const adjectivesBad = ["day-old", "overcooked"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
 const phrases = ["Here, [USER]! Kecatas wants you to have one of his [ADJ] [FOOD]s!",
-"[USER], you have stumbled upon Kecatas's stash of [ADJ] [FOOD]s. He won't know if you take just one, right?",
-"From the kitchen you can smell that Kecatas has prepared a batch of [ADJ] [FOOD]s. He offers [USER] one. What a good guy!",
-"Kecatas spent all morning baking a dozen [ADJ] [FOOD]s and wants you to try one, [USER]!",
-"Muffin Master Kecatas is testing a new recipe of [ADJ] [FOOD]s and gives you one to try. How does it taste, [USER]?"];
+    "[USER], you have stumbled upon Kecatas's stash of [ADJ] [FOOD]s. He won't know if you take just one, right?",
+    "From the kitchen you can smell that Kecatas has prepared a batch of [ADJ] [FOOD]s. He offers [USER] one. What a good guy!",
+    "Kecatas spent all morning baking a dozen [ADJ] [FOOD]s and wants you to try one, [USER]!",
+    "Muffin Master Kecatas is testing a new recipe of [ADJ] [FOOD]s and gives you one to try. How does it taste, [USER]?"];
 
 module.exports = {
     common,

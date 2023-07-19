@@ -4,27 +4,25 @@ const Guild = require('../../schemas/guild');
 const GlobalCount = require('../../schemas/globalCount');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
-const common = ["cheese pizza", "pepperoni pizza", "sausage pizza", "all-meat pizza", "hawaiian pizza", "margherita pizza", "veggie pizza"
+const common = ["blondie", "M&M brownie", "chocolate frosted brownie", "fudge chocolate brownie", "triple chocolate chunk brownie", "walnut brownie", "peanut butter brownie", "mint chocolate brownie", "coconut brownie", "nutella brownie"
 ];
 
-const uncommon = ["chicago-style deep dish pizza", "breakfast pizza", "buffalo chicken pizza", "feta cheese and salami pizza", "pineapple pepperoni pizza", "BBQ chicken pizza"
+const uncommon = ["raspberry cheesecake brownie", "cookies and cream brownie", "crumb coffee brownie", "cookie dough brownie", "espresso brownie", "salted caramel brownie", "cream cheese brownie"
 ];
 
-const rare = ["chicken alfredo pizza", "loaded baked-potato pizza", "chocolate chip cookie pizza",  "verde chicken enchilada pizza", "taco quesadilla pizza"
+const rare = ["tiramisu brownie", "s'mores brownie", "marshmallow crunch brownie", "peppermit brownie", "pecan praline brownie", "caramel pretzel brownie"
 ];
 
-const legendary = ["boneless pizza", "hotpocket™️"];
-
-const crusts = ["deep dish", "thin crust", "stuffed crust"];
+const legendary = ["Cosmic Brownie", "special 🌿🌱 brownie"];
 
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
-const adjectivesBad = ["day-old", "overcooked", "undercooked", "frozen"];
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = ["Here, [USER]! ItalianStallion wants you to have a slice of her [ADJ] [CRUST][FOOD]!",
-"[USER], you enter ItalianStallions pizzaria and order up a slice of [ADJ] [CRUST][FOOD]. Yum!",
-"ItalianStallion has chosen only the finest ingredients for her [ADJ] [CRUST][FOOD]. She looks around the room and choses [USER] to have the first slice!",
-"[USER], donning your pizza thief costume, you sneak into ItalianStallions kitchen and make off with her [ADJ] [CRUST][FOOD]. You're a menace!",
-"The smell of ItalianStallion's [ADJ] [CRUST][FOOD] fills your nose, [USER]. She offers you a slice!"];
+const phrases = ["Beeble baked a batch of her [ADJ] [FOOD]s, just for [USER]!",
+    "Here, [USER], Beeble wants you to have [A] [ADJ] [FOOD].",
+    "Lucky day! Beeble presents [USER] with a plate of [ADJ] [FOOD]s alongside a nice, cool glass of milk.",
+    "[USER] found a tin of [ADJ] [FOOD]s left out with a note from Beeble saying to help yourself. So kind!",
+    "Beeble is testing a new recipe and wants [USER] to try her [ADJ] [FOOD]."];
 
 module.exports = {
     common,
@@ -32,11 +30,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('pizza')
-        .setDescription('Get a random pizza!')
+        .setName('brownie')
+        .setDescription('Get a random brownie!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a pizza!')
+                  .setDescription('Give this user a brownie!')
         ),
     async execute(interaction, client) {
 
@@ -87,13 +85,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.pizzaCount + 1; ///////
-        const guildCount = guildProfile.pizzaCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.pizzaCount + 1; ///
+        const userCount = userProfile.brownieCount + 1; ///////
+        const guildCount = guildProfile.brownieCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.brownieCount + 1; ///
 
-        await userProfile.updateOne({ pizzaCount: userCount }); ///////
-        await guildProfile.updateOne({ pizzaCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ pizzaCount: globalCount }); ///
+        await userProfile.updateOne({ brownieCount: userCount }); ///////
+        await guildProfile.updateOne({ brownieCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ brownieCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -114,14 +112,9 @@ module.exports = {
 
         if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
 
-        const crust = ( (food != "chicago-style deep dish pizza" && food != "breakfast pizza" && food != "chocolate chip cookie pizza" && food != "hotpocket™️")   &&   Math.floor(Math.random() * (100 - 1) + 1) < 15 )
-            ? crustType = crusts[Math.floor(Math.random() * crusts.length)] + " "
-            : ""; // Crust handling... I know it is super ugly...
-
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
-        phrase = phrase.replace('[FOOD]', food);           //
-        phrase = phrase.replace('[CRUST]', crust); //////////
+        phrase = phrase.replace('[FOOD]', food); ////////////
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
@@ -135,7 +128,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} pizzas given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

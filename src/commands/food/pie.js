@@ -19,8 +19,8 @@ const rare = ["cheesecake", "prickly pear pie", "apple pie à la mode", "blackbe
 
 const legendary = ["creampie", "cow pie", "cutie pie"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
-const adjectivesBad = ["day-old", "overcooked"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
 const phrases = ["Here, [USER]! Kim wants you to have a slice of her [ADJ] [FOOD]!",
     "Using artisnal skill and experience, Master Chef Kim has prepared [A] [ADJ] [FOOD] for you, [USER]!",

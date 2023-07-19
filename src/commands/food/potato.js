@@ -15,8 +15,8 @@ const rare = ["potato gnocchi", "potato pancakes", "potato bread", "potato soup"
 
 const legendary = ["pocket potatoes, his very own recipe"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
-const adjectivesBad = ["day-old", "overcooked"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
 const phrases = ["Here, [USER]! Boneless wants you to have [PLURAL] [ADJ] [FOOD]!"];
 
@@ -111,7 +111,7 @@ module.exports = {
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
-        phrase = phrase.replace('[PLURAL]', food == "baked potato" ? "a" : "some");
+        phrase = phrase.replace('[PLURAL]', food == "baked potato" ? "[A]" : "some");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
