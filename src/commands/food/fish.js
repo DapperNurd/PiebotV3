@@ -4,28 +4,21 @@ const Guild = require('../../schemas/guild');
 const GlobalCount = require('../../schemas/globalCount');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
-const common = ["pumpkin pie", "coconut cream pie", "banana cream pie", "strawberry rhubarb pie", "chocolate cream pie", "blueberry pie", "ice cream pie", "peach pie", "pear pie", "chicken pot pie", "cranberry pie", "pineapple pie", "turtle pie", "chocolate hazelnut pie", "mixed berry pie", "chestnut pie"
+const common = ["carp", "bass", "trout", "tilapia", "catfish", "anchovy", "cod", "spanish mackeral", "bluefish", "crappie", "redfish", "mullet", "ruby splashtail"
 ];
 
-const uncommon = ["apple pie", "cherry pie", "key lime pie", "lemon meringue pie", "blackberry pie", "raspberry pie", "pecan pie",
-    "strawberry pie", "french silk pie", "custard pie", "chocolate peanut butter pie", "butterscotch pie", "mississippi mud pie", "caramel apple pie", 
-    "cookies and cream pie","boysenberry pie", "shepherd's pie", "mincemeat pie"
+const uncommon = ["cobia", "flounder", "red snapper", "king mackeral", "ladyfish", "largemouth bass", "tuna", "sunfish", "halibut", "pompano", "salmon", "sunny splashtail"
 ];
 
-const rare = ["cheesecake", "prickly pear pie", "apple pie à la mode", "blackberry pie à la mode", "cherry pie à la mode", "raspberry pie à la mode", "boysenberry pie à la mode"
+const rare = ["grouper", "alligator gar", "lionfish", "swordfish", "mahimahi", "wahoo", "clownfish", "indigo splashtail"
 ];
 
-const legendary = ["creampie", "cow pie", "cutie pie"];
+const legendary = ["Holy Mackerel", "fish sticks and custard", "umber splashtail"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
-const adjectivesBad = ["day-old", "overcooked", "undercooked"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "fresh"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked", "raw"];
 
-const phrases = ["Here, [USER]! Kim wants you to have a slice of her [ADJ] [FOOD]!",
-    "Using artisnal skill and experience, Master Chef Kim has prepared [A] [ADJ] [FOOD] for you, [USER]!",
-    "With incredible skill and hand-picked ingredients, Kim has created [A] [ADJ] [FOOD] for [USER]!",
-    "[USER], you see [A] [ADJ] [FOOD] sitting on the table in Kim's kitchen. You decide to steal it, you sly fox.",
-    "Using her own patented recipe, Kim made [A] [ADJ] [FOOD] just for you, [USER]! Wow, it's delicious!",
-    "[A] [ADJ] [FOOD] floats down from the heavens and into [USER][S] hands. You can tell that it was prepared by Kim with love." ];
+const phrases = ["Here, [USER]! Valyx the Florida Man wants you to have some [ADJ] [FOOD]!"];
 
 module.exports = {
     common,
@@ -33,11 +26,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('pie')
-        .setDescription('Get a random pie!')
+        .setName('fish')
+        .setDescription('Get a random fish!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a pie!')
+                  .setDescription('Give this user a fish!')
         ),
     async execute(interaction, client) {
 
@@ -88,13 +81,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.pieCount + 1; ///////
-        const guildCount = guildProfile.pieCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.pieCount + 1; ///
+        const userCount = userProfile.fishCount + 1; ///////
+        const guildCount = guildProfile.fishCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.fishCount + 1; ///
 
-        await userProfile.updateOne({ pieCount: userCount }); ///////
-        await guildProfile.updateOne({ pieCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ pieCount: globalCount }); ///
+        await userProfile.updateOne({ fishCount: userCount }); ///////
+        await guildProfile.updateOne({ fishCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ fishCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -113,7 +106,19 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
+        const specialPhrase = (Math.floor(Math.random() * (100 - 1) + 1));
+        if(specialPhrase < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead
+        else if(specialPhrase < 15) { // 7% Chance to send a catfish message instead
+            var food2; // Calculating and assigning second food for catfish message
+            const rarityNum = Math.floor(Math.random() * (100 - 1) + 1) // Random from 1 to 100
+            if (rarityNum < 51)        food2 = common[Math.floor(Math.random() * common.length)];       // 50% (1 to 50 )
+            else if (rarityNum < 91)   food2 = uncommon[Math.floor(Math.random() * uncommon.length)];   // 40% ( 51 to 90 )
+            else if (rarityNum < 100)  food2 = rare[Math.floor(Math.random() * rare.length)];           // 9% ( 91 to 99 )
+            else if (rarityNum >= 100) food2 = legendary[Math.floor(Math.random() * legendary.length)]; // 1% ( 100 )
+            else                       food2 = common[Math.floor(Math.random() * common.length)];       // Should never run but just in case
+            
+            phrase = `You just got catfished, [USER]! Your [ADJ] [FOOD]] is actually a ${food2}.`
+        }
 
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
@@ -131,7 +136,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} fish fillets given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

@@ -4,28 +4,21 @@ const Guild = require('../../schemas/guild');
 const GlobalCount = require('../../schemas/globalCount');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
-const common = ["pumpkin pie", "coconut cream pie", "banana cream pie", "strawberry rhubarb pie", "chocolate cream pie", "blueberry pie", "ice cream pie", "peach pie", "pear pie", "chicken pot pie", "cranberry pie", "pineapple pie", "turtle pie", "chocolate hazelnut pie", "mixed berry pie", "chestnut pie"
+const common = ["vanilla ice cream", "chocolate ice cream", "strawberry ice cream", "mint chocolate-chip ice cream", "orange sherbet",  "coffee ice cream", "peanut butter ice cream", "neapolitan ice cream", "cookie dough ice cream", "cookies n' cream ice cream", "chocolate-chip ice cream"
 ];
 
-const uncommon = ["apple pie", "cherry pie", "key lime pie", "lemon meringue pie", "blackberry pie", "raspberry pie", "pecan pie",
-    "strawberry pie", "french silk pie", "custard pie", "chocolate peanut butter pie", "butterscotch pie", "mississippi mud pie", "caramel apple pie", 
-    "cookies and cream pie","boysenberry pie", "shepherd's pie", "mincemeat pie"
+const uncommon = ["rocky road ice cream", "birthday cake ice cream", "tiger ice cream", "vanilla bean ice cream", "maple-nut ice cream", "chocolate peanut butter ice cream", "pistachio ice cream", "peppermint ice cream", "cotton candy ice cream", "rainbow sherbet", "pumpkin pie ice cream"
 ];
 
-const rare = ["cheesecake", "prickly pear pie", "apple pie à la mode", "blackberry pie à la mode", "cherry pie à la mode", "raspberry pie à la mode", "boysenberry pie à la mode"
+const rare = ["fudge brownie ice cream", "strawberry cheesecake ice cream", "salted caramel ice cream", "moose tracks ice cream", "pina colada ice cream", "rum raisin ice cream"
 ];
 
-const legendary = ["creampie", "cow pie", "cutie pie"];
+const legendary = ["pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
-const adjectivesBad = ["day-old", "overcooked", "undercooked"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
+const adjectivesBad = ["freezer burnt", "melted"];
 
-const phrases = ["Here, [USER]! Kim wants you to have a slice of her [ADJ] [FOOD]!",
-    "Using artisnal skill and experience, Master Chef Kim has prepared [A] [ADJ] [FOOD] for you, [USER]!",
-    "With incredible skill and hand-picked ingredients, Kim has created [A] [ADJ] [FOOD] for [USER]!",
-    "[USER], you see [A] [ADJ] [FOOD] sitting on the table in Kim's kitchen. You decide to steal it, you sly fox.",
-    "Using her own patented recipe, Kim made [A] [ADJ] [FOOD] just for you, [USER]! Wow, it's delicious!",
-    "[A] [ADJ] [FOOD] floats down from the heavens and into [USER][S] hands. You can tell that it was prepared by Kim with love." ];
+const phrases = ["Here, [USER]! \_\_\_\_\_ wants you to have some [ADJ] [FOOD]!"];
 
 module.exports = {
     common,
@@ -33,11 +26,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('pie')
-        .setDescription('Get a random pie!')
+        .setName('icecream')
+        .setDescription('Get a random icecream!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a pie!')
+                  .setDescription('Give this user a icecream!')
         ),
     async execute(interaction, client) {
 
@@ -88,13 +81,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.pieCount + 1; ///////
-        const guildCount = guildProfile.pieCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.pieCount + 1; ///
+        const userCount = userProfile.iceCreamCount + 1; ///////
+        const guildCount = guildProfile.iceCreamCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.iceCreamCount + 1; ///
 
-        await userProfile.updateOne({ pieCount: userCount }); ///////
-        await guildProfile.updateOne({ pieCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ pieCount: globalCount }); ///
+        await userProfile.updateOne({ iceCreamCount: userCount }); ///////
+        await guildProfile.updateOne({ iceCreamCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ iceCreamCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -113,7 +106,8 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
+        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]."; // 8% chance to send a sorry message instead 
+        if(food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" && (Math.floor(Math.random() * (100 - 1) + 1)) > 50) phrase = `Oh no [USER]! I dropped your melted dairy queen blizzard!`; // 50% chance on legendary food for it to be a custom message
 
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
