@@ -18,7 +18,7 @@ const legendary = ["pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp"];
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
 const adjectivesBad = ["freezer burnt", "melted"];
 
-const phrases = ["Here, [USER]! \_\_\_\_\_ wants you to have some [ADJ] [FOOD]!"];
+const phrases = ["Here, [USER]! Violet wants you to have some [ADJ] [FOOD]!"];
 
 module.exports = {
     common,
