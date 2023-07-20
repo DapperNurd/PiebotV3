@@ -53,7 +53,7 @@ module.exports = {
         }
 
         // Given / Receiving Handling
-        if(interaction.options.getUser("user")) { // ONLY RUNS if a food item is being given to another user
+        if(interaction.options.getUser("user") && interaction.options.getUser("user") != interaction.user) { // ONLY RUNS if a food item is being given to another user
             let giverProfile = await User.findOne({ userID: interaction.user.id }); // Searches database for a userProfile with a matching userID to id
             if(!giverProfile) giverProfile = await schemaBuildingFunctions.generateNewUser(interaction.user.id, interaction.user.username); // If no userProfile is found, generate a new one
 

@@ -8,7 +8,8 @@ module.exports = {
 
         // Sending a deferred message
         const message = await interaction.deferReply({
-            fetchReply: true
+            fetchReply: true,
+            ephemeral: true
         });
 
         // Building the message to send
@@ -16,7 +17,8 @@ module.exports = {
 
         // Sending the message by editing the deferred
         await interaction.editReply({
-            content: newMessage
+            content: newMessage,
+            ephemeral: true
         });
     }
 }
