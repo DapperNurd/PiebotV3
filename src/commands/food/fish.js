@@ -117,7 +117,7 @@ module.exports = {
             else if (rarityNum >= 100) food2 = legendary[Math.floor(Math.random() * legendary.length)]; // 1% ( 100 )
             else                       food2 = common[Math.floor(Math.random() * common.length)];       // Should never run but just in case
             
-            phrase = `You just got catfished, [USER]! Your [ADJ] [FOOD]] is actually a ${food2}.`
+            phrase = `You just got catfished, [USER]! Your [ADJ] [FOOD] is actually a ${food2}.`
         }
 
         phrase = phrase.replace('[USER]', userByMention); ///
