@@ -2,8 +2,8 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('ask')
-        .setDescription('Ask me a question!'),
+        .setName('coinflip')
+        .setDescription('Flip a coin!'),
     async execute(interaction, client) {
 
         // Rarity calculation

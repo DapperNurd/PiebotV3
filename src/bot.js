@@ -7,6 +7,8 @@ const fs = require('fs');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 //const client = new Client({ intents: GatewayIntentBits.Guilds });
 client.commands = new Collection();
+client.buttons = new Collection();
+client.selectMenus = new Collection();
 client.commandArray = [];
 
 // Following YT Tutorial: https://youtu.be/6IgOXmQMT68

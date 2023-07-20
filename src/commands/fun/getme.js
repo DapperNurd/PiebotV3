@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, userMention } = require('discord.js');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 module.exports = {
@@ -34,9 +34,9 @@ module.exports = {
             finalMsg = "https://tenor.com/view/windows-error-gif-21406993"; // Sends an automatic response
         }
 
-        // Sends the embed message
+        // Sends the context message
         await interaction.reply({
-            content: finalMsg
+            content: `getting you "${interaction.options.getString("prompt")}"... ${finalMsg}`
         });
     }
 }
