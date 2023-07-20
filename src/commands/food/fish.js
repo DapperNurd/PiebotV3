@@ -13,7 +13,7 @@ const uncommon = ["cobia", "flounder", "red snapper", "king mackeral", "ladyfish
 const rare = ["grouper", "alligator gar", "lionfish", "swordfish", "mahimahi", "wahoo", "clownfish", "indigo splashtail"
 ];
 
-const legendary = ["Holy Mackerel", "fish sticks and custard", "umber splashtail"];
+const legendary = ["Holy Mackerel", "umber splashtail"];
 
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "fresh"]
 const adjectivesBad = ["day-old", "overcooked", "undercooked", "raw"];

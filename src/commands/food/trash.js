@@ -5,7 +5,7 @@ const GlobalCount = require('../../schemas/globalCount');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
 // 13 Categories
-// 210 Total Items
+// 235 Total Items
 
 const food = [  "[A] [ADJ] apple core",
                 "[A] [ADJ] banana peel",
