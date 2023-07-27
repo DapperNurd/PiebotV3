@@ -4,7 +4,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('getme')
-        .setDescription('List of commands to use!')
+        .setDescription('Ask and you shall receive!')
         .addStringOption(option =>
             option.setName('prompt')
                   .setDescription('What do you want to see?')

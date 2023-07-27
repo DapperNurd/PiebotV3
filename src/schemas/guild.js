@@ -12,6 +12,7 @@ const guildSchema = new Schema({
     fishCount: Number,
     cakeCount: Number,
     cookieCount: Number,
+    chocolateCount: Number,
     pastaCount: Number,
     sandwichCount: Number,
     trashCount: Number,

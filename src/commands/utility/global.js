@@ -22,7 +22,7 @@ module.exports = {
         }
 
         // Total calculation
-        const total = globalProfile.pieCount + globalProfile.muffinCount + globalProfile.potatoCount + globalProfile.iceCreamCount + globalProfile.pizzaCount + globalProfile.pastaCount + globalProfile.cakeCount + globalProfile.cookieCount + globalProfile.sandwichCount + globalProfile.brownieCount + globalProfile.fishCount + globalProfile.trashCount;
+        const total = globalProfile.pieCount + globalProfile.muffinCount + globalProfile.potatoCount + globalProfile.iceCreamCount + globalProfile.pizzaCount + globalProfile.pastaCount + globalProfile.cakeCount + globalProfile.chocolateCount + globalProfile.sandwichCount + globalProfile.brownieCount + globalProfile.fishCount + globalProfile.trashCount;
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
@@ -34,22 +34,22 @@ module.exports = {
             .setTitle('Global Stats')
             .setThumbnail('https://creazilla-store.fra1.digitaloceanspaces.com/emojis/49917/globe-showing-americas-emoji-clipart-md.png')
             .addFields([
-                { name: 'Pie Count',         value: globalProfile.pieCount.toString(),      inline: true },
-                { name: 'Muffin Count',      value: globalProfile.muffinCount.toString(),   inline: true },
-                { name: 'Potato Count',      value: globalProfile.potatoCount.toString(),   inline: true },
-                { name: 'Ice Cream Count',   value: globalProfile.iceCreamCount.toString(), inline: true },
-                { name: 'Pizza Count',       value: globalProfile.pizzaCount.toString(),    inline: true },
-                { name: 'Pasta Count',       value: globalProfile.pastaCount.toString(),    inline: true },
-                { name: 'Cake Count',        value: globalProfile.cakeCount.toString(),     inline: true },
-                { name: 'Cookie Count',      value: globalProfile.cookieCount.toString(),   inline: true },
-                { name: 'Sandwich Count',    value: globalProfile.sandwichCount.toString(), inline: true },
-                { name: 'Brownie Count',     value: globalProfile.brownieCount.toString(),  inline: true },
-                { name: 'Fish Fillet Count', value: globalProfile.fishCount.toString(),     inline: true },
-                { name: 'Trash Count',       value: globalProfile.trashCount.toString(),    inline: true },
+                { name: 'Pie Count',         value: globalProfile.pieCount.toString(),       inline: true },
+                { name: 'Muffin Count',      value: globalProfile.muffinCount.toString(),    inline: true },
+                { name: 'Potato Count',      value: globalProfile.potatoCount.toString(),    inline: true },
+                { name: 'Ice Cream Count',   value: globalProfile.iceCreamCount.toString(),  inline: true },
+                { name: 'Pizza Count',       value: globalProfile.pizzaCount.toString(),     inline: true },
+                { name: 'Pasta Count',       value: globalProfile.pastaCount.toString(),     inline: true },
+                { name: 'Cake Count',        value: globalProfile.cakeCount.toString(),      inline: true },
+                { name: 'Chocolate Count',   value: globalProfile.chocolateCount.toString(), inline: true },
+                { name: 'Sandwich Count',    value: globalProfile.sandwichCount.toString(),  inline: true },
+                { name: 'Brownie Count',     value: globalProfile.brownieCount.toString(),   inline: true },
+                { name: 'Fish Fillet Count', value: globalProfile.fishCount.toString(),      inline: true },
+                { name: 'Trash Count',       value: globalProfile.trashCount.toString(),     inline: true },
                 { name: 'Total Count',       value: total.toString()},
                 { name: '\n',                  value: '\n'},
-                { name: 'Food Gifted',       value: globalProfile.foodGiven.toString(),     inline: true },
-                { name: 'Food Received',     value: globalProfile.foodReceived.toString(),  inline: true },
+                { name: 'Food Gifted',       value: globalProfile.foodGiven.toString(),      inline: true },
+                { name: 'Food Received',     value: globalProfile.foodReceived.toString(),   inline: true },
             ])
             .setTimestamp()
             .setFooter({

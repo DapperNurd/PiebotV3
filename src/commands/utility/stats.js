@@ -21,7 +21,7 @@ module.exports = {
         if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
 
         // Total calculation
-        const total = userProfile.pieCount + userProfile.muffinCount + userProfile.potatoCount + userProfile.iceCreamCount + userProfile.pizzaCount + userProfile.pastaCount + userProfile.cakeCount + userProfile.cookieCount + userProfile.sandwichCount + userProfile.brownieCount + userProfile.fishCount + userProfile.trashCount;
+        const total = userProfile.pieCount + userProfile.muffinCount + userProfile.potatoCount + userProfile.iceCreamCount + userProfile.pizzaCount + userProfile.pastaCount + userProfile.cakeCount + userProfile.chocolateCount + userProfile.sandwichCount + userProfile.brownieCount + userProfile.fishCount + userProfile.trashCount;
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
@@ -40,7 +40,7 @@ module.exports = {
                 { name: 'Pizza Count',           value: userProfile.pizzaCount.toString(),           inline: true },
                 { name: 'Pasta Count',           value: userProfile.pastaCount.toString(),           inline: true },
                 { name: 'Cake Count',            value: userProfile.cakeCount.toString(),            inline: true },
-                { name: 'Cookie Count',          value: userProfile.cookieCount.toString(),          inline: true },
+                { name: 'Chocolate Count',       value: userProfile.chocolateCount.toString(),       inline: true },
                 { name: 'Sandwich Count',        value: userProfile.sandwichCount.toString(),        inline: true },
                 { name: 'Brownie Count',         value: userProfile.brownieCount.toString(),         inline: true },
                 { name: 'Fish Fillet Count',     value: userProfile.fishCount.toString(),            inline: true },
