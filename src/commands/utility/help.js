@@ -18,7 +18,7 @@ module.exports = {
             .setColor('#FFFFFF')
             .setAuthor({ name: "Piebot Help" })
             .setThumbnail(client.user.displayAvatarURL())
-            .setTitle("Commands ( / )")
+            .setTitle("Commands")
             .setTimestamp()
             .setFooter({
                 iconURL: author.displayAvatarURL(),
@@ -35,6 +35,11 @@ module.exports = {
             }
 
             folder = folder.charAt(0).toUpperCase() + folder.slice(1); // Capitalizes the first letter of the folder
+
+            if(folder == "Moderation") { // If command folder is the Moderation folder
+                if(interaction.user.id != author.id) continue; // Skips the displaying of the Moderation commands if command user is not the author of the bot
+                folder = "*" + folder; // Adds an asterisk to the Moderation folder label
+            }
 
             statsEmbed.addFields({ // Adds a field with Folder name as the header and a list of commands (the string) as the value
                 name: folder,

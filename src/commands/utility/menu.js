@@ -132,7 +132,7 @@ module.exports = {
             .setColor('#FFCC2B')
             .setAuthor({ name: `Global Pizza Count: ${globalProfile.pizzaCount}` })
             .setTitle('Pizza Menu')
-            .setDescription(`Number of Pizzas: ${pizzas.common.le/menungth + pizzas.uncommon.length + pizzas.rare.length + pizzas.legendary.length}`)
+            .setDescription(`Number of Pizzas: ${pizzas.common.length + pizzas.uncommon.length + pizzas.rare.length + pizzas.legendary.length}`)
             .addFields([
                 { name: 'Common Pizzas (50%)',   value: commonString },
                 { name: 'Uncommon Pizzas (40%)', value: uncommonString },
@@ -370,7 +370,7 @@ module.exports = {
                     ephemeral: true
                 });
 
-                const collector = response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 3_600_000 }); // Collector for the dropdown
+                const collector = response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 120_000 }); // Collector for the dropdown, 2 minutes
 
                 collector.on('collect', async i => {
                     const statusMsg = await i.reply({ content: "Sending menus...", ephemeral: true }); // This is necessary so I can followUp for the rest of them... temporary
