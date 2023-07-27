@@ -53,10 +53,10 @@ module.exports = {
         // Embed building (this is rough lol)
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of pies.common)      commonString += `${food} *...* `;
-        for(const food of pies.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of pies.rare)        rareString += `${food} *...* `;
-        for(const food of pies.legendary)   legendaryString += `${food} *...* `;
+        for(const food of pies.common)      commonString += `${food}    `;
+        for(const food of pies.uncommon)    uncommonString += `${food}    `;
+        for(const food of pies.rare)        rareString += `${food}    `;
+        for(const food of pies.legendary)   legendaryString += `${food}    `;
         const pieMenu = new EmbedBuilder() // Pie menu embed
             .setColor('#FF1111')
             .setAuthor({ name: `Global Pie Count: ${globalProfile.pieCount}` })
@@ -76,10 +76,10 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of muffins.common)      commonString += `${food} *...* `;
-        for(const food of muffins.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of muffins.rare)        rareString += `${food} *...* `;
-        for(const food of muffins.legendary)   legendaryString += `${food} *...* `;
+        for(const food of muffins.common)      commonString += `${food}    `;
+        for(const food of muffins.uncommon)    uncommonString += `${food}    `;
+        for(const food of muffins.rare)        rareString += `${food}    `;
+        for(const food of muffins.legendary)   legendaryString += `${food}    `;
         const muffinMenu = new EmbedBuilder() // Muffin menu embed
             .setColor('#00FF00')
             .setAuthor({ name: `Global Muffin Count: ${globalProfile.muffinCount}` })
@@ -99,10 +99,10 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of potatoes.common)      commonString += `${food} *...* `;
-        for(const food of potatoes.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of potatoes.rare)        rareString += `${food} *...* `;
-        for(const food of potatoes.legendary)   legendaryString += `${food} *...* `;
+        for(const food of potatoes.common)      commonString += `${food}    `;
+        for(const food of potatoes.uncommon)    uncommonString += `${food}    `;
+        for(const food of potatoes.rare)        rareString += `${food}    `;
+        for(const food of potatoes.legendary)   legendaryString += `${food}    `;
         const potatoMenu = new EmbedBuilder() // Potato menu embed
             .setColor('#A0522D')
             .setAuthor({ name: `Global Potato Count: ${globalProfile.potatoCount}` })
@@ -122,17 +122,17 @@ module.exports = {
 
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of pizzas.common)      commonString += `${food} *...* `;
-        for(const food of pizzas.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of pizzas.rare)        rareString += `${food} *...* `;
-        for(const food of pizzas.legendary)   legendaryString += `${food} *...* `;
+        for(const food of pizzas.common)      commonString += `${food}    `;
+        for(const food of pizzas.uncommon)    uncommonString += `${food}    `;
+        for(const food of pizzas.rare)        rareString += `${food}    `;
+        for(const food of pizzas.legendary)   legendaryString += `${food}    `;
         var crustsString = "";
-        for(const crust of pizzas.crusts)     crustsString += `\`${crust}\` *...* `;
+        for(const crust of pizzas.crusts)     crustsString += `${crust}    `;
         const pizzaMenu = new EmbedBuilder() // Pizza menu embed
             .setColor('#FFCC2B')
             .setAuthor({ name: `Global Pizza Count: ${globalProfile.pizzaCount}` })
             .setTitle('Pizza Menu')
-            .setDescription(`Number of Pizzas: ${pizzas.common.length + pizzas.uncommon.length + pizzas.rare.length + pizzas.legendary.length}`)
+            .setDescription(`Number of Pizzas: ${pizzas.common.le/menungth + pizzas.uncommon.length + pizzas.rare.length + pizzas.legendary.length}`)
             .addFields([
                 { name: 'Common Pizzas (50%)',   value: commonString },
                 { name: 'Uncommon Pizzas (40%)', value: uncommonString },
@@ -149,10 +149,10 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of fishes.common)      commonString += `${food} *...* `;
-        for(const food of fishes.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of fishes.rare)        rareString += `${food} *...* `;
-        for(const food of fishes.legendary)   legendaryString += `${food} *...* `;
+        for(const food of fishes.common)      commonString += `${food}    `;
+        for(const food of fishes.uncommon)    uncommonString += `${food}    `;
+        for(const food of fishes.rare)        rareString += `${food}    `;
+        for(const food of fishes.legendary)   legendaryString += `${food}    `;
         const fishMenu = new EmbedBuilder() // Fish Fillet menu embed
             .setColor('#CAD8D7')
             .setAuthor({ name: `Global Fish Fillet Count: ${globalProfile.fishCount}` })
@@ -172,10 +172,10 @@ module.exports = {
     
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of cakes.common)      commonString += `${food} *...* `;
-        for(const food of cakes.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of cakes.rare)        rareString += `${food} *...* `;
-        for(const food of cakes.legendary)   legendaryString += `${food} *...* `;
+        for(const food of cakes.common)      commonString += `${food}    `;
+        for(const food of cakes.uncommon)    uncommonString += `${food}    `;
+        for(const food of cakes.rare)        rareString += `${food}    `;
+        for(const food of cakes.legendary)   legendaryString += `${food}    `;
         const cakeMenu = new EmbedBuilder() // Cake menu embed
             .setColor('#F1B3F2')
             .setAuthor({ name: `Global Cake Count: ${globalProfile.cakeCount}` })
@@ -195,10 +195,10 @@ module.exports = {
 
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of chocolates.common)      commonString += `${food} *...* `;
-        for(const food of chocolates.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of chocolates.rare)        rareString += `${food} *...* `;
-        for(const food of chocolates.legendary)   legendaryString += `${food} *...* `;
+        for(const food of chocolates.common)      commonString += `${food}    `;
+        for(const food of chocolates.uncommon)    uncommonString += `${food}    `;
+        for(const food of chocolates.rare)        rareString += `${food}    `;
+        for(const food of chocolates.legendary)   legendaryString += `${food}    `;
         const chocolateMenu = new EmbedBuilder() // Chocolate menu embed
             .setColor('#260F00')
             .setAuthor({ name: `Global Chocolate Count: ${globalProfile.chocolateCount}` })
@@ -218,10 +218,10 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of pastas.common)      commonString += `${food} *...* `;
-        for(const food of pastas.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of pastas.rare)        rareString += `${food} *...* `;
-        for(const food of pastas.legendary)   legendaryString += `${food} *...* `;
+        for(const food of pastas.common)      commonString += `${food}    `;
+        for(const food of pastas.uncommon)    uncommonString += `${food}    `;
+        for(const food of pastas.rare)        rareString += `${food}    `;
+        for(const food of pastas.legendary)   legendaryString += `${food}    `;
         const pastaMenu = new EmbedBuilder() // Pasta menu embed
             .setColor('#E6D28C')
             .setAuthor({ name: `Global Pasta Count: ${globalProfile.pastaCount}` })
@@ -241,10 +241,10 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of sandwiches.common)      commonString += `${food} *...* `;
-        for(const food of sandwiches.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of sandwiches.rare)        rareString += `${food} *...* `;
-        for(const food of sandwiches.legendary)   legendaryString += `${food} *...* `;
+        for(const food of sandwiches.common)      commonString += `${food}    `;
+        for(const food of sandwiches.uncommon)    uncommonString += `${food}    `;
+        for(const food of sandwiches.rare)        rareString += `${food}    `;
+        for(const food of sandwiches.legendary)   legendaryString += `${food}    `;
         const sandwichMenu = new EmbedBuilder() // Sandwich menu embed
             .setColor('#D6BF4B')
             .setAuthor({ name: `Global Sandwich Count: ${globalProfile.sandwichCount}` })
@@ -264,10 +264,10 @@ module.exports = {
 
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of iceCream.common)      commonString += `${food} *...* `;
-        for(const food of iceCream.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of iceCream.rare)        rareString += `${food} *...* `;
-        for(const food of iceCream.legendary)   legendaryString += `${food} *...* `;
+        for(const food of iceCream.common)      commonString += `${food}    `;
+        for(const food of iceCream.uncommon)    uncommonString += `${food}    `;
+        for(const food of iceCream.rare)        rareString += `${food}    `;
+        for(const food of iceCream.legendary)   legendaryString += `${food}    `;
         const iceCreamMenu = new EmbedBuilder() // Ice Cream menu embed
             .setColor('#33BBFF')
             .setAuthor({ name: `Global Ice Cream Count: ${globalProfile.iceCreamCount}` })
@@ -287,12 +287,12 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of brownies.common)      commonString += `${food} *...* `;
-        for(const food of brownies.uncommon)    uncommonString += `${food} *...* `;
-        for(const food of brownies.rare)        rareString += `${food} *...* `;
-        for(const food of brownies.legendary)   legendaryString += `${food} *...* `;
+        for(const food of brownies.common)      commonString += `${food}    `;
+        for(const food of brownies.uncommon)    uncommonString += `${food}    `;
+        for(const food of brownies.rare)        rareString += `${food}    `;
+        for(const food of brownies.legendary)   legendaryString += `${food}    `;
         const brownieMenu = new EmbedBuilder() // Brownie menu embed
-            .setColor('#CAD8D7')
+            .setColor('#5C280E')
             .setAuthor({ name: `Global Brownie Count: ${globalProfile.brownieCount}` })
             .setTitle('Brownie Menu')
             .setDescription(`Number of Brownies: ${brownies.common.length + brownies.uncommon.length + brownies.rare.length + brownies.legendary.length}`)
@@ -308,6 +308,7 @@ module.exports = {
                 text: `PiebotV3 by ${author.username}`
             });
 
+        // Drop down handling (no parameters entered)
         if(!interaction.options.getString("food")) {
             const select = new StringSelectMenuBuilder()
                 .setCustomId('menuDropdown')
@@ -416,6 +417,7 @@ module.exports = {
                     statusMsg.delete(); // Deletes the temporary message
                 });
         }
+        // Parameters entered, sending embeds by input
         else {
             const selection = interaction.options.getString("food");
             switch (selection) {
