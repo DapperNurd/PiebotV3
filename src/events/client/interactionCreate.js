@@ -28,9 +28,9 @@ module.exports = {
                 console.error(err);
             }
         }
-        else if (interaction.isSelectMenu()) {
+        else if (interaction.isStringSelectMenu()) {
             const { selectMenus } = client;
-            const { cusotmId } = interaction;
+            const { customId } = interaction;
             const menu = selectMenus.get(customId);
             if(!menu) return new Error("There is no code for this select menu.");
             try {

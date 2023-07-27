@@ -31,6 +31,7 @@ module.exports = {
     uncommon,
     rare,
     legendary,
+    crusts,
     data: new SlashCommandBuilder()
         .setName('pizza')
         .setDescription('Get a random pizza!')
