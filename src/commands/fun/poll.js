@@ -53,8 +53,6 @@ module.exports = {
         const pollTimestamp = Date.now(); // Used to track when the poll was created
 
         var timeLeft = pollLength; // Decrementing variable used to count time left for poll
-        
-        // ⬛⬜🟥🟧🟨🟩🟦🟪🟫❎⏹🔲🔳
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
@@ -147,12 +145,13 @@ module.exports = {
         }
 
         async function updateEmbed(end = false, start = false) { // Updates the embed with the proper information
-            const highest = Math.max(aVotes, bVotes, cVotes, dVotes, eVotes); // Calculation for the highest voted value
-            const aProgressBar = buildProgressBar(aVotes, (aVotes == highest) ? '🟩' : '🟦'); //
-            const bProgressBar = buildProgressBar(bVotes, (bVotes == highest) ? '🟩' : '🟦'); //
-            const cProgressBar = buildProgressBar(cVotes, (cVotes == highest) ? '🟩' : '🟦'); // Builds progress bar by votes, and determines which emoji to use for the bar based on whether or not it is the highest value
-            const dProgressBar = buildProgressBar(dVotes, (dVotes == highest) ? '🟩' : '🟦'); //
-            const eProgressBar = buildProgressBar(eVotes, (eVotes == highest) ? '🟩' : '🟦'); //
+            const highest = Math.max(aVotes, bVotes, cVotes, dVotes, eVotes); // Calculation for the highest voted value ⬛⬜🟥🟧🟨🟩🟦🟪🟫❎⏹🔲🔳
+            const highestBox = '🟩', normalBox = '🟦';
+            const aProgressBar = buildProgressBar(aVotes, (aVotes == highest) ? highestBox : normalBox); //
+            const bProgressBar = buildProgressBar(bVotes, (bVotes == highest) ? highestBox : normalBox); //
+            const cProgressBar = buildProgressBar(cVotes, (cVotes == highest) ? highestBox : normalBox); // Builds progress bar by votes, and determines which emoji to use for the bar based on whether or not it is the highest value
+            const dProgressBar = buildProgressBar(dVotes, (dVotes == highest) ? highestBox : normalBox); //
+            const eProgressBar = buildProgressBar(eVotes, (eVotes == highest) ? highestBox : normalBox); //
 
             const updatedEmbed = new EmbedBuilder()
                 .setColor(interaction.user.accentColor ?? '#FFFFFF')
