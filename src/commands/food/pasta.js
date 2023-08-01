@@ -30,7 +30,7 @@ module.exports = {
         .setDescription('Get a random pasta!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a pasta!')
+                  .setDescription('Give this user some pasta!')
         ),
     async execute(interaction, client) {
 

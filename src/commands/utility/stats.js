@@ -15,6 +15,7 @@ module.exports = {
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+        const namePossesive = (targetedUser.displayName.endsWith('s')) ? targetedUser.displayName+ "'" : targetedUser.displayName + "'s" // Proper spelling for when a user's displayName ends with an s... (Kecatas' instead of Kecatas's)
 
         // Database handling
         let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
@@ -28,9 +29,9 @@ module.exports = {
             .setColor('#FFFFFF')
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
-                name: `${client.user.username} Stats`
+                name: `${client.user.displayName} Stats`
             })
-            .setTitle(`${targetedUser.username }'s User Stats`)
+            .setTitle(`${namePossesive} User Stats`)
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([
                 { name: 'Pie Count',             value: userProfile.pieCount.toString(),             inline: true },

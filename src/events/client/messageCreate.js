@@ -1,3 +1,6 @@
+const exclamationCommands = [ "!brownie", "!cake", "!chocolate", "!fish", "!icecream", "!muffin", "!pasta", "!pie", "!potato", "!sandwich", "!help", "!menu", "!stats", "!roll", "!getme", "!ask", "!coinflip", "!server", "!global", "!trash"  ];
+const periodCommands = [ ".brownie", ".cake", ".chocolate", ".fish", ".icecream", ".muffin", ".pasta", ".pie", ".potato", ".sandwich", ".help", ".menu", ".stats", ".roll", ".getme", ".ask", ".coinflip", ".server", ".global", ".trash"  ];
+
 module.exports = {
     name: 'messageCreate',
     async execute(message, client) {
@@ -37,8 +40,15 @@ module.exports = {
             message.react(thonkEmoji);
         }
         // Wowee Emoji reacting handling
-        else if(message.content.toLowerCase().includes('wowee')) {
+        else if(message.content.toLowerCase().includes('wowee')) { 
             message.react(woweeEmoji);
+        }
+        // Slash Command Notifier handling
+        else if(message.content.startsWith("!") || message.content.startsWith(".")) { // If someone tries to use a command using the old way.
+            const firstWord = message.content.split(" ")[0]; // Returns the first word, as separated by spaces
+            if(!exclamationCommands.includes(firstWord) && !periodCommands.includes(firstWord)) return; // Skips if it does not include any of the commands from the two arrays
+            message.channel.send("All piebot commands are now done through Discord's built in Slash Commands. Type a / to begin.").then(msg => { setTimeout(() => msg.delete(), 30_000) }) // Sends message and deletes after 30 seconds
+                .catch(console.log(`Notified user ${message.author.username} of new command system...`));
         }
     },
 };

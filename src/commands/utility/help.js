@@ -31,7 +31,7 @@ module.exports = {
             const commandFiles = fs.readdirSync(`./src/commands/${folder}`).filter(file => file.endsWith('.js')); // Gets an array of strings of the files in the folder of folder
             for (var file of commandFiles) { // Goes through all files in the subfolder of folder
                 file = file.replace(".js", ""); // Removes the ".js" ending on the command names
-                names += `${file}    ` // Adds the command name to the string of names
+                names += `${file}    \n` // Adds the command name to the string of names
             }
 
             folder = folder.charAt(0).toUpperCase() + folder.slice(1); // Capitalizes the first letter of the folder
@@ -42,8 +42,9 @@ module.exports = {
             }
 
             statsEmbed.addFields({ // Adds a field with Folder name as the header and a list of commands (the string) as the value
-                name: folder,
-                value: names
+                name: `__${folder}__`,
+                value: names,
+                inline: true
             });
         }
 

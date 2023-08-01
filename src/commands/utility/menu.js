@@ -53,20 +53,21 @@ module.exports = {
         // Embed building (this is rough lol)
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of pies.common)      commonString += `${food}    `;
-        for(const food of pies.uncommon)    uncommonString += `${food}    `;
-        for(const food of pies.rare)        rareString += `${food}    `;
-        for(const food of pies.legendary)   legendaryString += `${food}    `;
+        for(const food of pies.common)      commonString += `${food}    \n`;
+        for(const food of pies.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of pies.rare)        rareString += `${food}    \n`;
+        for(const food of pies.legendary)   legendaryString += `${food}    \n`;
         const pieMenu = new EmbedBuilder() // Pie menu embed
             .setColor('#FF1111')
             .setAuthor({ name: `Global Pie Count: ${globalProfile.pieCount}` })
             .setTitle('Pie Menu')
             .setDescription(`Number of Pies: ${pies.common.length + pies.uncommon.length + pies.rare.length + pies.legendary.length}`)
             .addFields([
-                { name: 'Common Pies (50%)',   value: commonString },
-                { name: 'Uncommon Pies (40%)', value: uncommonString },
-                { name: 'Rare Pies (9%)',      value: rareString },
-                { name: 'Legendary Pies (1%)', value: legendaryString },
+                { name: 'Common Pies (50%)',   value: commonString, inline: true, inline: true },
+                { name: 'Uncommon Pies (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Pies (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Pies (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -76,20 +77,21 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of muffins.common)      commonString += `${food}    `;
-        for(const food of muffins.uncommon)    uncommonString += `${food}    `;
-        for(const food of muffins.rare)        rareString += `${food}    `;
-        for(const food of muffins.legendary)   legendaryString += `${food}    `;
+        for(const food of muffins.common)      commonString += `${food}    \n`;
+        for(const food of muffins.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of muffins.rare)        rareString += `${food}    \n`;
+        for(const food of muffins.legendary)   legendaryString += `${food}    \n`;
         const muffinMenu = new EmbedBuilder() // Muffin menu embed
             .setColor('#00FF00')
             .setAuthor({ name: `Global Muffin Count: ${globalProfile.muffinCount}` })
             .setTitle('Muffin Menu')
             .setDescription(`Number of Muffins: ${muffins.common.length + muffins.uncommon.length + muffins.rare.length + muffins.legendary.length}`)
             .addFields([
-                { name: 'Common Muffins (50%)',   value: commonString },
-                { name: 'Uncommon Muffins (40%)', value: uncommonString },
-                { name: 'Rare Muffins (9%)',      value: rareString },
-                { name: 'Legendary Muffins (1%)', value: legendaryString },
+                { name: 'Common Muffins (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Muffins (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Muffins (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Muffins (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -99,20 +101,21 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of potatoes.common)      commonString += `${food}    `;
-        for(const food of potatoes.uncommon)    uncommonString += `${food}    `;
-        for(const food of potatoes.rare)        rareString += `${food}    `;
-        for(const food of potatoes.legendary)   legendaryString += `${food}    `;
+        for(const food of potatoes.common)      commonString += `${food}    \n`;
+        for(const food of potatoes.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of potatoes.rare)        rareString += `${food}    \n`;
+        for(const food of potatoes.legendary)   legendaryString += `${food}    \n`;
         const potatoMenu = new EmbedBuilder() // Potato menu embed
             .setColor('#A0522D')
             .setAuthor({ name: `Global Potato Count: ${globalProfile.potatoCount}` })
             .setTitle('Pie Menu')
             .setDescription(`Number of Potatoes: ${potatoes.common.length + potatoes.uncommon.length + potatoes.rare.length + potatoes.legendary.length}`)
             .addFields([
-                { name: 'Common Potatoes (50%)',   value: commonString },
-                { name: 'Uncommon Potatoes (40%)', value: uncommonString },
-                { name: 'Rare Potatoes (9%)',      value: rareString },
-                { name: 'Legendary Potatoes (1%)', value: legendaryString },
+                { name: 'Common Potatoes (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Potatoes (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Potatoes (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Potatoes (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -122,10 +125,10 @@ module.exports = {
 
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of pizzas.common)      commonString += `${food}    `;
-        for(const food of pizzas.uncommon)    uncommonString += `${food}    `;
-        for(const food of pizzas.rare)        rareString += `${food}    `;
-        for(const food of pizzas.legendary)   legendaryString += `${food}    `;
+        for(const food of pizzas.common)      commonString += `${food}    \n`;
+        for(const food of pizzas.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of pizzas.rare)        rareString += `${food}    \n`;
+        for(const food of pizzas.legendary)   legendaryString += `${food}    \n`;
         var crustsString = "";
         for(const crust of pizzas.crusts)     crustsString += `${crust}    `;
         const pizzaMenu = new EmbedBuilder() // Pizza menu embed
@@ -134,10 +137,11 @@ module.exports = {
             .setTitle('Pizza Menu')
             .setDescription(`Number of Pizzas: ${pizzas.common.length + pizzas.uncommon.length + pizzas.rare.length + pizzas.legendary.length}`)
             .addFields([
-                { name: 'Common Pizzas (50%)',   value: commonString },
-                { name: 'Uncommon Pizzas (40%)', value: uncommonString },
-                { name: 'Rare Pizzas (9%)',      value: rareString },
-                { name: 'Legendary Pizzas (1%)', value: legendaryString },
+                { name: 'Common Pizzas (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Pizzas (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Pizzas (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Pizzas (1%)', value: legendaryString, inline: true },
                 { name: '\n', value: '\n' },
                 { name: 'Special Crusts (15%)',  value: crustsString }
             ])
@@ -149,20 +153,21 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of fishes.common)      commonString += `${food}    `;
-        for(const food of fishes.uncommon)    uncommonString += `${food}    `;
-        for(const food of fishes.rare)        rareString += `${food}    `;
-        for(const food of fishes.legendary)   legendaryString += `${food}    `;
+        for(const food of fishes.common)      commonString += `${food}    \n`;
+        for(const food of fishes.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of fishes.rare)        rareString += `${food}    \n`;
+        for(const food of fishes.legendary)   legendaryString += `${food}    \n`;
         const fishMenu = new EmbedBuilder() // Fish Fillet menu embed
             .setColor('#CAD8D7')
             .setAuthor({ name: `Global Fish Fillet Count: ${globalProfile.fishCount}` })
             .setTitle('Fish Fillet Menu')
             .setDescription(`Number of Fish Fillets: ${fishes.common.length + fishes.uncommon.length + fishes.rare.length + fishes.legendary.length}`)
             .addFields([
-                { name: 'Common Fish Fillets (50%)',   value: commonString },
-                { name: 'Uncommon Fish Fillets (40%)', value: uncommonString },
-                { name: 'Rare Fish Fillets (9%)',      value: rareString },
-                { name: 'Legendary Fish Fillets (1%)', value: legendaryString },
+                { name: 'Common Fish Fillets (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Fish Fillets (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Fish Fillets (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Fish Fillets (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -172,20 +177,21 @@ module.exports = {
     
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of cakes.common)      commonString += `${food}    `;
-        for(const food of cakes.uncommon)    uncommonString += `${food}    `;
-        for(const food of cakes.rare)        rareString += `${food}    `;
-        for(const food of cakes.legendary)   legendaryString += `${food}    `;
+        for(const food of cakes.common)      commonString += `${food}    \n`;
+        for(const food of cakes.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of cakes.rare)        rareString += `${food}    \n`;
+        for(const food of cakes.legendary)   legendaryString += `${food}    \n`;
         const cakeMenu = new EmbedBuilder() // Cake menu embed
             .setColor('#F1B3F2')
             .setAuthor({ name: `Global Cake Count: ${globalProfile.cakeCount}` })
             .setTitle('Cake Menu')
             .setDescription(`Number of Cakes: ${cakes.common.length + cakes.uncommon.length + cakes.rare.length + cakes.legendary.length}`)
             .addFields([
-                { name: 'Common Cakes (50%)',   value: commonString },
-                { name: 'Uncommon Cakes (40%)', value: uncommonString },
-                { name: 'Rare Cakes (9%)',      value: rareString },
-                { name: 'Legendary Cakes (1%)', value: legendaryString },
+                { name: 'Common Cakes (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Cakes (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Cakes (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Cakes (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -195,20 +201,21 @@ module.exports = {
 
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of chocolates.common)      commonString += `${food}    `;
-        for(const food of chocolates.uncommon)    uncommonString += `${food}    `;
-        for(const food of chocolates.rare)        rareString += `${food}    `;
-        for(const food of chocolates.legendary)   legendaryString += `${food}    `;
+        for(const food of chocolates.common)      commonString += `${food}    \n`;
+        for(const food of chocolates.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of chocolates.rare)        rareString += `${food}    \n`;
+        for(const food of chocolates.legendary)   legendaryString += `${food}    \n`;
         const chocolateMenu = new EmbedBuilder() // Chocolate menu embed
             .setColor('#260F00')
             .setAuthor({ name: `Global Chocolate Count: ${globalProfile.chocolateCount}` })
             .setTitle('Chocolate Menu')
             .setDescription(`Number of Chocolates: ${chocolates.common.length + chocolates.uncommon.length + chocolates.rare.length + chocolates.legendary.length}`)
             .addFields([
-                { name: 'Common Chocolates (50%)',   value: commonString },
-                { name: 'Uncommon Chocolates (40%)', value: uncommonString },
-                { name: 'Rare Chocolates (9%)',      value: rareString },
-                { name: 'Legendary Chocolates (1%)', value: legendaryString },
+                { name: 'Common Chocolates (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Chocolates (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Chocolates (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Chocolates (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -218,20 +225,21 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of pastas.common)      commonString += `${food}    `;
-        for(const food of pastas.uncommon)    uncommonString += `${food}    `;
-        for(const food of pastas.rare)        rareString += `${food}    `;
-        for(const food of pastas.legendary)   legendaryString += `${food}    `;
+        for(const food of pastas.common)      commonString += `${food}    \n`;
+        for(const food of pastas.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of pastas.rare)        rareString += `${food}    \n`;
+        for(const food of pastas.legendary)   legendaryString += `${food}    \n`;
         const pastaMenu = new EmbedBuilder() // Pasta menu embed
             .setColor('#E6D28C')
             .setAuthor({ name: `Global Pasta Count: ${globalProfile.pastaCount}` })
             .setTitle('Pasta Menu')
             .setDescription(`Number of Pastas: ${pastas.common.length + pastas.uncommon.length + pastas.rare.length + pastas.legendary.length}`)
             .addFields([
-                { name: 'Common Pastas (50%)',   value: commonString },
-                { name: 'Uncommon Pastas (40%)', value: uncommonString },
-                { name: 'Rare Pastas (9%)',      value: rareString },
-                { name: 'Legendary Pastas (1%)', value: legendaryString },
+                { name: 'Common Pastas (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Pastas (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Pastas (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Pastas (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -241,20 +249,21 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of sandwiches.common)      commonString += `${food}    `;
-        for(const food of sandwiches.uncommon)    uncommonString += `${food}    `;
-        for(const food of sandwiches.rare)        rareString += `${food}    `;
-        for(const food of sandwiches.legendary)   legendaryString += `${food}    `;
+        for(const food of sandwiches.common)      commonString += `${food}    \n`;
+        for(const food of sandwiches.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of sandwiches.rare)        rareString += `${food}    \n`;
+        for(const food of sandwiches.legendary)   legendaryString += `${food}    \n`;
         const sandwichMenu = new EmbedBuilder() // Sandwich menu embed
             .setColor('#D6BF4B')
             .setAuthor({ name: `Global Sandwich Count: ${globalProfile.sandwichCount}` })
             .setTitle('Sandwich Menu')
             .setDescription(`Number of Sandwiches: ${sandwiches.common.length + sandwiches.uncommon.length + sandwiches.rare.length + sandwiches.legendary.length}`)
             .addFields([
-                { name: 'Common Sandwiches (50%)',   value: commonString },
-                { name: 'Uncommon Sandwiches (40%)', value: uncommonString },
-                { name: 'Rare Sandwiches (9%)',      value: rareString },
-                { name: 'Legendary Sandwiches (1%)', value: legendaryString },
+                { name: 'Common Sandwiches (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Sandwiches (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Sandwiches (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Sandwiches (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -264,20 +273,21 @@ module.exports = {
 
         menuCount++;
         var commonString = "", uncommonString = "", rareString = "", legendaryString = "";
-        for(const food of iceCream.common)      commonString += `${food}    `;
-        for(const food of iceCream.uncommon)    uncommonString += `${food}    `;
-        for(const food of iceCream.rare)        rareString += `${food}    `;
-        for(const food of iceCream.legendary)   legendaryString += `${food}    `;
+        for(const food of iceCream.common)      commonString += `${food}    \n`;
+        for(const food of iceCream.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of iceCream.rare)        rareString += `${food}    \n`;
+        for(const food of iceCream.legendary)   legendaryString += `${food}    \n`;
         const iceCreamMenu = new EmbedBuilder() // Ice Cream menu embed
             .setColor('#33BBFF')
             .setAuthor({ name: `Global Ice Cream Count: ${globalProfile.iceCreamCount}` })
             .setTitle('Ice Cream Menu')
             .setDescription(`Number of Ice Cream: ${iceCream.common.length + iceCream.uncommon.length + iceCream.rare.length + iceCream.legendary.length}`)
             .addFields([
-                { name: 'Common Ice Cream (50%)',   value: commonString },
-                { name: 'Uncommon Ice Cream (40%)', value: uncommonString },
-                { name: 'Rare Ice Cream (9%)',      value: rareString },
-                { name: 'Legendary Ice Cream (1%)', value: legendaryString },
+                { name: 'Common Ice Cream (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Ice Cream (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Ice Cream (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Ice Cream (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({
@@ -287,20 +297,21 @@ module.exports = {
 
         menuCount++;
         commonString = ""; uncommonString = ""; rareString = ""; legendaryString = "";
-        for(const food of brownies.common)      commonString += `${food}    `;
-        for(const food of brownies.uncommon)    uncommonString += `${food}    `;
-        for(const food of brownies.rare)        rareString += `${food}    `;
-        for(const food of brownies.legendary)   legendaryString += `${food}    `;
+        for(const food of brownies.common)      commonString += `${food}    \n`;
+        for(const food of brownies.uncommon)    uncommonString += `${food}    \n`;
+        for(const food of brownies.rare)        rareString += `${food}    \n`;
+        for(const food of brownies.legendary)   legendaryString += `${food}    \n`;
         const brownieMenu = new EmbedBuilder() // Brownie menu embed
             .setColor('#5C280E')
             .setAuthor({ name: `Global Brownie Count: ${globalProfile.brownieCount}` })
             .setTitle('Brownie Menu')
             .setDescription(`Number of Brownies: ${brownies.common.length + brownies.uncommon.length + brownies.rare.length + brownies.legendary.length}`)
             .addFields([
-                { name: 'Common Brownies (50%)',   value: commonString },
-                { name: 'Uncommon Brownies (40%)', value: uncommonString },
-                { name: 'Rare Brownies (9%)',      value: rareString },
-                { name: 'Legendary Brownies (1%)', value: legendaryString },
+                { name: 'Common Brownies (50%)',   value: commonString, inline: true },
+                { name: 'Uncommon Brownies (40%)', value: uncommonString, inline: true },
+                { name: '\n', value: ' ' },
+                { name: 'Rare Brownies (9%)',      value: rareString, inline: true },
+                { name: 'Legendary Brownies (1%)', value: legendaryString, inline: true },
             ])
             .setTimestamp()
             .setFooter({

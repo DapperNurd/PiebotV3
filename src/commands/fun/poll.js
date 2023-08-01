@@ -138,8 +138,8 @@ module.exports = {
 
             if(totalVotes <= 0) perc = 0; // This is just to avoid division by zero errors and NaN occurences
 
-            for(var i = 0; i < Math.ceil(perc); i++)       progress += `${color} `;
-            for(var i = 0; i < Math.floor(10 - perc); i++) progress += "⬛ ";
+            for(var i = 0; i < Math.round(perc); i++)       progress += `${color} `;
+            for(var i = 0; i < 10 - Math.round(perc); i++) progress += "⬛ ";
 
             return progress += ` ${votes}  (${Math.round(100*perc)/10}%)`;
         }

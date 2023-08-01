@@ -7,7 +7,7 @@ const schemaBuildingFunctions = require('../../schemaBuilding.js');
 const common = ["milk chocolate", "white chocolate", "dark chocolate", "hazelnut milk chocolate", "dark mint chocolate", "mint chocolate", "almond chocolate", "fruits & nuts chocolate"
 ];
 
-const uncommon = ["white chocolate with raspberry", "salted caramel chocolate", "pop rocks and gummy chocolate", "cookies n' cream chocolate", "orange chocolate", "chocolate peanut cluster", "chocolate-covered pretzels"
+const uncommon = ["white chocolate with raspberry", "salted caramel chocolate", "cookies n' cream chocolate", "orange chocolate", "chocolate peanut cluster", "chocolate-covered pretzels"
 ];
 
 const rare = ["galaxy chocolate", "Aero milk chocolate", "M&Ms", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s peanut butter cup", "Almond Joy", "Flake"
@@ -26,11 +26,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('cookie')
-        .setDescription('Get a random cookie!')
+        .setName('chocolate')
+        .setDescription('Get a random chocolate!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a cookie!')
+                  .setDescription('Give this user some chocolate!')
         ),
     async execute(interaction, client) {
 
