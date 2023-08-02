@@ -18,7 +18,14 @@ const legendary = ["pocket potatoes, his very own recipe"];
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
 const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = ["Here, [USER]! Boneless wants you to have [PLURAL] [ADJ] [FOOD]!"];
+const phrases = [ "Here, [USER]! Boneless wants you to have [PLURAL] [ADJ] [FOOD]! What a big heart he has!",
+"[USER] seems to have caught the attention of Boneless. As he eyes you up and down, he flirtatiously hands you [PLURAL] [ADJ] [FOOD].",
+"While skating, [PLURAL] [ADJ] [FOOD] fell out of Boneless' pocket! [USER] quickly snagged it while no one was looking.",
+"Boneless offers [USER] [PLURAL] [ADJ] [FOOD] as they tell him about a fan fiction!",
+"After a long day at the skatepark, Boneless asks [USER] if they would like to share some [PLURAL] [ADJ] [FOOD]!",
+"Boneless thought [USER] might be hungry, so he brought them [PLURAL] [ADJ] [FOOD]! They gave Boneless a forehead kiss for his kindness!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
+"Uh-oh! While Meecah was visiting with his dog Jasmine, [USER] left out their [ADJ] [FOOD], and Jasmine ate it!" ];
 
 module.exports = {
     common,
@@ -105,8 +112,6 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
 
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms

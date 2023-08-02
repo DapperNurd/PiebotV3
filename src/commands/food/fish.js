@@ -18,7 +18,14 @@ const legendary = ["Holy Mackerel", "umber splashtail"];
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "fresh"]
 const adjectivesBad = ["day-old", "overcooked", "undercooked", "raw"];
 
-const phrases = ["Here, [USER]! Valyx the Florida Man wants you to have some [ADJ] [FOOD]!"];
+const phrases = [ "Here, [USER]! Valyx the Florida Man wants you to have some [ADJ] [FOOD]!",
+"During a heavy rainstorm, a live [FOOD] flew out of the sky and hit [USER] in the face! Where did it come from??",
+"After a long struggle, Valyx the Florida Man finally managed to catch [A] [FOOD]. He prepares it just for you, [USER], and it was [ADJ]!",
+"[USER] went bobbing for apples, but ended up pulling out a live [FOOD] instead! Valyx the Florida Man must have snuck it in there when no one was looking.",
+"Holy Carp! Valyx the Florida Man caught a large [FOOD]. He cooked it for [USER], just the way they like it. [ADJ]!",
+"You just got catfished, [USER]! Your [ADJ] [FOOD] is actually a [FOOD2]",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
+"Uh-oh! While Meecah was visiting with his dog Jasmine, [USER] left out their [ADJ] [FOOD], and Jasmine ate it!" ];
 
 module.exports = {
     common,
@@ -106,9 +113,13 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-        const specialPhrase = (Math.floor(Math.random() * (100 - 1) + 1));
-        if(specialPhrase < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead
-        else if(specialPhrase < 15) { // 7% Chance to send a catfish message instead
+        phrase = phrase.replace('[USER]', userByMention); ///
+        if(phrase == "Holy Carp! Valyx the Florida Man caught a large [FOOD]. He cooked it for [USER], just the way they like it. [ADJ]!") // Capitalizes the adjective for this phrase
+            adj = adj.charAt(0).toUpperCase() + adj.slice(1); 
+        phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
+        phrase = phrase.replace('[FOOD]', food); ////////////
+
+        if(phrase.includes('[FOOD2]')) { // For the catfish message
             var food2; // Calculating and assigning second food for catfish message
             const rarityNum = Math.floor(Math.random() * (100 - 1) + 1) // Random from 1 to 100
             if (rarityNum < 51)        food2 = common[Math.floor(Math.random() * common.length)];       // 50% (1 to 50 )
@@ -117,12 +128,8 @@ module.exports = {
             else if (rarityNum >= 100) food2 = legendary[Math.floor(Math.random() * legendary.length)]; // 1% ( 100 )
             else                       food2 = common[Math.floor(Math.random() * common.length)];       // Should never run but just in case
             
-            phrase = `You just got catfished, [USER]! Your [ADJ] [FOOD] is actually a ${food2}.`
+            phrase = phrase.replace('[FOOD2]', food2)
         }
-
-        phrase = phrase.replace('[USER]', userByMention); ///
-        phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
-        phrase = phrase.replace('[FOOD]', food); ////////////
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel

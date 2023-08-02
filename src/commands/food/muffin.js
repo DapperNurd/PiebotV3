@@ -22,7 +22,9 @@ const phrases = ["Here, [USER]! Kecatas wants you to have one of his [ADJ] [FOOD
     "[USER], you have stumbled upon Kecatas's stash of [ADJ] [FOOD]s. He won't know if you take just one, right?",
     "From the kitchen you can smell that Kecatas has prepared a batch of [ADJ] [FOOD]s. He offers [USER] one. What a good guy!",
     "Kecatas spent all morning baking a dozen [ADJ] [FOOD]s and wants you to try one, [USER]!",
-    "Muffin Master Kecatas is testing a new recipe of [ADJ] [FOOD]s and gives you one to try. How does it taste, [USER]?"];
+    "Muffin Master Kecatas is testing a new recipe of [ADJ] [FOOD]s and gives you one to try. How does it taste, [USER]?",
+    "[A] [ADJ] [FOOD] floats down from the heavens and into [USER][S] hands. You can tell that it was prepared by Kecatas with love.",
+    "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -109,8 +111,6 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
 
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms

@@ -14,11 +14,10 @@ module.exports = {
         .addBooleanOption(option =>
             option.setName('hidden')
                 .setDescription('Hide the command from others?')
-                .setRequired(true)
         ),
     async execute(interaction, client) {
 
-        const hidden = interaction.options.getBoolean('hidden');
+        const hidden = interaction.options.getBoolean('hidden') ?? false;
 
         // No input scenario handling
         if(!interaction.options.getUser("user")) { // If there is no question asked (an empty command)

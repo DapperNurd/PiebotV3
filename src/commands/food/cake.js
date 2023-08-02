@@ -18,7 +18,13 @@ const legendary = ["fruitcake", "pancake"];
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
 const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = ["Here, [USER]! Destronate wants you to have a[SLICE] [ADJ] [FOOD]!"];
+const phrases = [ "Here, [USER]! Destronate wants you to have a[SLICE] [ADJ] [FOOD]!",
+"Destro challenged [USER] to a game of Devil's Dice and lost! As a reward, he gave them a[SLICE] [ADJ] [FOOD]! Congratulations!",
+"Think fast! Destro threw a[SLICE] [ADJ] [FOOD] at you, [USER]. Did you catch it in time?",
+"Here, enjoy [USER]! Destro gives you a[SLICE] [ADJ] [FOOD]! It's definitely not poisoned..",
+"While going for a walk, Destro appeared out of nowhere and slapped [USER] in the face with a[SLICE] [ADJ] [FOOD]!",
+"Destro bakes [USER] up a[SLICE] [ADJ] [FOOD]! You enjoy it very much!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -105,8 +111,6 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
 
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms

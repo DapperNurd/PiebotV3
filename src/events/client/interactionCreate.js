@@ -1,4 +1,5 @@
 const BannedUser = require('../../schemas/bannedUsers')
+const chalk = require('chalk');
 
 const banIgnore = ['help', 'menu', 'stats', 'server', 'global'];
 const adminCommands = ['ban', 'unban'];
@@ -16,18 +17,17 @@ module.exports = {
 
             // Database Handling
             let bannedUsersProfile = await BannedUser.findOne({ userID: interaction.user.id }); // Searches database for a userID matching the command user's id
-
             // Running of commands
             try {
                 if(bannedUsersProfile && !banIgnore.includes(commandName)) { // If user is banned and the command does not ignore ban status
-                    console.log(`${interaction.user.username} tried using /${commandName} while banned...`)
+                    console.log(chalk.hex("#e8692a")(`[Bot Moderation]: ${interaction.user.displayName} tried using /${commandName} while banned`))
                     return await interaction.reply({
                         content: `You are banned from using commands!`,
                         ephemeral: true
                     });
                 }
                 else if(adminCommands.includes(commandName) && interaction.user.id != author.id) {
-                    console.log(`${interaction.user.username} tried using admin command /${commandName}...`)
+                    console.log(chalk.hex("#e8692a")(`[Bot Moderation]: ${interaction.user.displayName} tried using admin command /${commandName}`))
                     return await interaction.reply({
                         content: `You do not have permission to use this!`,
                         ephemeral: true

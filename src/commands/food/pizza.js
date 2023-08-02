@@ -24,7 +24,9 @@ const phrases = ["Here, [USER]! ItalianStallion wants you to have a slice of her
 "[USER], you enter ItalianStallions pizzaria and order up a slice of [ADJ] [CRUST][FOOD]. Yum!",
 "ItalianStallion has chosen only the finest ingredients for her [ADJ] [CRUST][FOOD]. She looks around the room and choses [USER] to have the first slice!",
 "[USER], donning your pizza thief costume, you sneak into ItalianStallions kitchen and make off with her [ADJ] [CRUST][FOOD]. You're a menace!",
-"The smell of ItalianStallion's [ADJ] [CRUST][FOOD] fills your nose, [USER]. She offers you a slice!"];
+"The smell of ItalianStallion's [ADJ] [CRUST][FOOD] fills your nose, [USER]. She offers you a slice!",
+"[USER] is feeling tired and ordered [A] [ADJ] [CRUST] [FOOD] from Domino's. Now ItalianStallion won't even talk to them.",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -112,8 +114,6 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
 
         const crust = ( (food != "chicago-style deep dish pizza" && food != "breakfast pizza" && food != "chocolate chip cookie pizza" && food != "hotpocket™️")   &&   Math.floor(Math.random() * (100 - 1) + 1) < 15 )
             ? crustType = crusts[Math.floor(Math.random() * crusts.length)] + " "

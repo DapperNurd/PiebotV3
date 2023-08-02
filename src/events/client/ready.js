@@ -46,7 +46,7 @@ module.exports = {
         pickPresence(); // Runs once initially before the timer starts below
 
         // Presence setting
-        setInterval(pickPresence, 30 * 1000); // Sets the presence randomly to one of the options above on a timer (X * 1000, X being in seconds)
+        setInterval(pickPresence, 60_000); // Sets the presence randomly to one of the options above on a timer in ms
 
         // Bot online message
         console.log(chalk.hex("#1cad2c")(`[Bot Status]: ${client.user.username} is ready and online!`));

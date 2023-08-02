@@ -2,10 +2,11 @@ require('dotenv').config();
 const { token, databaseToken } = process.env;
 const { connect } = require('mongoose');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const Reminder = require('./schemas/reminder');
 const fs = require('fs');
+const chalk = require('chalk');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
-//const client = new Client({ intents: GatewayIntentBits.Guilds });
 client.commands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
@@ -28,3 +29,29 @@ client.login(token);
 (async () => {
     await connect(databaseToken).catch(console.error);
 })();
+
+// Reminders Handling
+setInterval(async () => {
+    const reminders = await Reminder.find(); // Gets a list of all current documents in the reminder collection
+    if(!reminders) return; // Does nothing if none found
+    else {
+        reminders.forEach(async reminder => { // Goes through each document, as reminder
+            if(reminder.time > Date.now()) return; // Does nothing if it is not time yet for the reminder
+
+            const user = await client.users.fetch(reminder.userID);
+            user?.send({
+                content: `Reminding you about "${reminder.reminder}"`
+            }).catch(err => {return;});
+
+            console.log(chalk.hex("#ae34eb")(`[Bot Reminders]: Reminded ${user.username}`));
+
+            await Reminder.deleteMany({ // Deletes the completed reminder
+                _id: reminder._id,
+                userID: reminder.userID,
+                userName: reminder.userName,
+                time: reminder.time,
+                reminder: reminder.reminder
+            });
+        })
+    }
+}, 5_000);

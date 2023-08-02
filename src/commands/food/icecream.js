@@ -18,7 +18,13 @@ const legendary = ["pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp"];
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
 const adjectivesBad = ["freezer burnt", "melted"];
 
-const phrases = ["Here, [USER]! Violet wants you to have some [ADJ] [FOOD]!"];
+const phrases = [ "Here, [USER]! Violet wants you to have [PLURAL] [ADJ] [FOOD]!",
+"It's hot outside! Violet got [USER] [PLURAL] [ADJ] [FOOD] to cool down. Better eat it quick before it melts!",
+"[USER] won the gelato-ry! Violet blesses them with [ADJ] [FOOD]! What lucky day!",
+"[USER][S] [ADJ] [FOOD] was stolen. We don't Cone-done that kind of behavior!",
+"You scream, [USER] screams, we all scream for Violet's [ADJ] [FOOD]!",
+"Wow, [USER] just got a heap of Violet's [ADJ] [FOOD]! Cone-gratulations!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -106,12 +112,12 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]."; // 8% chance to send a sorry message instead 
         if(food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" && (Math.floor(Math.random() * (100 - 1) + 1)) > 50) phrase = `Oh no [USER]! I dropped your melted dairy queen blizzard!`; // 50% chance on legendary food for it to be a custom message
 
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
+        phrase = phrase.replace('[PLURAL]', food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" ? "[A]" : "some");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel

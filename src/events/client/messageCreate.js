@@ -1,3 +1,6 @@
+const { api_key } = process.env;
+const { Configuration, OpenAIApi } = require('openai');
+
 const exclamationCommands = [ "!brownie", "!cake", "!chocolate", "!fish", "!icecream", "!muffin", "!pasta", "!pie", "!potato", "!sandwich", "!help", "!menu", "!stats", "!roll", "!getme", "!ask", "!coinflip", "!server", "!global", "!trash"  ];
 const periodCommands = [ ".brownie", ".cake", ".chocolate", ".fish", ".icecream", ".muffin", ".pasta", ".pie", ".potato", ".sandwich", ".help", ".menu", ".stats", ".roll", ".getme", ".ask", ".coinflip", ".server", ".global", ".trash"  ];
 
@@ -12,7 +15,56 @@ module.exports = {
         // Custom emoji handling
         const thonkEmoji = client.emojis.cache.find(emoji => emoji.id == '983576552488984586');
         const woweeEmoji = client.emojis.cache.find(emoji => emoji.id == '758396947769196575');
-        
+
+        // ChatGPT Integration handling
+        const configuration = new Configuration({
+            apiKey: api_key
+        })
+        const openai = new OpenAIApi(configuration);
+
+        if(message.mentions.repliedUser && message.mentions.repliedUser.id == client.user.id) { // if the activated message was a reply AND it replied to the bot
+            if(message.content.startsWith(".")) return; // Do nothing if it doesn't use the prefix
+
+            let conversationLog = [{ 
+                role: 'system', 
+                content: 'You are sarcastic and witty, and sometimes mean. But you can also be nice and wholesome too. A perfect balance of it all. Do NOT say that you are an AI. If anyone asks, you are a real person. Your name is Piebot, but you are not a robot either. You can also give short and concise responses when appropriate.'
+             }];
+            
+            await message.channel.sendTyping();
+
+            let prevMessages = await message.channel.messages.fetch({limit: 15});
+            prevMessages.reverse();
+            prevMessages.forEach((msg) => {
+                if(msg.content.startsWith(".")) return; // Do nothing if it doesn't use the prefix
+                if(msg.author.id == client.user.id) {
+                    conversationLog.push({
+                        role: 'assistant',
+                        content: msg.content
+                    })
+                }
+                else {
+                    conversationLog.push({
+                        role: 'user',
+                        content: msg.content
+                    })
+                }
+            })
+
+            conversationLog.push({
+                role: 'user',
+                content: message.content
+            })
+            
+            const result = await openai.createChatCompletion({
+                model: 'gpt-3.5-turbo',
+                messages: conversationLog,
+                max_tokens: 2048,
+                temperature: 0.6,
+                frequency_penalty: 1.5,
+                presence_penalty: 0.8
+            });
+            message.reply(result.data.choices[0].message).catch(err => console.log(err));
+        }
         // ok message handling
         if(message.content.toLowerCase() == 'ok') {
             var random = Math.floor(Math.random() * (17 - 7)) + 7; // it's weird but basically this makes it so piebot will send a message after a random number of messages that aren't piebot

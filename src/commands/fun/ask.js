@@ -35,7 +35,7 @@ module.exports = {
         else                        response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];  // Should never run, but just in case
 
         // Building the final message
-        const msg = `**|**  *${interaction.options.getString("question")}*\n${response}` // Formatting for the final message, including the question asked
+        const msg = `> *${interaction.options.getString("question")}*\n${response}` // Formatting for the final message, including the question asked
 
         // Sending the final message
         await interaction.reply({

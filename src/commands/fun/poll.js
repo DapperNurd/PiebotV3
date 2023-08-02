@@ -52,7 +52,7 @@ module.exports = {
 
         const pollTimestamp = Date.now(); // Used to track when the poll was created
 
-        var timeLeft = pollLength; // Decrementing variable used to count time left for poll
+        var timeLeft = Date.now() + (pollLength * 60_000); // Variable to show time
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
@@ -86,12 +86,6 @@ module.exports = {
 
         await updateEmbed(false, true); // Initial embed updating (part of sending the embed)
 
-        // Starts the timer for the message time remaining
-        var timer = setInterval(() => {
-            timeLeft -= 1;
-            updateEmbed();
-        }, 60 * 1000);
-
         // Collection handling
         const collector = pollMsg.createMessageComponentCollector({ componentType: ComponentType.Button, time: pollLength * 60_000 }); // Creating the collector for the buttons
 
@@ -100,8 +94,9 @@ module.exports = {
             if(i.customId == 'z') { // Ending the poll
                 // If the person who pressed the end button is not the user who ran the poll command
                 if(interaction.user.id != i.user.id) return await i.reply({ content:`Only the creator can end the poll!`, ephemeral: true });
-                
+
                 // Else, end the poll
+                timeLeft = Date.now(); // Sets the time to now to show the poll ended early
                 collector.stop();
                 updateEmbed(true, false);
                 await i.reply({
@@ -178,7 +173,7 @@ module.exports = {
             updatedEmbed.addFields([
                 { name: '\n', value: '\n' },
                 { name: `Total Votes: ${totalVotes}`, value: `Poll created by ${userMention(interaction.user.id)}\n`},
-                { name: (!end) ? ( (timeLeft > 1) ? `${timeLeft} minutes remaining` : '< 1 minute remaining' ) : 'Poll ended.', value: '\n' }, // Basically a nested ?: operator... this is super messy so I will break it down... if it is not end, run { if time is less than minute, return timeLeft, else, return <1 minute } else return Poll ended
+                { name: (!end) ? `Poll ends <t:${Math.floor(timeLeft/1000)}:R>` : `Poll ended <t:${Math.floor(timeLeft/1000)}:R>`, value: '\n' }, // Time left message
             ])
 
             if(start) { // Only runs on the first posting of the embed
@@ -186,7 +181,6 @@ module.exports = {
             }
 
             if(end) { // Only runs on the last editing of the embed
-                clearInterval(timer); // Stops the interval for counting down timeLeft
                 await pollMsg.edit({
                     components: []
                 }).catch(err => console.log('Error updating poll embed! (End check)'));

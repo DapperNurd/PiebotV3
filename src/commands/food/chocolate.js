@@ -10,15 +10,19 @@ const common = ["milk chocolate", "white chocolate", "dark chocolate", "hazelnut
 const uncommon = ["white chocolate with raspberry", "salted caramel chocolate", "cookies n' cream chocolate", "orange chocolate", "chocolate peanut cluster", "chocolate-covered pretzels"
 ];
 
-const rare = ["galaxy chocolate", "Aero milk chocolate", "M&Ms", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s peanut butter cup", "Almond Joy", "Flake"
+const rare = ["galaxy chocolate", "Aero milk chocolate", "M&Ms", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s Peanut Butter Cup", "Almond Joy", "Flake"
 ];
 
-const legendary = ["idkkkkkkk"];
+const legendary = ["pop rocks and.. gummy?.. chocolate"];
 
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
 const adjectivesBad = ["expired", "melted"];
 
-const phrases = ["Here, [USER]! GoTHFuLGirL wants you to have [PLURAL] [ADJ] [FOOD]!"];
+const phrases = [ "Here, [USER]! GoTHFuLGirL wants you to have [PLURAL] [ADJ] [FOOD]!",
+"[USER] quietly approaches as Goth sits menacingly infront of a pile of chocolates. She doesn't notice as you pick up [A] [ADJ] [FOOD] and sneak away.",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
+
+const singularItems = [ "Aero milk chocolate", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s Peanut Butter Cup", "Almond Joy", "Flake" ];
 
 module.exports = {
     common,
@@ -106,11 +110,11 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-        if((Math.floor(Math.random() * (100 - 1) + 1)) < 9) phrase = "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." // 8% chance to send a sorry message instead 
-
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
+
+        phrase = phrase.replace('[PLURAL]', singularItems.includes(food) ? "[A]" : "some");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
