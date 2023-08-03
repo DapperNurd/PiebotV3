@@ -32,7 +32,6 @@ module.exports = {
                 name: `${client.user.username} Stats`
             })
             .setTitle('Global Stats')
-            .setThumbnail('https://creazilla-store.fra1.digitaloceanspaces.com/emojis/49917/globe-showing-americas-emoji-clipart-md.png')
             .addFields([
                 { name: 'Pie Count',         value: globalProfile.pieCount.toString(),       inline: true },
                 { name: 'Muffin Count',      value: globalProfile.muffinCount.toString(),    inline: true },

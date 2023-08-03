@@ -7,6 +7,12 @@ const chalk = require('chalk');
 // So for example I could set all of the counts to zero by default and then these new profiles would only require id and username to be changed,
 // but I'm not doing that feature simply because I think this is more clear as to what is going on.
 
+/**
+ * 
+ * @param {string} id ID of the user to generate a new document for
+ * @param {string} username Username of the user to generate a new document for
+ * @returns 
+ */
 async function generateNewUser(id, username) {
     let userProfile = await new User({ // Essentially a template for a user document in MongoDB Atlas
         _id: new mongoose.Types.ObjectId(),
