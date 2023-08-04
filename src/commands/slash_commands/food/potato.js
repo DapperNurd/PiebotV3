@@ -1,30 +1,31 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../schemas/user');
-const Guild = require('../../schemas/guild');
-const GlobalCount = require('../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const User = require('../../../schemas/user');
+const Guild = require('../../../schemas/guild');
+const GlobalCount = require('../../../schemas/globalCount');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
-const common = ["vanilla ice cream", "chocolate ice cream", "strawberry ice cream", "mint chocolate-chip ice cream", "orange sherbet",  "coffee ice cream", "peanut butter ice cream", "neapolitan ice cream", "cookie dough ice cream", "cookies n' cream ice cream", "chocolate-chip ice cream"
+const common = ["mashed potatoes", "french fries", "baked potato", "hash browns", "tater tots"
 ];
 
-const uncommon = ["rocky road ice cream", "birthday cake ice cream", "tiger ice cream", "vanilla bean ice cream", "maple-nut ice cream", "chocolate peanut butter ice cream", "pistachio ice cream", "peppermint ice cream", "cotton candy ice cream", "rainbow sherbet", "pumpkin pie ice cream"
+const uncommon = ["loaded potato skins", "potato chips", "roasted potatoes", "potato salad", "cheesy potatoes"
 ];
 
-const rare = ["fudge brownie ice cream", "strawberry cheesecake ice cream", "salted caramel ice cream", "moose tracks ice cream", "pina colada ice cream", "rum raisin ice cream"
+const rare = ["potato gnocchi", "potato pancakes", "potato bread", "potato soup"
 ];
 
-const legendary = ["pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp"];
+const legendary = ["pocket potatoes, his very own recipe"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
-const adjectivesBad = ["freezer burnt", "melted"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = [ "Here, [USER]! Violet wants you to have [PLURAL] [ADJ] [FOOD]!",
-"It's hot outside! Violet got [USER] [PLURAL] [ADJ] [FOOD] to cool down. Better eat it quick before it melts!",
-"[USER] won the gelato-ry! Violet blesses them with [ADJ] [FOOD]! What lucky day!",
-"[USER][S] [ADJ] [FOOD] was stolen. We don't Cone-done that kind of behavior!",
-"You scream, [USER] screams, we all scream for Violet's [ADJ] [FOOD]!",
-"Wow, [USER] just got a heap of Violet's [ADJ] [FOOD]! Cone-gratulations!",
-"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
+const phrases = [ "Here, [USER]! Boneless wants you to have [PLURAL] [ADJ] [FOOD]! What a big heart he has!",
+"[USER] seems to have caught the attention of Boneless. As he eyes you up and down, he flirtatiously hands you [PLURAL] [ADJ] [FOOD].",
+"While skating, [PLURAL] [ADJ] [FOOD] fell out of Boneless' pocket! [USER] quickly snagged it while no one was looking.",
+"Boneless offers [USER] [PLURAL] [ADJ] [FOOD] as they tell him about a fan fiction!",
+"After a long day at the skatepark, Boneless asks [USER] if they would like to share some [PLURAL] [ADJ] [FOOD]!",
+"Boneless thought [USER] might be hungry, so he brought them [PLURAL] [ADJ] [FOOD]! They gave Boneless a forehead kiss for his kindness!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
+"Uh-oh! While Meecah was visiting with his dog Jasmine, [USER] left out their [ADJ] [FOOD], and Jasmine ate it!" ];
 
 module.exports = {
     common,
@@ -32,11 +33,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('icecream')
-        .setDescription('Get a random icecream!')
+        .setName('potato')
+        .setDescription('Get a random potato!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user some icecream!')
+                  .setDescription('Give this user a muffin!')
         ),
     async execute(interaction, client) {
 
@@ -87,13 +88,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.iceCreamCount + 1; ///////
-        const guildCount = guildProfile.iceCreamCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.iceCreamCount + 1; ///
+        const userCount = userProfile.potatoCount + 1; ///////
+        const guildCount = guildProfile.potatoCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.potatoCount + 1; ///
 
-        await userProfile.updateOne({ iceCreamCount: userCount }); ///////
-        await guildProfile.updateOne({ iceCreamCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ iceCreamCount: globalCount }); ///
+        await userProfile.updateOne({ potatoCount: userCount }); ///////
+        await guildProfile.updateOne({ potatoCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ potatoCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -112,12 +113,10 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-        if(food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" && (Math.floor(Math.random() * (100 - 1) + 1)) > 50) phrase = `Oh no [USER]! I dropped your melted dairy queen blizzard!`; // 50% chance on legendary food for it to be a custom message
-
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
-        phrase = phrase.replace('[PLURAL]', food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" ? "[A]" : "some");
+        phrase = phrase.replace('[PLURAL]', food == "baked potato" ? "[A]" : "some");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
@@ -131,7 +130,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} potatoes given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

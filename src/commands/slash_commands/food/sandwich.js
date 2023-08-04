@@ -1,30 +1,31 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../schemas/user');
-const Guild = require('../../schemas/guild');
-const GlobalCount = require('../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const User = require('../../../schemas/user');
+const Guild = require('../../../schemas/guild');
+const GlobalCount = require('../../../schemas/globalCount');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
-const common = ["chocolate cake", "vanilla cake", "carrot cake", "birthday cake", "spice cake", "coffee cake", "ice cream cake"
+const common = ["ham and cheese sandwich", "grilled cheese sandwich", "BLT sandwich", "roast beef sandwich", "turkey sandwich", "peanut butter and jelly sandwich", "bologna sandwich"
 ];
 
-const uncommon = ["red velvet cake", "strawberry shortcake", "coconut cake", "lemon cake", "pound cake", "pumpkin spice cake", "sponge cake", "pineapple upside down cake"
+const uncommon = ["panini sandwich", "club sandwich", "reuben sandwich", "cuban sandwich", "tuna salad sandwich", "egg salad sandwich", "french dip sandwich", "meatball sub", "peanut butter and honey sandwich", "pastrami sandwich", "all-american sub"
 ];
 
-const rare = ["cake pop", "dulce de leche cake", "chocolate lava cake", "tiramisu", "mexican chocolate cake"
+const rare = ["cheeseburger", "philly cheesesteak", "patty melt", "chicken sandwich", "ice cream sandwich"
 ];
 
-const legendary = ["fruitcake", "pancake"];
+const legendary = ["peanut butter and banana sandwich", "hot dog"];
 
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
-const adjectivesBad = ["day-old", "overcooked", "undercooked"];
+const adjectivesBad = ["day-old", "dry"];
 
-const phrases = [ "Here, [USER]! Destronate wants you to have a[SLICE] [ADJ] [FOOD]!",
-"Destro challenged [USER] to a game of Devil's Dice and lost! As a reward, he gave them a[SLICE] [ADJ] [FOOD]! Congratulations!",
-"Think fast! Destro threw a[SLICE] [ADJ] [FOOD] at you, [USER]. Did you catch it in time?",
-"Here, enjoy [USER]! Destro gives you a[SLICE] [ADJ] [FOOD]! It's definitely not poisoned..",
-"While going for a walk, Destro appeared out of nowhere and slapped [USER] in the face with a[SLICE] [ADJ] [FOOD]!",
-"Destro bakes [USER] up a[SLICE] [ADJ] [FOOD]! You enjoy it very much!",
-"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
+const phrases = [ "Here, [USER]! Manton wants you to have [A] [ADJ] [FOOD]!",
+"You watch in awe as Manton assembles [AN] [ADJ] [FOOD] piece by piece. It's like he is a machine! After it's done, he hands it to you, [USER]!",
+"Manton bought you, [USER], [A] [ADJ] [FOOD] for lunch. You're not sure where the lunch money came from though...",
+"[USER] snatched Manton's [ADJ] [FOOD] while he was distracted by a dancing bunny girl gif!",
+"Manton couldn't finish his [ADJ] [FOOD] and he offers [USER] the other half!",
+"Manton just gave [USER] his [ADJ] [FOOD]. How thoughtful!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
+"Uh-oh! While Meecah was visiting with his dog Jasmine, [USER] left out their [ADJ] [FOOD], and Jasmine ate it!" ];
 
 module.exports = {
     common,
@@ -32,11 +33,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('cake')
-        .setDescription('Get a random cake!')
+        .setName('sandwich')
+        .setDescription('Get a random sandwich!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user some cake!')
+                  .setDescription('Give this user a sandwich!')
         ),
     async execute(interaction, client) {
 
@@ -87,13 +88,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.cakeCount + 1; ///////
-        const guildCount = guildProfile.cakeCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.cakeCount + 1; ///
+        const userCount = userProfile.sandwichCount + 1; ///////
+        const guildCount = guildProfile.sandwichCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.sandwichCount + 1; ///
 
-        await userProfile.updateOne({ cakeCount: userCount }); ///////
-        await guildProfile.updateOne({ cakeCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ cakeCount: globalCount }); ///
+        await userProfile.updateOne({ sandwichCount: userCount }); ///////
+        await guildProfile.updateOne({ sandwichCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ sandwichCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -115,7 +116,6 @@ module.exports = {
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
-        phrase = phrase.replace('[SLICE]', (food == "pancake" || food == "cake pop") ? "" : " slice of");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
@@ -129,7 +129,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} cakes given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

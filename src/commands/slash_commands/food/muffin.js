@@ -1,28 +1,30 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../schemas/user');
-const Guild = require('../../schemas/guild');
-const GlobalCount = require('../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const User = require('../../../schemas/user');
+const Guild = require('../../../schemas/guild');
+const GlobalCount = require('../../../schemas/globalCount');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
-const common = ["milk chocolate", "white chocolate", "dark chocolate", "hazelnut milk chocolate", "dark mint chocolate", "mint chocolate", "almond chocolate", "fruits & nuts chocolate"
+const common = ["banana nut muffin", "blueberry muffin", "lemon poppy seed muffin", "coconut muffin", "oatmeal muffin", "raspberry muffin"
 ];
 
-const uncommon = ["white chocolate with raspberry", "salted caramel chocolate", "cookies n' cream chocolate", "orange chocolate", "chocolate peanut cluster", "chocolate-covered pretzels"
+const uncommon = ["chocolate chip muffin", "cornbread muffin", "pumpkin muffin", "coffee cake muffin", "peanut butter muffin", "maple walnut muffin", "pecan muffin"
 ];
 
-const rare = ["galaxy chocolate", "Aero milk chocolate", "M&Ms", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s Peanut Butter Cup", "Almond Joy", "Flake"
+const rare = ["chocolate chunk muffin", "apple cinnamon muffin", "snickerdoodle muffin"
 ];
 
-const legendary = ["pop rocks and.. gummy?.. chocolate"];
+const legendary = [`Kecatas' "special" muffin`, "drudanae muffin", "muffin time"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
-const adjectivesBad = ["expired", "melted"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = [ "Here, [USER]! GoTHFuLGirL wants you to have [PLURAL] [ADJ] [FOOD]!",
-"[USER] quietly approaches as Goth sits menacingly infront of a pile of chocolates. She doesn't notice as you pick up [A] [ADJ] [FOOD] and sneak away.",
-"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
-
-const singularItems = [ "Aero milk chocolate", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s Peanut Butter Cup", "Almond Joy", "Flake" ];
+const phrases = ["Here, [USER]! Kecatas wants you to have one of his [ADJ] [FOOD]s!",
+    "[USER], you have stumbled upon Kecatas's stash of [ADJ] [FOOD]s. He won't know if you take just one, right?",
+    "From the kitchen you can smell that Kecatas has prepared a batch of [ADJ] [FOOD]s. He offers [USER] one. What a good guy!",
+    "Kecatas spent all morning baking a dozen [ADJ] [FOOD]s and wants you to try one, [USER]!",
+    "Muffin Master Kecatas is testing a new recipe of [ADJ] [FOOD]s and gives you one to try. How does it taste, [USER]?",
+    "[A] [ADJ] [FOOD] floats down from the heavens and into [USER][S] hands. You can tell that it was prepared by Kecatas with love.",
+    "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -30,11 +32,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('chocolate')
-        .setDescription('Get a random chocolate!')
+        .setName('muffin')
+        .setDescription('Get a random muffin!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user some chocolate!')
+                  .setDescription('Give this user a muffin!')
         ),
     async execute(interaction, client) {
 
@@ -85,13 +87,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.chocolateCount + 1; ///////
-        const guildCount = guildProfile.chocolateCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.chocolateCount + 1; ///
+        const userCount = userProfile.muffinCount + 1; ///////
+        const guildCount = guildProfile.muffinCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.muffinCount + 1; ///
 
-        await userProfile.updateOne({ chocolateCount: userCount }); ///////
-        await guildProfile.updateOne({ chocolateCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ chocolateCount: globalCount }); ///
+        await userProfile.updateOne({ muffinCount: userCount }); ///////
+        await guildProfile.updateOne({ muffinCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ muffinCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -114,8 +116,6 @@ module.exports = {
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
 
-        phrase = phrase.replace('[PLURAL]', singularItems.includes(food) ? "[A]" : "some");
-
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
             phrase = phrase.replace('[A]', a); // Replaces placeholder in the phrase with the proper term
@@ -128,7 +128,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} chocolates given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} muffins given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

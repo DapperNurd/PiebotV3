@@ -1,32 +1,30 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../schemas/user');
-const Guild = require('../../schemas/guild');
-const GlobalCount = require('../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const User = require('../../../schemas/user');
+const Guild = require('../../../schemas/guild');
+const GlobalCount = require('../../../schemas/globalCount');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
-const common = ["pumpkin pie", "coconut cream pie", "banana cream pie", "strawberry rhubarb pie", "chocolate cream pie", "blueberry pie", "ice cream pie", "peach pie", "pear pie", "chicken pot pie", "cranberry pie", "pineapple pie", "turtle pie", "chocolate hazelnut pie", "mixed berry pie", "chestnut pie"
+const common = ["chocolate cake", "vanilla cake", "carrot cake", "birthday cake", "spice cake", "coffee cake", "ice cream cake"
 ];
 
-const uncommon = ["apple pie", "cherry pie", "key lime pie", "lemon meringue pie", "blackberry pie", "raspberry pie", "pecan pie",
-    "strawberry pie", "french silk pie", "custard pie", "chocolate peanut butter pie", "butterscotch pie", "mississippi mud pie", "caramel apple pie", 
-    "cookies and cream pie","boysenberry pie", "shepherd's pie", "mincemeat pie"
+const uncommon = ["red velvet cake", "strawberry shortcake", "coconut cake", "lemon cake", "pound cake", "pumpkin spice cake", "sponge cake", "pineapple upside down cake"
 ];
 
-const rare = ["cheesecake", "prickly pear pie", "apple pie à la mode", "blackberry pie à la mode", "cherry pie à la mode", "raspberry pie à la mode", "boysenberry pie à la mode"
+const rare = ["cake pop", "dulce de leche cake", "chocolate lava cake", "tiramisu", "mexican chocolate cake"
 ];
 
-const legendary = ["creampie", "cow pie", "cutie pie"];
+const legendary = ["fruitcake", "pancake"];
 
 const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
 const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = ["Here, [USER]! Kim wants you to have a slice of her [ADJ] [FOOD]!",
-    "Using artisnal skill and experience, Master Chef Kim has prepared [A] [ADJ] [FOOD] for you, [USER]!",
-    "With incredible skill and hand-picked ingredients, Kim has created [A] [ADJ] [FOOD] for [USER]!",
-    "[USER], you see [A] [ADJ] [FOOD] sitting on the table in Kim's kitchen. You decide to steal it, you sly fox.",
-    "Using her own patented recipe, Kim made [A] [ADJ] [FOOD] just for you, [USER]! Wow, it's delicious!",
-    "[A] [ADJ] [FOOD] floats down from the heavens and into [USER][S] hands. You can tell that it was prepared by Kim with love.",
-    "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
+const phrases = [ "Here, [USER]! Destronate wants you to have a[SLICE] [ADJ] [FOOD]!",
+"Destro challenged [USER] to a game of Devil's Dice and lost! As a reward, he gave them a[SLICE] [ADJ] [FOOD]! Congratulations!",
+"Think fast! Destro threw a[SLICE] [ADJ] [FOOD] at you, [USER]. Did you catch it in time?",
+"Here, enjoy [USER]! Destro gives you a[SLICE] [ADJ] [FOOD]! It's definitely not poisoned..",
+"While going for a walk, Destro appeared out of nowhere and slapped [USER] in the face with a[SLICE] [ADJ] [FOOD]!",
+"Destro bakes [USER] up a[SLICE] [ADJ] [FOOD]! You enjoy it very much!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -34,11 +32,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('pie')
-        .setDescription('Get a random pie!')
+        .setName('cake')
+        .setDescription('Get a random cake!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a pie!')
+                  .setDescription('Give this user some cake!')
         ),
     async execute(interaction, client) {
 
@@ -89,13 +87,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.pieCount + 1; ///////
-        const guildCount = guildProfile.pieCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.pieCount + 1; ///
+        const userCount = userProfile.cakeCount + 1; ///////
+        const guildCount = guildProfile.cakeCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.cakeCount + 1; ///
 
-        await userProfile.updateOne({ pieCount: userCount }); ///////
-        await guildProfile.updateOne({ pieCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ pieCount: globalCount }); ///
+        await userProfile.updateOne({ cakeCount: userCount }); ///////
+        await guildProfile.updateOne({ cakeCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ cakeCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -113,10 +111,11 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        
+
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
+        phrase = phrase.replace('[SLICE]', (food == "pancake" || food == "cake pop") ? "" : " slice of");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
@@ -130,7 +129,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} cakes given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

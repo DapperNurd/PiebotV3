@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
-const Reminder = require('../../schemas/reminder');
+const Reminder = require('../../../schemas/reminder');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 

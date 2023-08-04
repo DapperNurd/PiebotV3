@@ -1,31 +1,32 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../schemas/user');
-const Guild = require('../../schemas/guild');
-const GlobalCount = require('../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const User = require('../../../schemas/user');
+const Guild = require('../../../schemas/guild');
+const GlobalCount = require('../../../schemas/globalCount');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
-const common = ["carp", "bass", "trout", "tilapia", "catfish", "anchovy", "cod", "spanish mackeral", "bluefish", "crappie", "redfish", "mullet", "ruby splashtail"
+const common = ["pumpkin pie", "coconut cream pie", "banana cream pie", "strawberry rhubarb pie", "chocolate cream pie", "blueberry pie", "ice cream pie", "peach pie", "pear pie", "chicken pot pie", "cranberry pie", "pineapple pie", "turtle pie", "chocolate hazelnut pie", "mixed berry pie", "chestnut pie"
 ];
 
-const uncommon = ["cobia", "flounder", "red snapper", "king mackeral", "ladyfish", "largemouth bass", "tuna", "sunfish", "halibut", "pompano", "salmon", "sunny splashtail"
+const uncommon = ["apple pie", "cherry pie", "key lime pie", "lemon meringue pie", "blackberry pie", "raspberry pie", "pecan pie",
+    "strawberry pie", "french silk pie", "custard pie", "chocolate peanut butter pie", "butterscotch pie", "mississippi mud pie", "caramel apple pie", 
+    "cookies and cream pie","boysenberry pie", "shepherd's pie", "mincemeat pie"
 ];
 
-const rare = ["grouper", "alligator gar", "lionfish", "swordfish", "mahimahi", "wahoo", "clownfish", "indigo splashtail"
+const rare = ["cheesecake", "prickly pear pie", "apple pie à la mode", "blackberry pie à la mode", "cherry pie à la mode", "raspberry pie à la mode", "boysenberry pie à la mode"
 ];
 
-const legendary = ["Holy Mackerel", "umber splashtail"];
+const legendary = ["creampie", "cow pie", "cutie pie"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "fresh"]
-const adjectivesBad = ["day-old", "overcooked", "undercooked", "raw"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
+const adjectivesBad = ["day-old", "overcooked", "undercooked"];
 
-const phrases = [ "Here, [USER]! Valyx the Florida Man wants you to have some [ADJ] [FOOD]!",
-"During a heavy rainstorm, a live [FOOD] flew out of the sky and hit [USER] in the face! Where did it come from??",
-"After a long struggle, Valyx the Florida Man finally managed to catch [A] [FOOD]. He prepares it just for you, [USER], and it was [ADJ]!",
-"[USER] went bobbing for apples, but ended up pulling out a live [FOOD] instead! Valyx the Florida Man must have snuck it in there when no one was looking.",
-"Holy Carp! Valyx the Florida Man caught a large [FOOD]. He cooked it for [USER], just the way they like it. [ADJ]!",
-"You just got catfished, [USER]! Your [ADJ] [FOOD] is actually a [FOOD2]",
-"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
-"Uh-oh! While Meecah was visiting with his dog Jasmine, [USER] left out their [ADJ] [FOOD], and Jasmine ate it!" ];
+const phrases = ["Here, [USER]! Kim wants you to have a slice of her [ADJ] [FOOD]!",
+    "Using artisnal skill and experience, Master Chef Kim has prepared [A] [ADJ] [FOOD] for you, [USER]!",
+    "With incredible skill and hand-picked ingredients, Kim has created [A] [ADJ] [FOOD] for [USER]!",
+    "[USER], you see [A] [ADJ] [FOOD] sitting on the table in Kim's kitchen. You decide to steal it, you sly fox.",
+    "Using her own patented recipe, Kim made [A] [ADJ] [FOOD] just for you, [USER]! Wow, it's delicious!",
+    "[A] [ADJ] [FOOD] floats down from the heavens and into [USER][S] hands. You can tell that it was prepared by Kim with love.",
+    "Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -33,11 +34,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('fish')
-        .setDescription('Get a random fish!')
+        .setName('pie')
+        .setDescription('Get a random pie!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a fish!')
+                  .setDescription('Give this user a pie!')
         ),
     async execute(interaction, client) {
 
@@ -88,13 +89,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.fishCount + 1; ///////
-        const guildCount = guildProfile.fishCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.fishCount + 1; ///
+        const userCount = userProfile.pieCount + 1; ///////
+        const guildCount = guildProfile.pieCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.pieCount + 1; ///
 
-        await userProfile.updateOne({ fishCount: userCount }); ///////
-        await guildProfile.updateOne({ fishCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ fishCount: globalCount }); ///
+        await userProfile.updateOne({ pieCount: userCount }); ///////
+        await guildProfile.updateOne({ pieCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ pieCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -112,24 +113,10 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
+        
         phrase = phrase.replace('[USER]', userByMention); ///
-        if(phrase == "Holy Carp! Valyx the Florida Man caught a large [FOOD]. He cooked it for [USER], just the way they like it. [ADJ]!") // Capitalizes the adjective for this phrase
-            adj = adj.charAt(0).toUpperCase() + adj.slice(1); 
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
-
-        if(phrase.includes('[FOOD2]')) { // For the catfish message
-            var food2; // Calculating and assigning second food for catfish message
-            const rarityNum = Math.floor(Math.random() * (100 - 1) + 1) // Random from 1 to 100
-            if (rarityNum < 51)        food2 = common[Math.floor(Math.random() * common.length)];       // 50% (1 to 50 )
-            else if (rarityNum < 91)   food2 = uncommon[Math.floor(Math.random() * uncommon.length)];   // 40% ( 51 to 90 )
-            else if (rarityNum < 100)  food2 = rare[Math.floor(Math.random() * rare.length)];           // 9% ( 91 to 99 )
-            else if (rarityNum >= 100) food2 = legendary[Math.floor(Math.random() * legendary.length)]; // 1% ( 100 )
-            else                       food2 = common[Math.floor(Math.random() * common.length)];       // Should never run but just in case
-            
-            phrase = phrase.replace('[FOOD2]', food2)
-        }
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
@@ -143,7 +130,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} fish fillets given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({

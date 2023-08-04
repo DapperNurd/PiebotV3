@@ -1,31 +1,30 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../schemas/user');
-const Guild = require('../../schemas/guild');
-const GlobalCount = require('../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const User = require('../../../schemas/user');
+const Guild = require('../../../schemas/guild');
+const GlobalCount = require('../../../schemas/globalCount');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
-const common = ["ham and cheese sandwich", "grilled cheese sandwich", "BLT sandwich", "roast beef sandwich", "turkey sandwich", "peanut butter and jelly sandwich", "bologna sandwich"
+const common = ["vanilla ice cream", "chocolate ice cream", "strawberry ice cream", "mint chocolate-chip ice cream", "orange sherbet",  "coffee ice cream", "peanut butter ice cream", "neapolitan ice cream", "cookie dough ice cream", "cookies n' cream ice cream", "chocolate-chip ice cream"
 ];
 
-const uncommon = ["panini sandwich", "club sandwich", "reuben sandwich", "cuban sandwich", "tuna salad sandwich", "egg salad sandwich", "french dip sandwich", "meatball sub", "peanut butter and honey sandwich", "pastrami sandwich", "all-american sub"
+const uncommon = ["rocky road ice cream", "birthday cake ice cream", "tiger ice cream", "vanilla bean ice cream", "maple-nut ice cream", "chocolate peanut butter ice cream", "pistachio ice cream", "peppermint ice cream", "cotton candy ice cream", "rainbow sherbet", "pumpkin pie ice cream"
 ];
 
-const rare = ["cheeseburger", "philly cheesesteak", "patty melt", "chicken sandwich", "ice cream sandwich"
+const rare = ["fudge brownie ice cream", "strawberry cheesecake ice cream", "salted caramel ice cream", "moose tracks ice cream", "pina colada ice cream", "rum raisin ice cream"
 ];
 
-const legendary = ["peanut butter and banana sandwich", "hot dog"];
+const legendary = ["pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp"];
 
-const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy", "homemade"]
-const adjectivesBad = ["day-old", "dry"];
+const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable", "delightful", "yummy"]
+const adjectivesBad = ["freezer burnt", "melted"];
 
-const phrases = [ "Here, [USER]! Manton wants you to have [A] [ADJ] [FOOD]!",
-"You watch in awe as Manton assembles [AN] [ADJ] [FOOD] piece by piece. It's like he is a machine! After it's done, he hands it to you, [USER]!",
-"Manton bought you, [USER], [A] [ADJ] [FOOD] for lunch. You're not sure where the lunch money came from though...",
-"[USER] snatched Manton's [ADJ] [FOOD] while he was distracted by a dancing bunny girl gif!",
-"Manton couldn't finish his [ADJ] [FOOD] and he offers [USER] the other half!",
-"Manton just gave [USER] his [ADJ] [FOOD]. How thoughtful!",
-"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
-"Uh-oh! While Meecah was visiting with his dog Jasmine, [USER] left out their [ADJ] [FOOD], and Jasmine ate it!" ];
+const phrases = [ "Here, [USER]! Violet wants you to have [PLURAL] [ADJ] [FOOD]!",
+"It's hot outside! Violet got [USER] [PLURAL] [ADJ] [FOOD] to cool down. Better eat it quick before it melts!",
+"[USER] won the gelato-ry! Violet blesses them with [ADJ] [FOOD]! What lucky day!",
+"[USER][S] [ADJ] [FOOD] was stolen. We don't Cone-done that kind of behavior!",
+"You scream, [USER] screams, we all scream for Violet's [ADJ] [FOOD]!",
+"Wow, [USER] just got a heap of Violet's [ADJ] [FOOD]! Cone-gratulations!",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
 
 module.exports = {
     common,
@@ -33,11 +32,11 @@ module.exports = {
     rare,
     legendary,
     data: new SlashCommandBuilder()
-        .setName('sandwich')
-        .setDescription('Get a random sandwich!')
+        .setName('icecream')
+        .setDescription('Get a random icecream!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user a sandwich!')
+                  .setDescription('Give this user some icecream!')
         ),
     async execute(interaction, client) {
 
@@ -88,13 +87,13 @@ module.exports = {
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Food Counts fetching, updating, and saving
-        const userCount = userProfile.sandwichCount + 1; ///////
-        const guildCount = guildProfile.sandwichCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.sandwichCount + 1; ///
+        const userCount = userProfile.iceCreamCount + 1; ///////
+        const guildCount = guildProfile.iceCreamCount + 1;    // Grabs the saved variables from the database and adds one to them
+        const globalCount = globalProfile.iceCreamCount + 1; ///
 
-        await userProfile.updateOne({ sandwichCount: userCount }); ///////
-        await guildProfile.updateOne({ sandwichCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ sandwichCount: globalCount }); ///
+        await userProfile.updateOne({ iceCreamCount: userCount }); ///////
+        await guildProfile.updateOne({ iceCreamCount: guildCount });    // Updates the database variables with the new ones (added one)
+        await globalProfile.updateOne({ iceCreamCount: globalCount }); ///
         
         // Food Rarity calculation and assigning
         var food;
@@ -113,9 +112,12 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
+        if(food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" && (Math.floor(Math.random() * (100 - 1) + 1)) > 50) phrase = `Oh no [USER]! I dropped your melted dairy queen blizzard!`; // 50% chance on legendary food for it to be a custom message
+
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
+        phrase = phrase.replace('[PLURAL]', food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" ? "[A]" : "some");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
             const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel

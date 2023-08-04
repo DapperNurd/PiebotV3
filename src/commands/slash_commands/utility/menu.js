@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, EmbedBuilder, ComponentType } = require('discord.js');
-const GlobalCount = require('../../schemas/globalCount');
+const GlobalCount = require('../../../schemas/globalCount');
 const pies = require('../food/pie');
 const muffins = require('../food/muffin');
 const potatoes = require('../food/potato');

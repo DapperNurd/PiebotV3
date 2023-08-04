@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const Guild = require('../../schemas/guild');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
+const Guild = require('../../../schemas/guild');
+const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 
 module.exports = {
     data: new SlashCommandBuilder()

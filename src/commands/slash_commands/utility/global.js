@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const GlobalCount = require('../../schemas/globalCount');
+const GlobalCount = require('../../../schemas/globalCount');
 const chalk = require('chalk');
 
 module.exports = {

@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const mongoose = require('mongoose');
-const BannedUser = require('../../schemas/bannedUsers')
+const BannedUser = require('../../../schemas/bannedUsers')
 
 module.exports = {
     data: new SlashCommandBuilder()
