@@ -20,7 +20,7 @@ module.exports = {
         // Code for most of the commands here (aside from single line reactions) are handled in separate files in the text_commands folder
 
         // ChatGPT integration handling
-        if((message.guild.id == '347828515858546688' && message.mentions.repliedUser && message.mentions.repliedUser.id == client.user.id) || message.content.includes(`<@${client.user.id}>`)) { // if the activated message was a reply AND it replied to the bot, OR the message mentions the bot (and, for now, in the Nurds server)
+        if(message.guild.id == '347828515858546688' && ((message.mentions.repliedUser && message.mentions.repliedUser.id == client.user.id) || message.content.includes(`<@${client.user.id}>`))) { // if the activated message was a reply AND it replied to the bot, OR the message mentions the bot (and, for now, in the Nurds server)
             runCommand('piebotGPT', false);
         }
         // "ok" handling

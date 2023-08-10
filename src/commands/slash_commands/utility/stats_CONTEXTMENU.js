@@ -6,6 +6,6 @@ module.exports = {
         .setName('Stats')
         .setType(ApplicationCommandType.User),
     async execute(interaction, client) {
-        client.commands.get('stats').execute(interaction, client, interaction.targetUser);
+        client.commands.get('stats').execute(interaction, client);
     }
 }

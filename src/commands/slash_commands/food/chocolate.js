@@ -20,8 +20,12 @@ const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable
 const adjectivesBad = ["expired", "melted"];
 
 const phrases = [ "Here, [USER]! GoTHFuLGirL wants you to have [PLURAL] [ADJ] [FOOD]!",
-"[USER] quietly approaches as Goth sits menacingly infront of a pile of chocolates. She doesn't notice as you pick up [A] [ADJ] [FOOD] and sneak away.",
-"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD]." ];
+"[USER] quietly approaches as Goth sits menacingly infront of a pile of chocolates. She doesn't notice as you pick up [PLURAL] [ADJ] [FOOD] and sneak away.",
+"Sorry, [USER], but I couldn't resist. I ate your [ADJ] [FOOD].",
+"[USER] got [PLURAL] [ADJ] [FOOD] from Goth- after she had already licked it...",
+"Goth eats her [ADJ] [FOOD] right in front of [USER]. Sorry, she doesn't share.",
+"Goth didn't want to give up her [FOOD]. By the time she gave it to [USER], it had melted.",
+ ];
 
 const singularItems = [ "Aero milk chocolate", "Butterfinger", "Twix", "Kit Kat", "Cherry Blossom Kit Kat", "Matcha Kit Kat", "Reese’s Peanut Butter Cup", "Almond Joy", "Flake" ];
 
