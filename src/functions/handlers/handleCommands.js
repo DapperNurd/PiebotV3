@@ -26,7 +26,7 @@ module.exports = (client) => {
             //console.log(`Command: ${command.name} has been passed through the handler`); ... Commenting this to reduce clutter but this would essentially log as each command is loaded through the handler. Not deleting for future reference.
         }
 
-        const clientId = '762880889817530368';
+        const clientId = '549418373130223630';
         const rest = new REST({ version: '9' }).setToken(process.env.token);
         try {
             console.log(chalk.hex("#94cc50")("[Bot Status]: Started refreshing application (/) commands."));

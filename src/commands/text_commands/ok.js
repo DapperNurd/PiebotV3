@@ -1,4 +1,7 @@
 const User = require('../../schemas/user');
+const Guild = require('../../schemas/guild');
+const GlobalCount = require('../../schemas/globalCount');
+
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
 module.exports = {
@@ -15,7 +18,7 @@ module.exports = {
         }
 
         var botID = authorIDs.find(function (element) {
-            return element == "762880889817530368"
+            return element == client.user.id;
         });
 
         if (!botID) {
