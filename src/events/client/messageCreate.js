@@ -1,22 +1,26 @@
 const BannedUser = require('../../schemas/bannedUsers')
 
-async function runCommand(command, bypassBan) { // command is the command to run, bypassBan is TRUE if it ignores banned status
-    if(!bypassBan) {
-        let bannedUsersProfile = await BannedUser.findOne({ userID: interaction.user.id }); // Searches database for a userID matching the command user's id
-        if(bannedUsersProfile) return;
-    }
-    client.commands.get(command).run(message, client);
-}
-
 module.exports = {
     name: 'messageCreate',
     async execute(message, client) {
         if(message.author.bot) return;
 
+        async function runCommand(command, bypassBan) { // command is the command to run, bypassBan is TRUE if it ignores banned status
+            if(!bypassBan) {
+                let bannedUsersProfile = await BannedUser.findOne({ userID: message.author.id }); // Searches database for a userID matching the command user's id
+                if(bannedUsersProfile) return;
+            }
+            try {
+                await client.textCommands.get(command).run(message, client);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
         // Code for most of the commands here (aside from single line reactions) are handled in separate files in the text_commands folder
 
         // ChatGPT integration handling
-        if((message.mentions.repliedUser && message.mentions.repliedUser.id == client.user.id) || message.content.includes(`<@${client.user.id}>`)) { // if the activated message was a reply AND it replied to the bot, OR the message mentions the bot
+        if((message.guild.id == '347828515858546688' && message.mentions.repliedUser && message.mentions.repliedUser.id == client.user.id) || message.content.includes(`<@${client.user.id}>`)) { // if the activated message was a reply AND it replied to the bot, OR the message mentions the bot (and, for now, in the Nurds server)
             runCommand('piebotGPT', false);
         }
         // "ok" handling

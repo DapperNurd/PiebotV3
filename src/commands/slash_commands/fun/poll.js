@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
+const extraFunctions = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -149,7 +150,7 @@ module.exports = {
             const eProgressBar = buildProgressBar(eVotes, (eVotes == highest) ? highestBox : normalBox); //
 
             const updatedEmbed = new EmbedBuilder()
-                .setColor(interaction.user.accentColor ?? '#FFFFFF')
+                .setColor(interaction.user.accentColor ?? extraFunctions.piebotColor)
                 .setAuthor({
                     iconURL: client.user.displayAvatarURL(),
                     name: `${client.user.username} Polls`

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Guild = require('../../../schemas/guild');
 const schemaBuildingFunctions = require('../../../schemaBuilding.js');
+const extraFunctions = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +21,7 @@ module.exports = {
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(extraFunctions.piebotColor)
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.username} Stats`
@@ -28,22 +29,22 @@ module.exports = {
             .setTitle(`${interaction.guild.name} Server Stats`)
             .setThumbnail(interaction.guild.iconURL())
             .addFields([
-                { name: 'Pie Count',         value: guildProfile.pieCount.toString(),       inline: true },
-                { name: 'Muffin Count',      value: guildProfile.muffinCount.toString(),    inline: true },
-                { name: 'Potato Count',      value: guildProfile.potatoCount.toString(),    inline: true },
-                { name: 'Ice Cream Count',   value: guildProfile.iceCreamCount.toString(),  inline: true },
-                { name: 'Pizza Count',       value: guildProfile.pizzaCount.toString(),     inline: true },
-                { name: 'Pasta Count',       value: guildProfile.pastaCount.toString(),     inline: true },
-                { name: 'Cake Count',        value: guildProfile.cakeCount.toString(),      inline: true },
-                { name: 'Chocolate Count',   value: guildProfile.chocolateCount.toString(), inline: true },
-                { name: 'Sandwich Count',    value: guildProfile.sandwichCount.toString(),  inline: true },
-                { name: 'Brownie Count',     value: guildProfile.brownieCount.toString(),   inline: true },
-                { name: 'Fish Fillet Count', value: guildProfile.fishCount.toString(),      inline: true },
-                { name: 'Trash Count',       value: guildProfile.trashCount.toString(),     inline: true },
-                { name: 'Total Count',       value: total.toString()},
+                { name: '__Pie Count__',         value: guildProfile.pieCount.toString(),       inline: true },
+                { name: '__Muffin Count__',      value: guildProfile.muffinCount.toString(),    inline: true },
+                { name: '__Potato Count__',      value: guildProfile.potatoCount.toString(),    inline: true },
+                { name: '__Ice Cream Count__',   value: guildProfile.iceCreamCount.toString(),  inline: true },
+                { name: '__Pizza Count__',       value: guildProfile.pizzaCount.toString(),     inline: true },
+                { name: '__Pasta Count__',       value: guildProfile.pastaCount.toString(),     inline: true },
+                { name: '__Cake Count__',        value: guildProfile.cakeCount.toString(),      inline: true },
+                { name: '__Chocolate Count__',   value: guildProfile.chocolateCount.toString(), inline: true },
+                { name: '__Sandwich Count__',    value: guildProfile.sandwichCount.toString(),  inline: true },
+                { name: '__Brownie Count__',     value: guildProfile.brownieCount.toString(),   inline: true },
+                { name: '__Fish Fillet Count__', value: guildProfile.fishCount.toString(),      inline: true },
+                { name: '__Trash Count__',       value: guildProfile.trashCount.toString(),     inline: true },
+                { name: '__Total Count__',       value: total.toString()},
                 { name: '\n',                  value: '\n'},
-                { name: 'Food Gifted',       value: guildProfile.foodGiven.toString(),      inline: true },
-                { name: 'Food Received',     value: guildProfile.foodReceived.toString(),   inline: true },
+                { name: '__Food Gifted__',       value: guildProfile.foodGiven.toString(),      inline: true },
+                { name: '__Food Received__',     value: guildProfile.foodReceived.toString(),   inline: true },
             ])
             .setTimestamp()
             .setFooter({

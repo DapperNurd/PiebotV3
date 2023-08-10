@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
 const GlobalCount = require('../../../schemas/globalCount');
 const chalk = require('chalk');
+const extraFunctions = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,12 +14,9 @@ module.exports = {
 
         // Database handling
         let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
-        if(!globalProfile) { // Should hopefully never happen
-            console.log(chalk.red("[Bot Status]: Error finding global database!"));
-            return await interaction.reply({ // We do not build a new global profile because there is only ever one.
-                content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`,
-                ephemeral: true
-            });
+        if(!globalProfile) { // Should hopefully never happen... We do not build a new global profile because there is only ever one. Instead we error and intentionally stop.
+            await interaction.reply({ content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`, ephemeral: true });
+            return console.error(chalk.red("[Bot Status]: Error finding global database!"));
         }
 
         // Total calculation
@@ -26,29 +24,29 @@ module.exports = {
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(extraFunctions.piebotColor)
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.username} Stats`
             })
             .setTitle('Global Stats')
             .addFields([
-                { name: 'Pie Count',         value: globalProfile.pieCount.toString(),       inline: true },
-                { name: 'Muffin Count',      value: globalProfile.muffinCount.toString(),    inline: true },
-                { name: 'Potato Count',      value: globalProfile.potatoCount.toString(),    inline: true },
-                { name: 'Ice Cream Count',   value: globalProfile.iceCreamCount.toString(),  inline: true },
-                { name: 'Pizza Count',       value: globalProfile.pizzaCount.toString(),     inline: true },
-                { name: 'Pasta Count',       value: globalProfile.pastaCount.toString(),     inline: true },
-                { name: 'Cake Count',        value: globalProfile.cakeCount.toString(),      inline: true },
-                { name: 'Chocolate Count',   value: globalProfile.chocolateCount.toString(), inline: true },
-                { name: 'Sandwich Count',    value: globalProfile.sandwichCount.toString(),  inline: true },
-                { name: 'Brownie Count',     value: globalProfile.brownieCount.toString(),   inline: true },
-                { name: 'Fish Fillet Count', value: globalProfile.fishCount.toString(),      inline: true },
-                { name: 'Trash Count',       value: globalProfile.trashCount.toString(),     inline: true },
-                { name: 'Total Count',       value: total.toString()},
+                { name: '__Pie Count__',         value: globalProfile.pieCount.toString(),       inline: true },
+                { name: '__Muffin Count__',      value: globalProfile.muffinCount.toString(),    inline: true },
+                { name: '__Potato Count__',      value: globalProfile.potatoCount.toString(),    inline: true },
+                { name: '__Ice Cream Count__',   value: globalProfile.iceCreamCount.toString(),  inline: true },
+                { name: '__Pizza Count__',       value: globalProfile.pizzaCount.toString(),     inline: true },
+                { name: '__Pasta Count__',       value: globalProfile.pastaCount.toString(),     inline: true },
+                { name: '__Cake Count__',        value: globalProfile.cakeCount.toString(),      inline: true },
+                { name: '__Chocolate Count__',   value: globalProfile.chocolateCount.toString(), inline: true },
+                { name: '__Sandwich Count__',    value: globalProfile.sandwichCount.toString(),  inline: true },
+                { name: '__Brownie Count__',     value: globalProfile.brownieCount.toString(),   inline: true },
+                { name: '__Fish Fillet Count__', value: globalProfile.fishCount.toString(),      inline: true },
+                { name: '__Trash Count__',       value: globalProfile.trashCount.toString(),     inline: true },
+                { name: '__Total Count__',       value: total.toString()},
                 { name: '\n',                  value: '\n'},
-                { name: 'Food Gifted',       value: globalProfile.foodGiven.toString(),      inline: true },
-                { name: 'Food Received',     value: globalProfile.foodReceived.toString(),   inline: true },
+                { name: '__Food Gifted__',       value: globalProfile.foodGiven.toString(),      inline: true },
+                { name: '__Food Received__',     value: globalProfile.foodReceived.toString(),   inline: true },
             ])
             .setTimestamp()
             .setFooter({

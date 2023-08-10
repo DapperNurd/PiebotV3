@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const User = require('../../../schemas/user');
 const schemaBuildingFunctions = require('../../../schemaBuilding.js');
+const extraFunctions = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,7 +11,7 @@ module.exports = {
             option.setName('user')
                   .setDescription('User to display stats for')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, user = interaction.user) {
 
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
@@ -21,12 +22,15 @@ module.exports = {
         let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
         if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
 
+        // Username updating within the database (to new system)
+        if(userProfile.userName != interaction.user.username) await userProfile.updateOne({ userName: interaction.user.username }); // Checks if the username within the database is not the current username of the user
+
         // Total calculation
         const total = userProfile.pieCount + userProfile.muffinCount + userProfile.potatoCount + userProfile.iceCreamCount + userProfile.pizzaCount + userProfile.pastaCount + userProfile.cakeCount + userProfile.chocolateCount + userProfile.sandwichCount + userProfile.brownieCount + userProfile.fishCount + userProfile.trashCount;
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(targetedUser.accentColor ?? extraFunctions.piebotColor)
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.displayName} Stats`
@@ -34,23 +38,25 @@ module.exports = {
             .setTitle(`${namePossesive} User Stats`)
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([
-                { name: 'Pie Count',             value: userProfile.pieCount.toString(),             inline: true },
-                { name: 'Muffin Count',          value: userProfile.muffinCount.toString(),          inline: true },
-                { name: 'Potato Count',          value: userProfile.potatoCount.toString(),          inline: true },
-                { name: 'Ice Cream Count',       value: userProfile.iceCreamCount.toString(),        inline: true },
-                { name: 'Pizza Count',           value: userProfile.pizzaCount.toString(),           inline: true },
-                { name: 'Pasta Count',           value: userProfile.pastaCount.toString(),           inline: true },
-                { name: 'Cake Count',            value: userProfile.cakeCount.toString(),            inline: true },
-                { name: 'Chocolate Count',       value: userProfile.chocolateCount.toString(),       inline: true },
-                { name: 'Sandwich Count',        value: userProfile.sandwichCount.toString(),        inline: true },
-                { name: 'Brownie Count',         value: userProfile.brownieCount.toString(),         inline: true },
-                { name: 'Fish Fillet Count',     value: userProfile.fishCount.toString(),            inline: true },
-                { name: 'Trash Count',           value: userProfile.trashCount.toString(),           inline: true },
-                { name: 'Total Count',           value: total.toString(),                            inline: true },
-                { name: 'Total (without gifts)', value: (total-userProfile.foodReceived).toString(), inline: true },
-                { name: '\n',                    value: '\n' },
-                { name: 'Food Gifted',           value: userProfile.foodGiven.toString(),            inline: true },
-                { name: 'Food Received',         value: userProfile.foodReceived.toString(),         inline: true },
+                { name: '__Pie Count__',             value: userProfile.pieCount.toString(),             inline: true },
+                { name: '__Muffin Count__',          value: userProfile.muffinCount.toString(),          inline: true },
+                { name: '__Potato Count__',          value: userProfile.potatoCount.toString(),          inline: true },
+                { name: '__Ice Cream Count__',       value: userProfile.iceCreamCount.toString(),        inline: true },
+                { name: '__Pizza Count__',           value: userProfile.pizzaCount.toString(),           inline: true },
+                { name: '__Pasta Count__',           value: userProfile.pastaCount.toString(),           inline: true },
+                { name: '__Cake Count__',            value: userProfile.cakeCount.toString(),            inline: true },
+                { name: '__Chocolate Count__',       value: userProfile.chocolateCount.toString(),       inline: true },
+                { name: '__Sandwich Count__',        value: userProfile.sandwichCount.toString(),        inline: true },
+                { name: '__Brownie Count__',         value: userProfile.brownieCount.toString(),         inline: true },
+                { name: '__Fish Fillet Count__',     value: userProfile.fishCount.toString(),            inline: true },
+                { name: '__Trash Count__',           value: userProfile.trashCount.toString(),           inline: true },
+                { name: '__Total Count__',           value: total.toString(),                            inline: true },
+                { name: '__Total (without gifts)__', value: (total-userProfile.foodReceived).toString(), inline: true },
+                { name: '\n',                        value: '\n' },
+                { name: '__Food Gifted__',           value: userProfile.foodGiven.toString(),            inline: true },
+                { name: '__Food Received__',         value: userProfile.foodReceived.toString(),         inline: true },
+                { name: '\n',                        value: '\n' },
+                { name: '__Ok Count__',              value: userProfile.okCount.toString(),              inline: true },
 
             ])
             .setTimestamp()

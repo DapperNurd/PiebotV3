@@ -3,6 +3,7 @@ const User = require('../../../schemas/user');
 const Guild = require('../../../schemas/guild');
 const GlobalCount = require('../../../schemas/globalCount');
 const schemaBuildingFunctions = require('../../../schemaBuilding.js');
+const extraFunctions = require('../../../extraFunctions.js');
 
 const common = ["ham and cheese sandwich", "grilled cheese sandwich", "BLT sandwich", "roast beef sandwich", "turkey sandwich", "peanut butter and jelly sandwich", "bologna sandwich"
 ];
@@ -51,37 +52,16 @@ module.exports = {
         if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
 
         let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
-        if(!globalProfile) { // Should hopefully never happen
-            console.log(chalk.red("[Bot Status]: Error finding global database!"));
-            return await interaction.reply({ // We do not build a new global profile because there is only ever one.
-                content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`,
-                ephemeral: true
-            });
+        if(!globalProfile) { // Should hopefully never happen... We do not build a new global profile because there is only ever one. Instead we error and intentionally stop.
+            await interaction.reply({ content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`, ephemeral: true });
+            return console.error(chalk.red("[Bot Status]: Error finding global database!"));
         }
 
-        // Given / Receiving Handling
-        if(interaction.options.getUser("user") && interaction.options.getUser("user") != interaction.user) { // ONLY RUNS if a food item is being given to another user
-            let giverProfile = await User.findOne({ userID: interaction.user.id }); // Searches database for a userProfile with a matching userID to id
-            if(!giverProfile) giverProfile = await schemaBuildingFunctions.generateNewUser(interaction.user.id, interaction.user.username); // If no userProfile is found, generate a new one
-
-            // User adjustments
-            const giverCount = giverProfile.foodGiven + 1; // Gets foodGiven count from the giver (command user) and adds one
-            const receiverCount = userProfile.foodReceived + 1; // Gets foodReceived count from the receiver (person mentioned) and adds one
-
-            await giverProfile.updateOne({ foodGiven: giverCount }); // Updates the givers (command user) foodGiven count
-            await userProfile.updateOne({ foodReceived: receiverCount }); // Updates the receivers (person mentioned) foodReceived count
-
-            // Server and Global adjustments
-            const serverGiven = guildProfile.foodGiven + 1; // Gets foodGiven count from the server and adds one
-            const serverReceived = guildProfile.foodReceived + 1; // Gets foodReceived count from the server and adds one
-            const globalGiven = globalProfile.foodGiven + 1; // Gets global foodGiven count and adds one
-            const globalReceived = globalProfile.foodReceived + 1; // Gets global foodReceived count and adds one
-
-            await guildProfile.updateOne({ foodGiven: serverGiven }); // Updates the givers (command user) foodGiven count
-            await guildProfile.updateOne({ foodReceived: serverReceived }); // Updates the receivers (person mentioned) foodReceived count
-            await globalProfile.updateOne({ foodGiven: globalGiven }); // Updates the givers (command user) foodGiven count
-            await globalProfile.updateOne({ foodReceived: globalReceived }); // Updates the receivers (person mentioned) foodReceived count
-        }
+        // Username updating within the database (to new system)
+        if(userProfile.userName != interaction.user.username) await userProfile.updateOne({ userName: interaction.user.username }); // Checks if the username within the database is not the current username of the user
+        
+        // Given / Receiving Handling... only if a food item is being given to a differnet user
+        if(interaction.options.getUser("user") && interaction.options.getUser("user") != interaction.user) await extraFunctions.giveAndReceive(interaction.user, userProfile, guildProfile, globalProfile);
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id

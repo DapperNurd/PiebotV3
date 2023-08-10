@@ -44,8 +44,6 @@ setInterval(async () => {
                 content: `Reminding you about "${reminder.reminder}"`
             }).catch(err => {return;});
 
-            console.log(chalk.hex("#ae34eb")(`[Bot Reminders]: Reminded ${user.username}`));
-
             await Reminder.deleteMany({ // Deletes the completed reminder
                 _id: reminder._id,
                 userID: reminder.userID,

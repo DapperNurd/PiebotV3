@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, userMention } = require('discord.js');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 module.exports = {
@@ -12,14 +12,6 @@ module.exports = {
                   .setMaxLength(50)
         ),
     async execute(interaction, client) {
-
-        // No input scenario handling
-        if(!interaction.options.getString("prompt")) { // If there is no question asked (an empty command)
-            return await interaction.reply({
-                content: "What do you want to see??",
-                ephemeral: true
-            });
-        }
 
         // GIF Fetching handling
         var finalMsg = "";
@@ -36,7 +28,7 @@ module.exports = {
 
         // Sends the context message
         await interaction.reply({
-            content: `getting you "${interaction.options.getString("prompt")}"... ${finalMsg}`
+            content: `Getting ${userMention(interaction.user.id)} "***${interaction.options.getString("prompt")}***"... ${finalMsg}`
         });
     }
 }

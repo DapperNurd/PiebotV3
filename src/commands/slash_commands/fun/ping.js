@@ -13,7 +13,7 @@ module.exports = {
         });
 
         // Building the message to send
-        const newMessage = `*Pong!*\nAPI Latency: **${client.ws.ping}ms**\nClient Ping: **${message.createdTimestamp - interaction.createdTimestamp}ms**`
+        const newMessage = `*Pong!*\n\`API Latency: ${client.ws.ping}ms\`\n\`Client Ping: ${message.createdTimestamp - interaction.createdTimestamp}ms\``
 
         // Sending the message by editing the deferred
         await interaction.editReply({

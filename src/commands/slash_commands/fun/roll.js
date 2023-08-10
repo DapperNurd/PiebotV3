@@ -3,80 +3,66 @@ const { SlashCommandBuilder, userMention } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('roll')
-        .setDescription('Roll a dice!')
-        .addStringOption(option =>
-            option.setName('maximum')
-                  .setDescription('The highest possible number to roll (Enter "next" to use the previously rolled number).')
-                  .setRequired(true)
+        .setDescription('Roll a die!')
+        .addSubcommand(command => command
+            .setName('die')
+            .setDescription('Roll a custom die!')
+            .addIntegerOption(option =>
+                option.setName('maximum')
+                      .setDescription('The highest possible number to roll.')
+                      .setMinValue(1)
+                      .setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option.setName('minimum')
+                      .setDescription('The lowest possible number to roll. Default is 1.')
+                      .setMinValue(1)
+            ),
         )
-        .addIntegerOption(option =>
-            option.setName('minimum')
-                  .setDescription('The lowest possible number to roll. Default is 1.')
-                  .setMinValue(1)
+        .addSubcommand(command => command
+            .setName('next')
+            .setDescription('Roll directly from the previously rolled number!')
         ),
     async execute(interaction, client) {
 
         // Extra misc variables
         const user = userMention(interaction.user.id); // Converts user id into a mention for the string
 
-        // Initializes the min and max variables
-        const min = interaction.options.getInteger("minimum") ?? 1; // The same as min = interaction.options.getInteger("minimum") ? interaction.options.getInteger("minimum") : 1
-        var max = Number(interaction.options.getString("maximum"));
-
-            // So basically this command could have been a lot cleaner if I had just used an integer instead of a string for max,
-            // but there were a few reasons I did it with string:
-            // - Allows me to be able to have "next" as an option for it without it being super janky with parameter fields
-            // - Allows me to have a maximum greater than like 100000000 or whatever it was, with it going all the way to Infinity now like before
+        // Max and min variable declaration
+        var max, min;
 
         // Roll input handling (whether "next" is entered, or a number, or otherwise to error)
-        if(isNaN(max)) {
-            // Roll Next handling
-            if(interaction.options.getString("maximum").toLowerCase() == 'next') {
-                const messages = await interaction.channel.messages.fetch({ limit: 50 }); // gets a collection of messages from the channel, with length of limit
+        if(interaction.options.getSubcommand() == "next") {
+            const messages = await interaction.channel.messages.fetch({ limit: 50 }); // gets a collection of messages from the channel, with length of limit
 
-                messages.sweep(msg => !msg.interaction); // Removes content that meets the condition from the collection, so in our case removes all non slash commands
+            messages.sweep(msg => !msg.interaction); // Removes content that meets the condition from the collection, so in our case removes all non slash commands
 
-                const lastRollMsg = messages.find(msg => msg.interaction.commandName === 'roll'); // finds the most recent roll command usage
+            const lastRollMsg = messages.find(msg => msg.interaction.commandName == 'roll die' || msg.interaction.commandName == "roll next"); // Finds the most recent roll command usage
 
-                if(!lastRollMsg) { // Checks if there was a roll command used in the last X messages (limit above for count)
-                    return await interaction.reply({
-                        content: "No previous roll found :(",
-                        ephemeral: true
-                    });
-                }
+            if(!lastRollMsg) return await interaction.reply({ content: "No previous roll found :(", ephemeral: true }); // Checks if there was a roll command used in the last X messages (limit above for count)
 
-                const msg = lastRollMsg.content.split(" "); // Splits string into array of strings separated by a space
-                max = Number(msg[msg.length - 4]); // Gets the fourth to last word in the string (well, 4th to last element in the array, now)
-            }
-            else { // Maximum entered is not a number, and is not a specific case (such as "next")
-                return await interaction.reply({
-                    content: "Maximum not recognized...",
-                    ephemeral: true
-                });
-            }
+            const msg = lastRollMsg.content.split(" "); // Splits string into array of strings separated by a space
+
+            console.log(msg);
+
+            max = Number(msg[3]); // Gets the third word in the string (which is the number previously rolled) and converts it to a Number
+            min = 1;
         }
         else {
-            if(max < 1) { // Errors if maximum entered is less than one
-                return await interaction.reply({
-                    content: "Maximum should be equal to or greater than 1.",
-                    ephemeral: true
-                });
-            }
-            else if(min > max) { // Errors if maximum entered is less than minimum entered
-                return await interaction.reply({
-                    content: "Maximum should be higher than min...",
-                    ephemeral: true
-                });
-            }
+            // Initializes the min and max variables
+            min = interaction.options.getInteger("minimum") ?? 1; // The same as min = interaction.options.getInteger("minimum") ? interaction.options.getInteger("minimum") : 1... Sets to 1 by default (if no inputted minimum)
+            max = interaction.options.getInteger("maximum");
+
+            if(min > max) return await interaction.reply({ content: "Maximum should be higher than minimum...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
         }
 
         // Calculation for roll command
         const rolledNum = Math.floor(Math.random() * ((max+1) - min) + min);
 
         // Building final message
-        var msg = (min == 1) // Changes message based on whether there is a minimum or not (to clarify for death rolls)
+        const msg = (min == 1) // Changes message based on whether there is a minimum or not (to clarify for death rolls)
             ? `${user} rolled a ${rolledNum} out of ${max}!` 
-            : `${user} rolled a ${rolledNum} (${min} to ${max})!` // Formatted like this because it is a long line
+            : `${user} rolled a ${rolledNum} out of ${max} (and a minimum of ${min})!` // Formatted like this because it is a long line
 
         // Sending final message
         await interaction.reply({

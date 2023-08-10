@@ -16,7 +16,7 @@ module.exports = {
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
             .setColor('#FFFFFF')
-            .setAuthor({ name: "Piebot Help" })
+            .setAuthor({ name: `${client.user.username} Help` })
             .setThumbnail(client.user.displayAvatarURL())
             .setTitle("Commands")
             .setTimestamp()
@@ -38,6 +38,7 @@ module.exports = {
 
             if(folder == "Moderation") { // If command folder is the Moderation folder
                 if(interaction.user.id != author.id) continue; // Skips the displaying of the Moderation commands if command user is not the author of the bot
+                else statsEmbed.setDescription('This user can use Moderation commands*'); // Displays moderator status... This runs in the loop so it's technically not very efficient but the code looks cleaner.
                 folder = "*" + folder; // Adds an asterisk to the Moderation folder label
             }
 

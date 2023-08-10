@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRow
 const Reminder = require('../../../schemas/reminder');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
+const extraFunctions = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -49,7 +50,7 @@ module.exports = {
             const namePossesive = (interaction.user.displayName.endsWith('s')) ? interaction.user.displayName+ "'" : interaction.user.displayName + "'s" // Proper spelling for when a user's displayName ends with an s... (Kecatas' instead of Kecatas's)
 
             const remindersEmbed = new EmbedBuilder()
-                .setColor('#FFFFFF')
+                .setColor(extraFunctions.piebotColor)
                 .setAuthor({
                     iconURL: client.user.displayAvatarURL(),
                     name: `${client.user.displayName} Reminders`
@@ -103,7 +104,7 @@ module.exports = {
 
         // Embed building for confirmation message
         const embed = new EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(extraFunctions.piebotColor)
             .setTitle(`I will remind you "${reminder}" <t:${Math.floor(time/1000)}:R>`)
             .setDescription("***[NOTE]** Cancel Button only available for 10 minutes after reminder creation...*")
             .setAuthor({
@@ -117,7 +118,7 @@ module.exports = {
             });
 
         // Message in console for myself
-        console.log(chalk.hex("#ae34eb")(`[Bot Reminders]: ${interaction.user.username} made a reminder`));
+        console.log(chalk.hex("#ae34eb")(`[Bot Reminders]: ${interaction.user.username} made a reminder: "${reminder}"`));
 
         // Sending the confirmation message
         const confirmMsg = await interaction.reply({
