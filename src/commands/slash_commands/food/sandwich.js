@@ -109,7 +109,7 @@ module.exports = {
         }
 
         // Final message building
-        const finalMsg = `${phrase} There have been ${guildCount} pies given out on ${interaction.guild.name}.`
+        const finalMsg = `${phrase} There have been ${guildCount} sandwiches given out on ${interaction.guild.name}.`
             
         // Sends the final message
         await interaction.reply({
