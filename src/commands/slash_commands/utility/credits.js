@@ -27,7 +27,7 @@ module.exports = {
             });
         
         var users = "\0";
-        programmers.forEach((user) => { users += userMention(user) + "\n"; })
+        creator.forEach((user) => { users += userMention(user) + "\n"; })
         creditsEmbed.addFields([{ name: "Creator", value: creator }]);
 
         users = "\0";
