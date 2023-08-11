@@ -45,13 +45,13 @@ module.exports = {
             min = 1;
         }
         else { // roll die
-            if(isNaN(interaction.options.getString("maximum"))) return await interaction.reply({ content: "Maximum must be a number...", ephemeral: true });
-            if(interaction.options.getString("minimum")) {
-                if(isNaN(interaction.options.getString("minimum"))) return await interaction.reply({ content: "Minimum must be a number...", ephemeral: true });
-                min = Number(interaction.options.getString("minimum"));
+            if(isNaN(interaction.options.getString("maximum"))) return await interaction.reply({ content: "Maximum must be a number...", ephemeral: true }); // Checks if the max is NaN
+            if(interaction.options.getString("minimum")) { // Checks if minimum input exists
+                if(isNaN(interaction.options.getString("minimum"))) return await interaction.reply({ content: "Minimum must be a number...", ephemeral: true }); // Checks if the min is NaN
+                min = Number(interaction.options.getString("minimum")); // If it IS a number, sets it to the input
             }
-            else min = 1;
-            max = Number(interaction.options.getString("maximum"));
+            else min = 1; // If minimum input does not exist, sets it to one
+            max = Number(interaction.options.getString("maximum")); // Sets max to the max input
 
             if(min < 1) return await interaction.reply({ content: "Minimum must be higher than 1...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
             if(max < 1) return await interaction.reply({ content: "Maximum must be higher than 1...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
