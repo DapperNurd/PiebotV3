@@ -43,8 +43,6 @@ module.exports = {
 
             const msg = lastRollMsg.content.split(" "); // Splits string into array of strings separated by a space
 
-            console.log(msg);
-
             max = Number(msg[3]); // Gets the third word in the string (which is the number previously rolled) and converts it to a Number
             min = 1;
         }
