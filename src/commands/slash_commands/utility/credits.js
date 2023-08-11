@@ -28,7 +28,7 @@ module.exports = {
         
         var users = "\0";
         creator.forEach((user) => { users += userMention(user) + "\n"; })
-        creditsEmbed.addFields([{ name: "Creator", value: creator }]);
+        creditsEmbed.addFields([{ name: "Creator", value: users }]);
 
         users = "\0";
         troubleshooters.forEach((user) => { users += userMention(user) + "\n"; })
