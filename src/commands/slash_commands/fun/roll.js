@@ -7,16 +7,14 @@ module.exports = {
         .addSubcommand(command => command
             .setName('die')
             .setDescription('Roll a custom die!')
-            .addIntegerOption(option =>
+            .addStringOption(option =>
                 option.setName('maximum')
                       .setDescription('The highest possible number to roll.')
-                      .setMinValue(1)
                       .setRequired(true)
             )
-            .addIntegerOption(option =>
+            .addStringOption(option =>
                 option.setName('minimum')
                       .setDescription('The lowest possible number to roll. Default is 1.')
-                      .setMinValue(1)
             ),
         )
         .addSubcommand(command => command
@@ -46,12 +44,18 @@ module.exports = {
             max = Number(msg[3]); // Gets the third word in the string (which is the number previously rolled) and converts it to a Number
             min = 1;
         }
-        else {
-            // Initializes the min and max variables
-            min = interaction.options.getInteger("minimum") ?? 1; // The same as min = interaction.options.getInteger("minimum") ? interaction.options.getInteger("minimum") : 1... Sets to 1 by default (if no inputted minimum)
-            max = interaction.options.getInteger("maximum");
+        else { // roll die
+            if(isNaN(interaction.options.getString("maximum"))) return await interaction.reply({ content: "Maximum must be a number...", ephemeral: true });
+            if(interaction.options.getString("minimum")) {
+                if(isNaN(interaction.options.getString("minimum"))) return await interaction.reply({ content: "Minimum must be a number...", ephemeral: true });
+                min = Number(interaction.options.getString("minimum"));
+            }
+            else min = 1;
+            max = Number(interaction.options.getString("maximum"));
 
-            if(min > max) return await interaction.reply({ content: "Maximum should be higher than minimum...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
+            if(min < 1) return await interaction.reply({ content: "Minimum must be higher than 1...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
+            if(max < 1) return await interaction.reply({ content: "Maximum must be higher than 1...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
+            if(min > max) return await interaction.reply({ content: "Maximum must be higher than minimum...", ephemeral: true }); // Errors if maximum entered is less than minimum entered
         }
 
         // Calculation for roll command
