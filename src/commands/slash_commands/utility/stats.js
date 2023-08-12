@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const User = require('../../../schemas/user');
-const schemaBuildingFunctions = require('../../../schemaBuilding.js');
-const extraFunctions = require('../../../extraFunctions.js');
+const { GenerateNewUser } = require('../../../schemaBuilding.js');
+const { piebotColor } = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ module.exports = {
 
         // Database handling
         let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
-        if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
+        if(!userProfile) userProfile = await GenerateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
 
         // Username updating within the database (to new system)
         if(userProfile.userName != interaction.user.username) await userProfile.updateOne({ userName: interaction.user.username }); // Checks if the username within the database is not the current username of the user
@@ -30,7 +30,7 @@ module.exports = {
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor(targetedUser.accentColor ?? extraFunctions.piebotColor)
+            .setColor(targetedUser.accentColor ?? piebotColor)
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.displayName} Stats`

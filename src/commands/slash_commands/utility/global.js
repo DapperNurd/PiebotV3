@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
 const GlobalCount = require('../../../schemas/globalCount');
 const chalk = require('chalk');
-const extraFunctions = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,7 +24,7 @@ module.exports = {
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor(extraFunctions.piebotColor)
+            .setColor(piebotColor)
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.username} Stats`

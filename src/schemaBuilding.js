@@ -13,7 +13,7 @@ const chalk = require('chalk');
  * @param {string} username Username of the user to generate a new document for
  * @returns 
  */
-async function generateNewUser(id, username) {
+async function GenerateNewUser(id, username) {
     let userProfile = await new User({ // Essentially a template for a user document in MongoDB Atlas
         _id: new mongoose.Types.ObjectId(),
         userID: id,
@@ -43,7 +43,7 @@ async function generateNewUser(id, username) {
     return userProfile;
 }
 
-async function generateNewGuild(id, name) {
+async function GenerateNewGuild(id, name) {
     let guildProfile = await new Guild({ // Essentially a template for a guild document in MongoDB Atlas
         _id: new mongoose.Types.ObjectId(),
         guildID: id,
@@ -74,6 +74,6 @@ async function generateNewGuild(id, name) {
 }
 
 module.exports = {
-    generateNewUser,
-    generateNewGuild,
+    GenerateNewUser,
+    GenerateNewGuild,
 }

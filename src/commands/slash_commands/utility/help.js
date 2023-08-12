@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const User = require('../../../schemas/user');
-const schemaBuildingFunctions = require('../../../schemaBuilding.js');
 const fs = require('fs');
+const { piebotColor } = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,7 +14,7 @@ module.exports = {
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(piebotColor)
             .setAuthor({ name: `${client.user.username} Help` })
             .setThumbnail(client.user.displayAvatarURL())
             .setTitle("Commands")

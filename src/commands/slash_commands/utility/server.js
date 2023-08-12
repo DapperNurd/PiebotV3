@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Guild = require('../../../schemas/guild');
-const schemaBuildingFunctions = require('../../../schemaBuilding.js');
-const extraFunctions = require('../../../extraFunctions.js');
+const { GenerateNewGuild } = require('../../../schemaBuilding.js');
+const { piebotColor } = require('../../../extraFunctions.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,14 +14,14 @@ module.exports = {
 
         // Database Handling
         let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches database for a guildProfile with a matching userID to id
-        if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
+        if(!guildProfile) guildProfile = await GenerateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
 
         // Total calculation
         const total = guildProfile.pieCount + guildProfile.muffinCount + guildProfile.potatoCount + guildProfile.iceCreamCount + guildProfile.pizzaCount + guildProfile.pastaCount + guildProfile.cakeCount + guildProfile.chocolateCount + guildProfile.sandwichCount + guildProfile.brownieCount + guildProfile.fishCount + guildProfile.trashCount;
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
-            .setColor(extraFunctions.piebotColor)
+            .setColor(piebotColor)
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.username} Stats`

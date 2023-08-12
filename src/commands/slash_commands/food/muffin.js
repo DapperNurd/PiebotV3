@@ -2,8 +2,8 @@ const { SlashCommandBuilder, userMention } = require('discord.js');
 const User = require('../../../schemas/user');
 const Guild = require('../../../schemas/guild');
 const GlobalCount = require('../../../schemas/globalCount');
-const schemaBuildingFunctions = require('../../../schemaBuilding.js');
-const extraFunctions = require('../../../extraFunctions.js');
+const { GenerateNewUser, GenerateNewGuild } = require('../../../schemaBuilding.js');
+const { GiveAndReceive } = require('../../../extraFunctions.js');
 
 const common = ["banana nut muffin", "blueberry muffin", "lemon poppy seed muffin", "coconut muffin", "oatmeal muffin", "raspberry muffin"
 ];
@@ -45,10 +45,10 @@ module.exports = {
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // This is a little confusing so I'm going to explain it out: if the command is run without a user added, so like just /food, then targetedUser (and therefore userProfile)
                                                                                       // belongs to the user of the command. If there IS a user added, so like /food @user, then targetedUser (and again, userProfile too) belong to the user mentioned.
         let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
-        if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
+        if(!userProfile) userProfile = await GenerateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
 
         let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches database for a guildProfile with a matching userID to id
-        if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
+        if(!guildProfile) guildProfile = await GenerateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
 
         let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
         if(!globalProfile) { // Should hopefully never happen... We do not build a new global profile because there is only ever one. Instead we error and intentionally stop.
@@ -60,7 +60,7 @@ module.exports = {
         if(userProfile.userName != interaction.user.username) await userProfile.updateOne({ userName: interaction.user.username }); // Checks if the username within the database is not the current username of the user
 
         // Given / Receiving Handling... only if a food item is being given to a differnet user
-        if(interaction.options.getUser("user") && interaction.options.getUser("user") != interaction.user) await extraFunctions.giveAndReceive(interaction.user, userProfile, guildProfile, globalProfile);
+        if(interaction.options.getUser("user") && interaction.options.getUser("user") != interaction.user) await GiveAndReceive(interaction.user, userProfile, guildProfile, globalProfile);
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const extraFunctions = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extraFunctions.js');
 
 const changes = ['**~** Slash commands! Commands are no longer based by text and now start with a /...',
 '**+** `/roll next` is now a feature for those who love playing Devil\'s Dice! It will automatically roll from the most recent roll.',
@@ -23,7 +23,7 @@ module.exports = {
 
         // Builds the embed message
         const creditsEmbed = new EmbedBuilder()
-            .setColor(extraFunctions.piebotColor)
+            .setColor(piebotColor)
             .setAuthor({ name: `${client.user.username} Changelog` })
             .setTimestamp()
             .setTitle("PiebotV3?...")

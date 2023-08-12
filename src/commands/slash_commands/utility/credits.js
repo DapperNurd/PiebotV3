@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const extraFunctions = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extraFunctions.js');
 
 const creator = ['189510396569190401'];
 const troubleshooters = ['307350352594862080', '223578917372428288']; // kec, trash
@@ -17,7 +17,7 @@ module.exports = {
 
         // Builds the embed message
         const creditsEmbed = new EmbedBuilder()
-            .setColor(extraFunctions.piebotColor)
+            .setColor(piebotColor)
             .setAuthor({ name: `${client.user.username} Credits` })
             .setThumbnail(client.user.displayAvatarURL())
             .setTimestamp()

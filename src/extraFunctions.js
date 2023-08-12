@@ -3,7 +3,7 @@ const User = require('./schemas/user.js');
 
 const piebotColor = '#be1a34';
 
-async function giveAndReceive(givingUser, receivingUserProfile, guildProfile, globalProfile) {
+async function GiveAndReceive(givingUser, receivingUserProfile, guildProfile, globalProfile) {
     let givingUserProfile = await User.findOne({ userID: givingUser.id }); // Searches database for a userProfile with a matching userID to id
     if(!givingUserProfile) givingUserProfile = await schemaBuildingFunctions.generateNewUser(givingUser.id, givingUser.username); // If no userProfile is found, generate a new one
 
@@ -27,6 +27,6 @@ async function giveAndReceive(givingUser, receivingUserProfile, guildProfile, gl
 }
 
 module.exports = {
-    giveAndReceive,
+    GiveAndReceive,
     piebotColor
 }

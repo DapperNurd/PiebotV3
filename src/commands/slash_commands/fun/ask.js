@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const extraFunctions = require('../../../extraFunctions.js');
 
 var yesOrNoResponses = ["Yep.", "Yes, definitely.", "Without a doubt.", "I believe so.", "Mhmm.",
     "I wouldn't count on it.", "I don't think so.", "No way.", "Nah.", "Doubting it."]
