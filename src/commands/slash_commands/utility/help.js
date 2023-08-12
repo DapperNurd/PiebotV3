@@ -30,6 +30,7 @@ module.exports = {
             const commandFiles = fs.readdirSync(`./src/commands/slash_commands/${folder}`).filter(file => file.endsWith('.js')); // Gets an array of strings of the files in the folder of folder
             for (var file of commandFiles) { // Goes through all files in the subfolder of folder
                 file = file.replace(".js", ""); // Removes the ".js" ending on the command names
+                if(file.endsWith("_CONTEXTMENU")) continue; // Skips displaying anything from the context menu (with the proper label)
                 names += `${file}    \n` // Adds the command name to the string of names
             }
 
