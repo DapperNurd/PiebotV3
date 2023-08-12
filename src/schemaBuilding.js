@@ -38,7 +38,7 @@ async function GenerateNewUser(id, username) {
 
     await userProfile.save().catch(console.error);
 
-    console.log(chalk.yellow(`Generated new user profile for user: ${username}`));
+    console.log(chalk.yellow(`[Database Status]: Generated new user profile for user: ${username}`));
 
     return userProfile;
 }
@@ -68,7 +68,7 @@ async function GenerateNewGuild(id, name) {
 
     await guildProfile.save().catch(console.error);
 
-    console.log(chalk.yellow(`Generated new guild profile for server: ${name}`));
+    console.log(chalk.yellow(`[Database Status]: Generated new guild profile for server: ${name}`));
 
     return guildProfile;
 }
