@@ -29,8 +29,8 @@ module.exports = {
                 let userProfile = await User.findOne({ userID: message.author.id }); // Searches database for a userProfile with a matching userID to id
                 if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(message.author.id, message.author.displayName); // If no userProfile is found, generate a new one
 
-                let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches database for a guildProfile with a matching userID to id
-                if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
+                let guildProfile = await Guild.findOne({ guildID: message.guild.id }); // Searches database for a guildProfile with a matching userID to id
+                if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(message.guild.id, message.guild.name); // If no guildProfile is found, generate a new one
 
                 let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
                 if(!globalProfile) { // Should hopefully never happen... We do not build a new global profile because there is only ever one. Instead we error and intentionally stop.
