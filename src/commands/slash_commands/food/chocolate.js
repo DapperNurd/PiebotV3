@@ -97,7 +97,6 @@ module.exports = {
         phrase = phrase.replace('[USER]', userByMention); ///
         phrase = phrase.replace('[ADJ]', adj);             // Replaces placeholders in the phrase with the proper terms
         phrase = phrase.replace('[FOOD]', food); ////////////
-
         phrase = phrase.replace('[PLURAL]', singularItems.includes(food) ? "[A]" : "some");
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)

@@ -95,6 +95,7 @@ module.exports = {
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
+        // Crust calculation and assigning
         const crust = ( (food != "chicago-style deep dish pizza" && food != "breakfast pizza" && food != "chocolate chip cookie pizza" && food != "hotpocket™️")   &&   Math.floor(Math.random() * (100 - 1) + 1) < 15 )
             ? crustType = crusts[Math.floor(Math.random() * crusts.length)] + " "
             : ""; // Crust handling... I know it is super ugly...

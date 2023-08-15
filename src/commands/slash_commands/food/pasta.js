@@ -35,7 +35,7 @@ module.exports = {
     legendary,
     data: new SlashCommandBuilder()
         .setName('pasta')
-        .setDescription('Get a random pasta!')
+        .setDescription('Get a random pasta dish!')
         .addUserOption(option =>
             option.setName('user')
                   .setDescription('Give this user some pasta!')

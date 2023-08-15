@@ -1,9 +1,20 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
 const { piebotColor } = require('../../../extraFunctions.js');
 
-const creator = ['189510396569190401'];
-const troubleshooters = ['307350352594862080', '223578917372428288']; // kec, trash
-const writers = ['223578917372428288', '676978890068983818', '910534977173721171', '400539189495726101', '117120898992963591']; // trash, beeble, violet, destro, trauma
+const creators = [
+    '189510396569190401', // nurd
+];
+const troubleshooters = [
+    '307350352594862080', // kec
+    '223578917372428288', // trash
+];
+const writers = [
+    '223578917372428288', // trash
+    '676978890068983818', // beeble
+    '910534977173721171', // violet
+    '400539189495726101', // destro
+    '117120898992963591', // trauma
+];
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,7 +38,7 @@ module.exports = {
             });
         
         var users = "\0";
-        creator.forEach((user) => { users += userMention(user) + "\n"; })
+        creators.forEach((user) => { users += userMention(user) + "\n"; })
         creditsEmbed.addFields([{ name: "Creator", value: users }]);
 
         users = "\0";

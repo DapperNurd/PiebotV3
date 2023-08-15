@@ -34,10 +34,10 @@ module.exports = {
     legendary,
     data: new SlashCommandBuilder()
         .setName('icecream')
-        .setDescription('Get a random icecream!')
+        .setDescription('Get some random ice cream!')
         .addUserOption(option =>
             option.setName('user')
-                  .setDescription('Give this user some icecream!')
+                  .setDescription('Give this user some ice cream!')
         ),
     async execute(interaction, client) {
 
@@ -91,7 +91,6 @@ module.exports = {
         
         // Phrase formatting
         var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
         if(food == "pɹɐzzᴉlq uǝǝnb ʎɹᴉɐp" && (Math.floor(Math.random() * (100 - 1) + 1)) > 50) phrase = `Oh no [USER]! I dropped your melted dairy queen blizzard!`; // 50% chance on legendary food for it to be a custom message
 
         phrase = phrase.replace('[USER]', userByMention); ///
