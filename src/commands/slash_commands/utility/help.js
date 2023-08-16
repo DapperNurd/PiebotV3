@@ -11,6 +11,7 @@ module.exports = {
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+        var modCommands = "\0";
 
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
@@ -38,13 +39,23 @@ module.exports = {
 
             if(folder == "Moderation") { // If command folder is the Moderation folder
                 if(interaction.user.id != author.id) continue; // Skips the displaying of the Moderation commands if command user is not the author of the bot
-                else statsEmbed.setDescription('This user can use Moderation commands*'); // Displays moderator status... This runs in the loop so it's technically not very efficient but the code looks cleaner.
-                folder = "*" + folder; // Adds an asterisk to the Moderation folder label
+                modCommands = names;
+                continue;
             }
 
             statsEmbed.addFields({ // Adds a field with Folder name as the header and a list of commands (the string) as the value
                 name: `__${folder}__`,
                 value: names,
+                inline: true
+            });
+        }
+
+        // Adds the mod commands last, if the field is not empty... this is just so it is the last folder in the embed and keeps it cleaner.
+        if(modCommands != "\0") {
+            statsEmbed.setDescription('This user can use Moderation commands*');
+            statsEmbed.addFields({ // Adds a field with Folder name as the header and a list of commands (the string) as the value
+                name: `__Moderation*__`,
+                value: modCommands,
                 inline: true
             });
         }
