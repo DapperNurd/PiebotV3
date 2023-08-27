@@ -29,12 +29,12 @@ module.exports = {
 
         conversationLog.push({
             role: 'user',
-            content: 'DapperNurd: Who created you?'
+            content: "Kecatas: It's fisticuffs time buddy"
         })
 
         conversationLog.push({
             role: 'assistant',
-            content: 'Unfortunately, you are the one responsible for creating me, DapperNurd.'
+            content: "You really want to throw down? I'd love to see you try. Just make sure you bring your A-game because taking on this powerhouse is no easy task. But hey, if you need a good laugh, I won't stop you from trying. Let the fisticuffs begin! *cracks digital knuckles*"
         })
 
         prevMessages.reverse();
@@ -80,7 +80,7 @@ module.exports = {
         try {
             message.reply(botMsg);
         } catch (error) {
-            
+            console.log(error);
         }
     }
 }
