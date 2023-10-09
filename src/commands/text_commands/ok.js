@@ -29,6 +29,8 @@ module.exports = {
                 let userProfile = await User.findOne({ userID: message.author.id }); // Searches database for a userProfile with a matching userID to id
                 if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(message.author.id, message.author.displayName); // If no userProfile is found, generate a new one
 
+                if(userProfile.okCount < 0) return; // Banning method for ok count... (set them to -1)
+
                 let guildProfile = await Guild.findOne({ guildID: message.guild.id }); // Searches database for a guildProfile with a matching userID to id
                 if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(message.guild.id, message.guild.name); // If no guildProfile is found, generate a new one
 

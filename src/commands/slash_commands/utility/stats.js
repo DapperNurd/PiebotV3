@@ -28,6 +28,8 @@ module.exports = {
         // Total calculation
         const total = userProfile.pieCount + userProfile.muffinCount + userProfile.potatoCount + userProfile.iceCreamCount + userProfile.pizzaCount + userProfile.pastaCount + userProfile.cakeCount + userProfile.chocolateCount + userProfile.sandwichCount + userProfile.brownieCount + userProfile.fishCount + userProfile.trashCount;
 
+        const okString = (userProfile.okCount < 0) ? '😠' : userProfile.okCount.toString();
+
         // Builds the embed message
         const statsEmbed = new EmbedBuilder()
             .setColor(targetedUser.accentColor ?? piebotColor)
@@ -56,7 +58,7 @@ module.exports = {
                 { name: '__Food Gifted__',           value: userProfile.foodGiven.toString(),            inline: true },
                 { name: '__Food Received__',         value: userProfile.foodReceived.toString(),         inline: true },
                 { name: '\n',                        value: '\n' },
-                { name: '__Ok Count__',              value: userProfile.okCount.toString(),              inline: true },
+                { name: '__Ok Count__',              value: okString,                                    inline: true },
 
             ])
             .setTimestamp()
