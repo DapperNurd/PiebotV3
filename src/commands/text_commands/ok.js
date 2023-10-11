@@ -8,6 +8,9 @@ module.exports = {
     name: 'ok',
     description: 'Code for when someone says "ok"',
     async run(message, client) {
+
+        if(message.author.id == '223578917372428288') return; // Skip if it is Trash
+
         var random = Math.floor(Math.random() * (17 - 7)) + 7; // it's weird but basically this makes it so piebot will send a message after a random number of messages that aren't piebot
                                                                    // from 7 to 17, though I'm not sure how much the 17 max actually affects it
         const messages = await message.channel.messages.fetch({ limit: random });
