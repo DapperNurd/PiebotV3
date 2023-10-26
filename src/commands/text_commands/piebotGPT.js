@@ -53,9 +53,9 @@ module.exports = {
             model: 'gpt-3.5-turbo',
             messages: conversationLog,
             max_tokens: 3036,
-            temperature: 0.6,
-            frequency_penalty: 1,
-            presence_penalty: 0.7
+            temperature: 0.8,
+            frequency_penalty: 1.3,
+            presence_penalty: 0.5
         }).catch((err) => {
             console.log("Error generating OpenAI Chat Completion... (" + err + ")");
         });
