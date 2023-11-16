@@ -30,6 +30,7 @@ module.exports = {
         prevMessages.reverse();
         prevMessages.forEach((msg) => {
             if(msg.content.startsWith(".")) return; // Do nothing if it doesn't use the prefix
+            if(msg.content.startsWith("❌")) return;
             if(msg.content == "sorry, but I couldn't think of what to say...") return; // Skips previous errored messages
             if(msg.author.id == client.user.id) {
                 conversationLog.push({
@@ -47,7 +48,7 @@ module.exports = {
             }
         })
 
-        //console.log(conversationLog);
+        console.log(conversationLog);
 
         const result = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',

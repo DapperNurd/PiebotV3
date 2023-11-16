@@ -5,10 +5,8 @@ const changes = ['**~** Slash commands! Commands are no longer based by text and
 '**+** `/roll next` is now a feature for those who love playing Devil\'s Dice! It will automatically roll from the most recent roll.',
 '**+** Use `/poll` to create a poll! Anyone can vote anonymously on a selection of choices picked by the poll creator!',
 '**+** Individuals can now set private reminders with `/reminder set`! Piebot will personally remind you when the time is up.',
-'**+** Phrases for every item! Before only a few of the food commands had unique phrases, and now all food commands do. Thanks to everyone who helped with that.',
-'**+** More stats are tracked, like gifting and receiving food!',
-'**+** New profile picture for Piebot (Yes, it is very subtle <:nurdThonk:983576552488984586>)',
-'**~** Completely rewritten code with updated packages... should hopefully crash less 😅'
+'**+** Sentience! <:nurdThonk:983576552488984586>',
+'**+** /clear_buffer command... technical nurdy command for resetting the "sentience"'
 ];
 
 module.exports = {
