@@ -69,7 +69,7 @@ module.exports = {
             else {
                 reminders.forEach(async reminder => { // Goes through each document, as reminder
                     remindersEmbed.addFields([
-                        { name: reminder.reminder, value: `<t:${Math.floor(reminder.time/1000)}:R>` }
+                        { name: reminder.reminder, value: `<t:${Math.floor(reminder.time/1000)}:F> (<t:${Math.floor(reminder.time/1000)}:R>)` }
                     ])
                 })
             }
@@ -105,7 +105,7 @@ module.exports = {
         // Embed building for confirmation message
         const embed = new EmbedBuilder()
             .setColor(piebotColor)
-            .setTitle(`I will remind you "${reminder}" <t:${Math.floor(time/1000)}:R>`)
+            .setTitle(`I will remind you "${reminder}" on <t:${Math.floor(time/1000)}:F> (<t:${Math.floor(time/1000)}:R>)`)
             .setDescription("***[NOTE]** Cancel Button only available for 10 minutes after reminder creation...*")
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
@@ -133,7 +133,7 @@ module.exports = {
             if(i.customId == 'x') { // On cancel button
 
                 const cancelEmbed = new EmbedBuilder() // Builds the new embed for the cancelled msg
-                    .setColor('#FFFFFF')
+                    .setColor(piebotColor)
                     .setDescription(`Successfully cancelled reminder "${reminder}"`)
                     .setAuthor({
                         iconURL: client.user.displayAvatarURL(),

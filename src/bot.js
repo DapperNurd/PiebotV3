@@ -28,7 +28,7 @@ client.handleEvents();
 client.handleCommands();
 client.login(token);
 (async () => {
-    await connect(databaseToken).catch(console.error);
+    await connect(databaseToken).catch(err => {console.log(err)});
 })();
 
 // Reminders Handling
@@ -37,11 +37,14 @@ setInterval(async () => {
     if(!reminders) return; // Does nothing if none found
     else {
         reminders.forEach(async reminder => { // Goes through each document, as reminder
+            let msg = `Reminding you about "${reminder.reminder}"`;
+
             if(reminder.time > Date.now()) return; // Does nothing if it is not time yet for the reminder
+            if(Date.now() - reminder.time > 3600) msg = `Reminding you about "${reminder.reminder}" (Reminder is late, sorry)` // Adds a late msg to the reminder if it is more than a minute late
 
             const user = await client.users.fetch(reminder.userID);
             user?.send({
-                content: `Reminding you about "${reminder.reminder}"`
+                content: msg
             }).catch(err => {return;});
 
             await Reminder.deleteMany({ // Deletes the completed reminder

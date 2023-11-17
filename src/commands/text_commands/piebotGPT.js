@@ -48,7 +48,7 @@ module.exports = {
             }
         })
 
-        console.log(conversationLog);
+        // console.log(conversationLog);
 
         const result = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
