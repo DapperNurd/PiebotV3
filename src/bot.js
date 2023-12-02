@@ -1,10 +1,12 @@
 require('dotenv').config();
 const { token, databaseToken } = process.env;
 const { connect } = require('mongoose');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const Reminder = require('./schemas/reminder');
+const TwitchClips = require('./schemas/twitchClips');
 const fs = require('fs');
 const chalk = require('chalk');
+const { piebotColor } = require('./extraFunctions.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 client.commands = new Collection();
@@ -53,6 +55,33 @@ setInterval(async () => {
                 userName: reminder.userName,
                 time: reminder.time,
                 reminder: reminder.reminder
+            });
+        })
+    }
+}, 5_000);
+
+// Reminders Handling
+setInterval(async () => {
+    const clips = await TwitchClips.find(); // Gets a list of all current documents in the TwitchClips collection
+    if(!clips) return; // Does nothing if none found
+    else {
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        clips.forEach(async clip => { // Goes through each document, as clip
+
+            client.channels.fetch('515395913624322053').then( (channel) => { // Fetches the "twitch-clips" channel on The Trauma Center
+                channel.send({
+                    content: `"${clip.clipURL}\n${clip.clipName}" by ${clip.clipCreator}` // Sends a message with the clip and some additional info, name and creator
+                });
+            });
+
+            await TwitchClips.deleteMany({ // Deletes the clip from the database
+                _id: clip._id,
+                clipID: clip.clipID,
+                clipName: clip.clipName,
+                clipURL: clip.clipURL,
+                clipCreator: clip.clipCreator,
+                clipThumbnail: clip.clipThumbnail
             });
         })
     }
