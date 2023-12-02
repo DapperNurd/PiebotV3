@@ -42,7 +42,7 @@ module.exports = {
             option.setName('length')
                   .setDescription('The length of time, in minutes, for the poll to last. Default is 30 minutes.')
                   .setMinValue(1)
-                  .setMaxValue(120)
+                  .setMaxValue(60*12)
         ),
     async execute(interaction, client) {
 
