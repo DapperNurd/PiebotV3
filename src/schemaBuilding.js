@@ -33,7 +33,10 @@ async function GenerateNewUser(id, username) {
         brownieCount: 0,
         foodGiven: 0,
         foodReceived: 0,
-        okCount: 0
+        okCount: 0,
+        triviaScore: 0,
+        triviaCorrect: 0,
+        triviaPlayed: 0
     });
 
     await userProfile.save().catch(console.error);
@@ -63,7 +66,8 @@ async function GenerateNewGuild(id, name) {
         brownieCount: 0,
         foodGiven: 0,
         foodReceived: 0,
-        okCount: 0
+        okCount: 0,
+        triviaCount: 0
     });
 
     await guildProfile.save().catch(console.error);

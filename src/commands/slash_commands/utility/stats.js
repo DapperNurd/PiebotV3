@@ -59,6 +59,7 @@ module.exports = {
                 { name: '__Food Received__',         value: userProfile.foodReceived.toString(),         inline: true },
                 { name: '\n',                        value: '\n' },
                 { name: '__Ok Count__',              value: okString,                                    inline: true },
+                { name: '__Trivia Score__',          value: userProfile.triviaScore.toString(),          inline: true },
 
             ])
             .setTimestamp()

@@ -19,7 +19,8 @@ const guildSchema = new Schema({
     brownieCount: Number,
     foodGiven: Number,
     foodReceived: Number,
-    okCount: Number
+    okCount: Number,
+    triviaCount: Number,
 });
 
 module.exports = model('Guild', guildSchema, 'guilds');

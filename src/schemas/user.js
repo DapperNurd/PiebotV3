@@ -19,7 +19,10 @@ const userSchema = new Schema({
     brownieCount: Number,
     foodGiven: Number,
     foodReceived: Number,
-    okCount: Number
+    okCount: Number,
+    triviaScore: Number,
+    triviaCorrect: Number,
+    triviaPlayed: Number,
 });
 
 module.exports = model('User', userSchema, 'users');
