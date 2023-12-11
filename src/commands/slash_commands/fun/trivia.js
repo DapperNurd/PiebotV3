@@ -64,7 +64,7 @@ module.exports = {
 
         var interacted = [];
 
-        const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 0.5 * 60_000 }); // Creating the collector for the buttons
+        const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 8 * 60_000 }); // Creating the collector for the buttons
 
         var guessed = false;
 
