@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
 const { piebotColor } = require('../../../extraFunctions.js');
 const User = require('../../../schemas/user');
 const Guild = require('../../../schemas/guild');
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -100,7 +100,7 @@ module.exports = {
                     ephemeral: true
                 });
                 triviaEmbed.addFields([
-                    { name: `${i.user.displayName} guessed correctly and won 2 points!`, value: '\n' }
+                    { name: '\n', value: `${userMention(i.user.id)} guessed correctly and won 2 points!` }
                 ])
                 await triviaPost.edit({
                     embeds: [triviaEmbed],
