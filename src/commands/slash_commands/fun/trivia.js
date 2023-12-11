@@ -2,13 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRow
 const { piebotColor } = require('../../../extraFunctions.js');
 const User = require('../../../schemas/user');
 const Guild = require('../../../schemas/guild');
-
-var yesOrNoResponses = ["Yep.", "Yes, definitely.", "Without a doubt.", "I believe so.", "Mhmm.",
-    "I wouldn't count on it.", "I don't think so.", "No way.", "Nah.", "Doubting it."]
-
-var middleResponses = ["Could you repeat that?", "I'm not sure...", "idk", "Can't answer right now.", "One more time?", "🤔"]
-
-var oddResponses = ["I'll let you know later.", "You know the answer to that already.", "Go bother someone else."]
+const fetch = require('node-fetch');
 
 module.exports = {
     data: new SlashCommandBuilder()
