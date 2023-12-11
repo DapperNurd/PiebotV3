@@ -100,7 +100,7 @@ module.exports = {
                     ephemeral: true
                 });
                 triviaEmbed.addFields([
-                    { name: '\n', value: `${userMention(i.user.id)} guessed correctly and won 2 points!` }
+                    { name: `The correct answer was: ${correctID}) ${trivia.correctAnswer}`, value: `${userMention(i.user.id)} guessed correctly and won ${scoreIncrement} points!` }
                 ])
                 await triviaPost.edit({
                     embeds: [triviaEmbed],
@@ -120,7 +120,7 @@ module.exports = {
             if(!guessed) {
                 triviaEmbed.addFields([
                     { name: '\n', value: '\n' },
-                    { name: `No one guessed... the correct answer was: ${correctID}) ${trivia.correctAnswer}`, value: '\n' }
+                    { name: '\n', value: `No one guessed... the correct answer was: ${correctID}) ${trivia.correctAnswer}` }
                 ])
                 await triviaPost.edit({
                     embeds: [triviaEmbed],
