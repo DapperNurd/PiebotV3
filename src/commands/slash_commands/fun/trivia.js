@@ -15,7 +15,7 @@ module.exports = {
         var useScore = true;
 
         if(interaction != null) {
-            if(!interaction.member.roles.cache.has('320264951597891586')) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true });
+            if(!interaction.member.roles.cache.has('320264951597891586')) return interaction.reply({ content:`You cannot use this command! Trivia starts automatically every 8 hours...`, ephemeral: true });
             useScore = false;
             await interaction.reply({
                 content: "Creating trivia...",
