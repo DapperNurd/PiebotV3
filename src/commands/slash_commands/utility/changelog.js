@@ -6,7 +6,6 @@ const changes = ['**~** Slash commands! Commands are no longer based by text and
 '**+** Use `/poll` to create a poll! Anyone can vote anonymously on a selection of choices picked by the poll creator!',
 '**+** Individuals can now set private reminders with `/reminder set`! Piebot will personally remind you when the time is up.',
 '**+** Sentience! <:nurdThonk:983576552488984586>',
-'**+** /clear_buffer command... technical nurdy command for resetting the "sentience"',
 '**+** Twitch integration? Using !clip on Traumz\'s twitch channel will now automatically make a clip and send it to discord!',
 '**+** Trivia! Was once on Twitch, now brought to discord. Every 8 hours, a trivia question will be posted. First to answer correctly wins!',
 ];
