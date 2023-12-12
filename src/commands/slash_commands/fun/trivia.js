@@ -7,13 +7,16 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('trivia')
-        .setDescription('Temporary trivia command!'),
+        .setDescription('[MODS ONLY] Manually run trivia, does not count score!'),
     async execute(interaction, client) {
 
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
+        var useScore = true;
+
         if(interaction != null) {
-            if(interaction.user != author) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true });
+            if(!interaction.member.roles.cache.has('320264951597891586')) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true });
+            useScore = false;
             await interaction.reply({
                 content: "Creating trivia...",
                 ephemeral: true
@@ -47,6 +50,12 @@ module.exports = {
             });
 
         var correctID = -1;
+
+        if(!useScore) {
+            triviaEmbed.addFields([
+                { name: '\n', value: `Trivia started manually by ${userMention(interaction.user.id)}` }
+            ])
+        }
         
         for(i = 0; i < answers.length; i++) {
             // var value = answers[i] == trivia.correctAnswer ? `CORRECT ANSWER: ${i+1})` : `${i+1})`
@@ -84,11 +93,13 @@ module.exports = {
             if(interacted.includes(i.user.id)) return await i.reply({ content:`You have already guessed!`, ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
             interacted.push(i.user.id); // Adds the guessing user to the interacted list
 
-            let userProfile = await User.findOne({ userID: i.user.id }); // Searches database for a userProfile with a matching userID to id
-            if(!userProfile) userProfile = await GenerateNewUser(i.user.id, i.user.username); // If no userProfile is found, generate a new one
+            if(useScore) {
+                let userProfile = await User.findOne({ userID: i.user.id }); // Searches database for a userProfile with a matching userID to id
+                if(!userProfile) userProfile = await GenerateNewUser(i.user.id, i.user.username); // If no userProfile is found, generate a new one
 
-            const userPlayed = userProfile.triviaPlayed + 1; //
-            await userProfile.updateOne({ triviaPlayed: userPlayed }); //
+                const userPlayed = userProfile.triviaPlayed + 1; //
+                await userProfile.updateOne({ triviaPlayed: userPlayed }); //
+            }
 
             if(answers[id-1] == trivia.correctAnswer) {
 
@@ -96,20 +107,24 @@ module.exports = {
                 if(trivia.difficulty == 'medium') scoreIncrement = 2;
                 if(trivia.difficulty == 'hard') scoreIncrement = 3;
 
-                // Food Counts fetching, updating, and saving
-                const userScore = userProfile.triviaScore + scoreIncrement; ////
-                const userCorrect = userProfile.triviaCorrect + 1; ////
+                if(useScore) {
+                    // Food Counts fetching, updating, and saving
+                    const userScore = userProfile.triviaScore + scoreIncrement; ////
+                    const userCorrect = userProfile.triviaCorrect + 1; ////
 
-                await userProfile.updateOne({ triviaScore: userScore }); ////
-                await userProfile.updateOne({ triviaCorrect: userCorrect }); ////
+                    await userProfile.updateOne({ triviaScore: userScore }); ////
+                    await userProfile.updateOne({ triviaCorrect: userCorrect }); ////
+                }
 
                 guessed = true;
                 await i.reply({ 
                     content: "Correct answer!",
                     ephemeral: true
                 });
+                msg = `${userMention(i.user.id)} guessed correctly`;
+                if(useScore) msg += ` and won ${scoreIncrement} points`
                 triviaEmbed.addFields([
-                    { name: `The correct answer was: ${correctID}) ${trivia.correctAnswer}`, value: `${userMention(i.user.id)} guessed correctly and won ${scoreIncrement} points!` }
+                    { name: `The correct answer was: ${correctID}) ${trivia.correctAnswer}`, value: `${msg}!` }
                 ])
                 await triviaPost.edit({
                     embeds: [triviaEmbed],
@@ -137,11 +152,13 @@ module.exports = {
                 }).catch(err => console.log('Error updating poll embed!'));
             }
 
-            let guildProfile = await Guild.findOne({ guildID: pies_of_exile.guild.id }); // Searches database for a guildProfile with a matching userID to id
-            if(!guildProfile) guildProfile = await GenerateNewGuild(i.guild.id, pies_of_exile.guild.name); // If no guildProfile is found, generate a new one
+            if(useScore) {
+                let guildProfile = await Guild.findOne({ guildID: pies_of_exile.guild.id }); // Searches database for a guildProfile with a matching userID to id
+                if(!guildProfile) guildProfile = await GenerateNewGuild(i.guild.id, pies_of_exile.guild.name); // If no guildProfile is found, generate a new one
 
-            const guildCount = guildProfile.triviaCount + 1; // Grabs the saved variables from the database and adds one to them
-            await guildProfile.updateOne({ triviaCount: guildCount }); // Updates the database variables with the new ones (added one)            
+                const guildCount = guildProfile.triviaCount + 1; // Grabs the saved variables from the database and adds one to them
+                await guildProfile.updateOne({ triviaCount: guildCount }); // Updates the database variables with the new ones (added one)            
+            }
         });
     }
 }
