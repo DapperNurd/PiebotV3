@@ -22,6 +22,11 @@ module.exports = {
         let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
         if(!userProfile) userProfile = await GenerateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
 
+        var triviaPlace = -1;
+        await User.find().sort({ triviaScore: -1 }).then((items) => { // Finding the index of the user in the database, sorted by triviaScore... new users go to the back
+            triviaPlace = items.findIndex((element) => element.userID == userProfile.userID);
+        }).catch((err) => { console.error(err); });
+
         // Username updating within the database (to new system)
         if(userProfile.userName != interaction.user.username) await userProfile.updateOne({ userName: interaction.user.username }); // Checks if the username within the database is not the current username of the user
 
@@ -59,7 +64,7 @@ module.exports = {
                 { name: '__Food Received__',         value: userProfile.foodReceived.toString(),         inline: true },
                 { name: '\n',                        value: '\n' },
                 { name: '__Ok Count__',              value: okString,                                    inline: true },
-                { name: '__Trivia Score__',          value: userProfile.triviaScore.toString(),          inline: true },
+                { name: '__Trivia Score__',          value: `${userProfile.triviaScore.toString()} (#${triviaPlace+1})`, inline: true },
 
             ])
             .setTimestamp()
