@@ -12,7 +12,13 @@ module.exports = {
 
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
-        if(interaction.user != author) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true });
+        if(interaction != null) {
+            if(interaction.user != author) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true });
+            await interaction.reply({
+                content: "Creating trivia...",
+                ephemeral: true
+            });
+        }
 
         var trivia = null;
 
@@ -57,14 +63,17 @@ module.exports = {
         const fourButton = new ButtonBuilder().setCustomId('4').setLabel('4').setStyle(ButtonStyle.Danger);
         const row = new ActionRowBuilder().addComponents(oneButton, twoButton, threeButton, fourButton);
 
-        var triviaPost = await interaction.reply({
+        const pies_of_exile = await client.channels.fetch('459566179615506442');
+        if(pies_of_exile == null) return console.log("[TRIVIA ERROR]: Could not find pies_of_exile!");
+
+        var triviaPost = await pies_of_exile.send({
             embeds: [triviaEmbed],
             components: [row]
         });
 
         var interacted = [];
 
-        const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 8 * 60_000 }); // Creating the collector for the buttons
+        const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); // Creating the collector for the buttons
 
         var guessed = false;
 
@@ -128,8 +137,8 @@ module.exports = {
                 }).catch(err => console.log('Error updating poll embed!'));
             }
 
-            let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches database for a guildProfile with a matching userID to id
-            if(!guildProfile) guildProfile = await GenerateNewGuild(i.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
+            let guildProfile = await Guild.findOne({ guildID: pies_of_exile.guild.id }); // Searches database for a guildProfile with a matching userID to id
+            if(!guildProfile) guildProfile = await GenerateNewGuild(i.guild.id, pies_of_exile.guild.name); // If no guildProfile is found, generate a new one
 
             const guildCount = guildProfile.triviaCount + 1; // Grabs the saved variables from the database and adds one to them
             await guildProfile.updateOne({ triviaCount: guildCount }); // Updates the database variables with the new ones (added one)            

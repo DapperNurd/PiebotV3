@@ -7,6 +7,7 @@ const TwitchClips = require('./schemas/twitchClips');
 const fs = require('fs');
 const chalk = require('chalk');
 const { piebotColor } = require('./extraFunctions.js');
+const schedule = require('node-schedule');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 client.commands = new Collection();
@@ -32,6 +33,22 @@ client.login(token);
 (async () => {
     await connect(databaseToken).catch(err => {console.log(err)});
 })();
+
+const job = schedule.scheduleJob('57 0-24/8 * * *', async function() { // '0 0-24/8 * * *' runs every 8 hours... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
+    const pies_of_exile = await client.channels.fetch('459566179615506442');
+    pies_of_exile.send({
+        content: "Trivia starting in 3 minutes!"
+    })
+    setInterval(async () => {
+        const contextCommand = client.commands.get("trivia");
+        if(!contextCommand) return;
+        try {
+            await contextCommand.execute(null, client);
+        } catch (err) {
+            console.error(err);
+        }
+    }, 3 * 60_000);
+});
 
 // Reminders Handling
 setInterval(async () => {
