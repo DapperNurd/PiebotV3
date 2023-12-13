@@ -8,40 +8,84 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('reminder')
         .setDescription('Set a reminder for yourself!')
-        .addSubcommand(command => command
+        .addSubcommandGroup(commandGroup => commandGroup
             .setName('set')
             .setDescription('Set a reminder!')
-            .addStringOption(option =>
-                option.setName('reminder')
-                    .setDescription('What do you want to be reminded of?')
-                    .setRequired(true)
+            .addSubcommand((command) => command
+                .setName('from-now')
+                .setDescription('Set the reminder to go off in a specified amount of time from now.')
+                .addStringOption(option =>
+                    option.setName('reminder')
+                        .setDescription('What do you want to be reminded of?')
+                        .setRequired(true)
+                )
+                .addIntegerOption(option =>
+                    option.setName('minutes')
+                        .setDescription('How many minutes from now?')
+                        .setRequired(true)
+                        .setMinValue(0)
+                        .setMaxValue(59)
+                )
+                .addIntegerOption(option =>
+                    option.setName('hours')
+                        .setDescription('How many hours from now?')
+                        .setMinValue(1)
+                        .setMaxValue(23)
+                )
+                .addIntegerOption(option =>
+                    option.setName('days')
+                        .setDescription('How many days from now?')
+                        .setMinValue(1)
+                        .setMaxValue(31)
+                )
             )
-            .addIntegerOption(option =>
-                option.setName('minutes')
-                    .setDescription('How many minutes from now?')
-                    .setRequired(true)
-                    .setMinValue(0)
-                    .setMaxValue(59)
-            )
-            .addIntegerOption(option =>
-                option.setName('hours')
-                    .setDescription('How many hours from now?')
-                    .setMinValue(1)
-                    .setMaxValue(23)
-            )
-            .addIntegerOption(option =>
-                option.setName('days')
-                    .setDescription('How many days from now?')
-                    .setMinValue(1)
-                    .setMaxValue(31)
-            )
+            // .addSubcommand((command) => command // new Date(year, monthIndex, day, hours, minutes)... THIS DOES NOT APPLY TO LOCAL TIME ZONES WITHOUT A LARGE FIX NEEDED
+            //     .setName('time-date')
+            //     .setDescription('Specify a date and time for the reminder.')
+            //     .addStringOption(option =>
+            //         option.setName('reminder')
+            //             .setDescription('What do you want to be reminded of?')
+            //             .setRequired(true)
+            //     )
+            //     .addIntegerOption(option =>
+            //         option.setName('year')
+            //             .setDescription('How many minutes from now?')
+            //             .setRequired(true)
+            //             .setMinValue(0)
+            //             .setMaxValue(59)
+            //     )
+            //     .addIntegerOption(option =>
+            //         option.setName('month')
+            //             .setDescription('How many hours from now?')
+            //             .setMinValue(1)
+            //             .setMaxValue(23)
+            //     )
+            //     .addIntegerOption(option =>
+            //         option.setName('day')
+            //             .setDescription('How many days from now?')
+            //             .setMinValue(1)
+            //             .setMaxValue(31)
+            //     )
+            //     .addIntegerOption(option =>
+            //         option.setName('hour')
+            //             .setDescription('How many hours from now?')
+            //             .setMinValue(1)
+            //             .setMaxValue(23)
+            //     )
+            //     .addIntegerOption(option =>
+            //         option.setName('minute')
+            //             .setDescription('How many days from now?')
+            //             .setMinValue(1)
+            //             .setMaxValue(31)
+            //     )
+            // )
         )
         .addSubcommand(command => command
             .setName('list')
             .setDescription('View current reminders!')
         ),
     async execute(interaction, client) {
-
+            
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
