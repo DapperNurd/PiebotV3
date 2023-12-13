@@ -34,7 +34,7 @@ client.login(token);
     await connect(databaseToken).catch(err => {console.log(err)});
 })();
 
-const job = schedule.scheduleJob('57 0-24/8 * * *', async function() { // '0 0-24/8 * * *' runs every 8 hours... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
+const job = schedule.scheduleJob('57 0 0/8 ? * * *', async function() { // '0 0-24/8 * * *' runs every 8 hours... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442');
     pies_of_exile.send({
         content: "Trivia starting in 3 minutes!"
