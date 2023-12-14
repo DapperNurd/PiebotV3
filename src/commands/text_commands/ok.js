@@ -2,7 +2,6 @@ const User = require('../../schemas/user');
 const Guild = require('../../schemas/guild');
 const GlobalCount = require('../../schemas/globalCount');
 const { GenerateNewUser, GenerateNewGuild } = require('../../../schemaBuilding.js');
-const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
 module.exports = {
     name: 'ok',
