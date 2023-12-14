@@ -1,7 +1,7 @@
 const User = require('../../schemas/user');
 const Guild = require('../../schemas/guild');
 const GlobalCount = require('../../schemas/globalCount');
-
+const { GenerateNewUser, GenerateNewGuild } = require('../../../schemaBuilding.js');
 const schemaBuildingFunctions = require('../../schemaBuilding.js');
 
 module.exports = {
@@ -30,12 +30,12 @@ module.exports = {
 
             if(message.channel.id == "459207634403196938") { // "ok" channel (id) in The Trauma Center
                 let userProfile = await User.findOne({ userID: message.author.id }); // Searches database for a userProfile with a matching userID to id
-                if(!userProfile) userProfile = await schemaBuildingFunctions.generateNewUser(message.author.id, message.author.displayName); // If no userProfile is found, generate a new one
+                if(!userProfile) userProfile = await GenerateNewUser(message.author.id, message.author.displayName); // If no userProfile is found, generate a new one
 
                 if(userProfile.okCount < 0) return; // Banning method for ok count... (set them to -1)
 
                 let guildProfile = await Guild.findOne({ guildID: message.guild.id }); // Searches database for a guildProfile with a matching userID to id
-                if(!guildProfile) guildProfile = await schemaBuildingFunctions.generateNewGuild(message.guild.id, message.guild.name); // If no guildProfile is found, generate a new one
+                if(!guildProfile) guildProfile = await GenerateNewGuild(message.guild.id, message.guild.name); // If no guildProfile is found, generate a new one
 
                 let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
                 if(!globalProfile) { // Should hopefully never happen... We do not build a new global profile because there is only ever one. Instead we error and intentionally stop.
