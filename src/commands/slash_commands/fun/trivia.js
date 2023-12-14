@@ -3,6 +3,7 @@ const { piebotColor } = require('../../../extraFunctions.js');
 const User = require('../../../schemas/user');
 const Guild = require('../../../schemas/guild');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
+const { GenerateNewUser, GenerateNewGuild } = require('../../../schemaBuilding.js');
 
 module.exports = {
     data: new SlashCommandBuilder()

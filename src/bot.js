@@ -31,7 +31,9 @@ client.handleEvents();
 client.handleCommands();
 client.login(token);
 (async () => {
-    await connect(databaseToken).catch(err => {console.log(err)});
+    await connect(databaseToken, {
+        serverSelectionTimeoutMS: 60_000 // default is 30_000
+      }).catch(err => {console.log(err)});
 })();
 
 // *      *    *    *    *    *
