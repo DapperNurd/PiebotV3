@@ -17,7 +17,7 @@ module.exports = {
                   .setRequired(true)
                   .setMaxLength(50)
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         // No input scenario handling
         if(!interaction.options.getString("question")) { // If there is no question asked (an empty command)

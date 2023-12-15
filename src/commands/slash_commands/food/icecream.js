@@ -39,7 +39,7 @@ module.exports = {
             option.setName('user')
                   .setDescription('Give this user some ice cream!')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         // Database handling
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // This is a little confusing so I'm going to explain it out: if the command is run without a user added, so like just /food, then targetedUser (and therefore userProfile)

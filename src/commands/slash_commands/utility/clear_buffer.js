@@ -3,7 +3,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('clear_buffer')
         .setDescription('Clears Piebot\'s previous messages from it\'s memory'),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         let prevMessages = await interaction.channel.messages.fetch({limit: 15});
 

@@ -36,6 +36,27 @@ client.login(token);
       }).catch(err => {console.log(err)});
 })();
 
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "192.168.4.30", // pi
+  user: "admin",
+  password: "Pw113445"
+});
+
+// var sql = "SELECT * FROM Discord.user where userID = '189510396569190401'" // result[0] != null
+// var sql = "INSERT INTO Discord.user (userID,userName,pieCount) VALUES ('307350352594862080','kecatas',0) ON DUPLICATE KEY UPDATE pieCount=pieCount+1;"
+// var sql = "DELETE FROM Discord.user WHERE userName = 'dappernurd'"
+
+// con.connect(function(err) {
+//     if (err) throw err;
+//     console.log("Connected!");
+//     con.query(sql, (err, result) => {
+//         if (err) return console.log(chalk.red("[MYSQL ERROR]: " + err));
+//         console.log(result[0] != null);
+//     });
+// });
+
 // *      *    *    *    *    *
 // ┬      ┬    ┬    ┬    ┬    ┬
 // │      │    │    │    │    │
@@ -46,7 +67,7 @@ client.login(token);
 // │      └──────────────────── minute (0 - 59)
 // └─────────────────────────── second (0 - 59, OPTIONAL)
 
-const job = schedule.scheduleJob('57 */8 * * *', async function() { // '57 */8 * * *' runs every 8 hours at 57 minutes... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
+const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
     pies_of_exile.send({
         content: "Trivia starting in 3 minutes!"
@@ -55,7 +76,7 @@ const job = schedule.scheduleJob('57 */8 * * *', async function() { // '57 */8 *
         const contextCommand = client.commands.get("trivia");
         if(!contextCommand) return;
         try {
-            await contextCommand.execute(null, client);
+            await contextCommand.execute(null, client, con);
         } catch (err) {
             console.error(err);
         }

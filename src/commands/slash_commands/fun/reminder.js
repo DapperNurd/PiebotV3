@@ -84,7 +84,7 @@ module.exports = {
             .setName('list')
             .setDescription('View current reminders!')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
             
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id

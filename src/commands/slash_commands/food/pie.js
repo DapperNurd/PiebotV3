@@ -41,7 +41,35 @@ module.exports = {
             option.setName('user')
                   .setDescription('Give this user a pie!')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
+
+        // var userCountTest, guildCountTest;
+
+        // (async () => {
+        //     con.connect();
+        //     const result = await getColour("username", 2);
+        //     console.log(result);
+        //     con.end();
+        // })();
+          
+        // function getColour(username, roomCount) {
+        //     return new Promise((resolve, reject) => {
+        //         con.query("SELECT hexcode FROM colours WHERE precedence = ?", (err, result) => {
+        //             return err ? reject(err) : resolve(result[0].hexcode);
+        //         });
+        //     });
+        // }
+
+        // await con.connect(async (err) => {
+        //     if (err) throw err;
+        //     con.query(`INSERT INTO Discord.user (userID,userName,pieCount) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE pieCount=pieCount+1;`, (err, result) => { if (err) return console.log(chalk.red("[MYSQL ERROR]: " + err)); }); // USER UPDATING
+        //     con.query(`INSERT INTO Discord.guild (guildID,guildName,pieCount) VALUES ('${interaction.guild.id}','${interaction.guild.name}',1) ON DUPLICATE KEY UPDATE pieCount=pieCount+1;`, (err, result) => { if (err) return console.log(chalk.red("[MYSQL ERROR]: " + err)); }); // GUILD UPDATING
+
+        //     await con.query(`SELECT * FROM Discord.user WHERE userID = '${interaction.user.id}'`, async (err, result) => { userCountTest = await result[0].pieCount; console.log(result[0].pieCount) } );
+        //     await con.query(`SELECT * FROM Discord.guild WHERE guildID = '${interaction.guild.id}'`, async (err, result) => { guildCountTest = await result[0].pieCount } );
+        // });
+
+        // console.log("user count: " + userCountTest + ", guild count: " + guildCountTest);
 
         // Database handling
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // This is a little confusing so I'm going to explain it out: if the command is run without a user added, so like just /food, then targetedUser (and therefore userProfile)

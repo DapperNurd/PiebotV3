@@ -14,7 +14,7 @@ module.exports = {
             option.setName('hidden')
                 .setDescription('Hide the command from others?')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         const hidden = interaction.options.getBoolean('hidden') ?? false;
 

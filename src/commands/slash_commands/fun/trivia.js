@@ -9,7 +9,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('trivia')
         .setDescription('[MODS ONLY] Manually run trivia, does not count score!'),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 

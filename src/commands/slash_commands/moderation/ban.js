@@ -27,7 +27,7 @@ module.exports = {
                     .setDescription('Hide the command from others?')
             )
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         // Viewing banned users
         if(interaction.options.getSubcommand() == "list") {

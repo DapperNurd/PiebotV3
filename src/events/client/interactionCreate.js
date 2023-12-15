@@ -1,17 +1,24 @@
 const BannedUser = require('../../schemas/bannedUsers')
 const chalk = require('chalk');
+var mysql = require('mysql');
 
 const banIgnore = ['help', 'menu', 'stats', 'server', 'global'];
 const adminCommands = ['ban', 'unban'];
 
 module.exports = {
     name: 'interactionCreate',
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
         if (interaction.isChatInputCommand()) {
             const { commands } = client;
             const { commandName } = interaction;
             const command = commands.get(commandName);
             if (!command) return;
+
+            var con = mysql.createConnection({
+                host: "192.168.4.30", // pi
+                user: "admin",
+                password: "Pw113445"
+            });
 
             const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
@@ -33,7 +40,7 @@ module.exports = {
                         ephemeral: true
                     });
                 }
-                await command.execute(interaction, client);
+                await command.execute(interaction, client, con);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({

@@ -11,7 +11,7 @@ module.exports = {
             option.setName('user')
                   .setDescription('User to display stats for')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, con) {
 
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
