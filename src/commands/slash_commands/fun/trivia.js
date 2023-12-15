@@ -94,10 +94,10 @@ module.exports = {
             if(interacted.includes(i.user.id)) return await i.reply({ content:`You have already guessed!`, ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
             interacted.push(i.user.id); // Adds the guessing user to the interacted list
 
-            if(useScore) {
-                let userProfile = await User.findOne({ userID: i.user.id }); // Searches database for a userProfile with a matching userID to id
-                if(!userProfile) userProfile = await GenerateNewUser(i.user.id, i.user.username); // If no userProfile is found, generate a new one
+            let userProfile = await User.findOne({ userID: i.user.id }); // Searches database for a userProfile with a matching userID to id
+            if(!userProfile) userProfile = await GenerateNewUser(i.user.id, i.user.username); // If no userProfile is found, generate a new one
 
+            if(useScore) {
                 const userPlayed = userProfile.triviaPlayed + 1; //
                 await userProfile.updateOne({ triviaPlayed: userPlayed }); //
             }
