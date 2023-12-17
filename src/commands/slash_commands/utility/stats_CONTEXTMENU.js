@@ -4,7 +4,7 @@ module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('Stats')
         .setType(ApplicationCommandType.User),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
         client.commands.get('stats').execute(interaction, client);
     }
 }

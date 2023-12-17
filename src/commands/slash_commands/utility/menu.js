@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, EmbedBuilder, ComponentType } = require('discord.js');
-const GlobalCount = require('../../../schemas/globalCount');
+const mysql = require('mysql2/promise');
 const pies = require('../food/pie');
 const muffins = require('../food/muffin');
 const potatoes = require('../food/potato');
@@ -34,21 +34,17 @@ module.exports = {
                     { name: 'Brownie', value: 'brownie' },
                 )
         ),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
         var menuCount = 0; // This is simply keeping track of how many individual menus there are, so I can accurately update the maximum selected values
 
         // Database handling
-        let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
-        if(!globalProfile) { // Should hopefully never happen
-            console.log(chalk.red("[Bot Status]: Error finding global database!"));
-            return await interaction.reply({ // We do not build a new global profile because there is only ever one.
-                content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`,
-                ephemeral: true
-            });
-        }
+        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+        let [rows, fields] = await con.execute('SELECT SUM(pieCount) AS pieCount, SUM(muffinCount) AS muffinCount, SUM(potatoCount) AS potatoCount, SUM(pizzaCount) AS pizzaCount, SUM(iceCreamCount) AS iceCreamCount, SUM(cakeCount) AS cakeCount, SUM(cookieCount) AS cookieCount, SUM(brownieCount) AS brownieCount, SUM(chocolateCount) AS chocolateCount, SUM(sandwichCount) AS sandwichCount, SUM(pastaCount) AS pastaCount, SUM(fishCount) AS fishCount, SUM(trashCount) AS trashCount FROM Discord.user;');
+        const globalProfile = rows[0];
+        con.end();
 
         // Embed building (this is rough lol)
         menuCount++;

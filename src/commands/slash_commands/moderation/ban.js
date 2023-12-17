@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const mongoose = require('mongoose');
-const BannedUser = require('../../../schemas/bannedUsers')
+const mysql = require('mysql2/promise');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,8 +25,13 @@ module.exports = {
                 option.setName('hidden')
                     .setDescription('Hide the command from others?')
             )
+            .addStringOption(option =>
+                option.setName('reason')
+                    .setDescription('Hide the command from others?')
+                    .setMaxLength(255)
+            )
         ),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Viewing banned users
         if(interaction.options.getSubcommand() == "list") {
@@ -52,18 +56,15 @@ module.exports = {
                 });
 
             // Database handling
-            const banned = await BannedUser.find();
-            if(!banned) { // For some reason this just doesnt work....
-                embed.setDescription(listString);
-            }
+            const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+            let [rows, fields] = await con.execute('SELECT * FROM Discord.banned_user');
+            con.end();
+
+            if(rows.length <= 0) embed.addFields([ { name: 'There are currently no banned users...', value: '\n' } ]) // If there are no user rows in the Discord.banned_user table
             else {
-                listString = "\0";
-                banned.forEach(async user => {
-                    listString += user.userTag + "\n";
-                });
-                embed.addFields([
-                    { name: 'Banned Users', value: listString }
-                ])
+                listString = "";
+                rows.forEach(async user => { listString += user.userName + "\n"; });
+                embed.addFields([ { name: 'Banned Users', value: listString } ]);
             }
 
             // Sending the final message
@@ -87,29 +88,24 @@ module.exports = {
             const bannedUser = interaction.options.getUser("user");
 
             // Database handling
-            let bannedUsersProfile = await BannedUser.findOne({ userID: bannedUser.id }); // Searches database for a userID matching the command user's id
+            const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+            let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = ${bannedUser.id}`);
 
-            // Banning handling
-            if(!bannedUsersProfile) { // If banned user is not already in the list
-                let bannedUsersProfile = await new BannedUser({ // Essentially a template for a guild document in MongoDB Atlas
-                    _id: new mongoose.Types.ObjectId(),
-                    userID: bannedUser.id,
-                    userTag: bannedUser.username
-                });
-            
-                await bannedUsersProfile.save().catch(console.error);
-
+            if(rows.length <= 0) {
+                con.execute(`INSERT INTO Discord.banned_user (userID, userName, reason) VALUES ('${bannedUser.id}', '${bannedUser.username}', '${interaction.options.getString('reason') ?? 'No reason given.'}')`);
                 return await interaction.reply({
                     content: "Successfully banned " + userMention(bannedUser.id),
                     ephemeral: hidden
                 });
-            }
-            else { // If banned user IS already in the list
-                return await interaction.reply({
+            } else {
+                await interaction.reply({
                     content: userMention(bannedUser.id) + " is already banned...",
                     ephemeral: hidden
                 });
             }
+
+            con.end();
+            return;
         }
     }
 }

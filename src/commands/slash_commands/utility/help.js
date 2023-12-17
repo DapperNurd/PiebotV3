@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('help')
         .setDescription('List of commands to use!'),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user

@@ -1,22 +1,20 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
 const { piebotColor } = require('../../../extraFunctions.js');
-const User = require('../../../schemas/user');
-const Guild = require('../../../schemas/guild');
+const mysql = require('mysql2/promise');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
-const { GenerateNewUser, GenerateNewGuild } = require('../../../schemaBuilding.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('trivia')
         .setDescription('[MODS ONLY] Manually run trivia, does not count score!'),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         var useScore = true;
 
         if(interaction != null) {
-            if(!interaction.member.roles.cache.has('320264951597891586')) return interaction.reply({ content:`You cannot use this command! Trivia starts automatically every 8 hours...`, ephemeral: true });
+            if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command! Trivia starts automatically every 8 hours...`, ephemeral: true });
             useScore = false;
             await interaction.reply({
                 content: "Creating trivia...",
@@ -59,12 +57,15 @@ module.exports = {
         }
         
         for(i = 0; i < answers.length; i++) {
-            // var value = answers[i] == trivia.correctAnswer ? `CORRECT ANSWER: ${i+1})` : `${i+1})`
+            // var value = answers[i] == trivia.correctAnswer ? `CORRECT ANSWER: ${i+1})` : `${i+1})` // Displays which one is the correct answer... useful for debugging
             triviaEmbed.addFields([
                 { name: `${i+1}) ${answers[i]}`, value: '\n' }
             ])
             if(answers[i] == trivia.correctAnswer) correctID = i+1;
         }
+
+        // Database handling
+        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
 
         // Button building
         const oneButton = new ButtonBuilder().setCustomId('1').setLabel('1').setStyle(ButtonStyle.Danger);
@@ -74,6 +75,7 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(oneButton, twoButton, threeButton, fourButton);
 
         const pies_of_exile = await client.channels.fetch('459566179615506442');
+        // const pies_of_exile = await client.channels.fetch('562136578265317388'); // #no FROM Nurds SERVER
         if(pies_of_exile == null) return console.log("[TRIVIA ERROR]: Could not find pies_of_exile!");
 
         var triviaPost = await pies_of_exile.send({
@@ -88,19 +90,13 @@ module.exports = {
         var guessed = false;
 
         collector.on('collect', async i => { // Collector on collect function
-            // if(interacted.includes(i.user.id) && i.customId != 'z' && i.customId != 'x') return await i.reply({ content:`You have already voted!`, ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
             const id = Number(i.customId);
-            if(isNaN(id)) return; // ADD AN ERROR MSG***********************
+            if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
             if(interacted.includes(i.user.id)) return await i.reply({ content:`You have already guessed!`, ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
             interacted.push(i.user.id); // Adds the guessing user to the interacted list
 
-            let userProfile = await User.findOne({ userID: i.user.id }); // Searches database for a userProfile with a matching userID to id
-            if(!userProfile) userProfile = await GenerateNewUser(i.user.id, i.user.username); // If no userProfile is found, generate a new one
-
-            if(useScore) {
-                const userPlayed = userProfile.triviaPlayed + 1; //
-                await userProfile.updateOne({ triviaPlayed: userPlayed }); //
-            }
+            if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
+                con.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
             if(answers[id-1] == trivia.correctAnswer) {
 
@@ -109,12 +105,8 @@ module.exports = {
                 if(trivia.difficulty == 'hard') scoreIncrement = 3;
 
                 if(useScore) {
-                    // Food Counts fetching, updating, and saving
-                    const userScore = userProfile.triviaScore + scoreIncrement; ////
-                    const userCorrect = userProfile.triviaCorrect + 1; ////
-
-                    await userProfile.updateOne({ triviaScore: userScore }); ////
-                    await userProfile.updateOne({ triviaCorrect: userCorrect }); ////
+                    con.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
+                    con.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
                 }
 
                 guessed = true;
@@ -123,7 +115,7 @@ module.exports = {
                     ephemeral: true
                 });
                 msg = `${userMention(i.user.id)} guessed correctly`;
-                if(useScore) msg += ` and won ${scoreIncrement} points`
+                if(useScore) msg += ` and won ${scoreIncrement} points`;
                 triviaEmbed.addFields([
                     { name: `The correct answer was: ${correctID}) ${trivia.correctAnswer}`, value: `${msg}!` }
                 ])
@@ -153,13 +145,10 @@ module.exports = {
                 }).catch(err => console.log('Error updating poll embed!'));
             }
 
-            if(useScore) {
-                let guildProfile = await Guild.findOne({ guildID: pies_of_exile.guild.id }); // Searches database for a guildProfile with a matching userID to id
-                if(!guildProfile) guildProfile = await GenerateNewGuild(i.guild.id, pies_of_exile.guild.name); // If no guildProfile is found, generate a new one
+            if(useScore)
+                con.execute(`INSERT INTO Discord.guild (guildID,guildName,triviaPlayed) VALUES ('${pies_of_exile.guild.id}','${pies_of_exile.guild.name}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
-                const guildCount = guildProfile.triviaCount + 1; // Grabs the saved variables from the database and adds one to them
-                await guildProfile.updateOne({ triviaCount: guildCount }); // Updates the database variables with the new ones (added one)            
-            }
+            con.end();
         });
     }
 }

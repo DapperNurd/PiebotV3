@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const BannedUser = require('../../../schemas/bannedUsers')
+const mysql = require('mysql2/promise');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
             option.setName('hidden')
                 .setDescription('Hide the command from others?')
         ),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         const hidden = interaction.options.getBoolean('hidden') ?? false;
 
@@ -29,35 +29,23 @@ module.exports = {
         const bannedUser = interaction.options.getUser("user");
 
         // Database handling
-        let bannedUsersProfile = await BannedUser.findOne({ userID: bannedUser.id }); // Searches database for a userID matching the command user's id
+        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+        let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = ${bannedUser.id}`);
 
-        // Unbanning handling
-        if(!bannedUsersProfile) { // If banned user is not already in the list
+        if(rows.length > 0) {
+            con.execute(`DELETE FROM Discord.banned_user WHERE userID = '${bannedUser.id}'`);
             return await interaction.reply({
-                content: "User is not currently banned...",
+                content: "Successfully unbanned " + userMention(bannedUser.id),
+                ephemeral: hidden
+            });
+        } else {
+            await interaction.reply({
+                content: userMention(bannedUser.id) + " is not currently banned...",
                 ephemeral: hidden
             });
         }
-        else { // If banned user IS already in the list
-            const result = await BannedUser.deleteOne({ userID: bannedUser.id });
-            if(result.deletedCount == 1) {
-                return await interaction.reply({
-                    content: "Successfully unbanned user " + userMention(bannedUser.id),
-                    ephemeral: hidden
-                });
-            }
-            else if(result.deletedCount > 1) {
-                return await interaction.reply({
-                    content: "Error in unbanning, please contact DapperNurd",
-                    ephemeral: hidden
-                });
-            }
-            else {
-                return await interaction.reply({
-                    content: "Error unbanning " + userMention(bannedUser.id),
-                    ephemeral: hidden
-                });
-            }
-        }
+
+        con.end();
+        return;
     }
 }

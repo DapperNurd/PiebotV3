@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const User = require('../../../schemas/user');
+const mysql = require('mysql2/promise');
 const { piebotColor } = require('../../../extraFunctions.js');
 
 module.exports = {
@@ -12,10 +12,15 @@ module.exports = {
                 .setMinValue(1)
                 .setMaxValue(999)
         ),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        // Database handling
+        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+        let [rows, fields] = await con.execute('SELECT * FROM Discord.user ORDER BY triviaScore DESC');
+        con.end();
 
         const embed = new EmbedBuilder()
             .setColor(piebotColor)
@@ -33,35 +38,26 @@ module.exports = {
 
         if(interaction.options.getInteger("rank")) { // If there are arguments
             var rank  = interaction.options.getInteger("rank") - 1;
-            await User.find().sort({ triviaScore: -1 }).then((items) => {
-                if(!items[rank]) rank = items.length - 1; // If there are less items than the given rank, sets rank to last one
+            if(!rows[rank]) rank = rows.length - 1; // If there are less rows than the given rank, sets rank to last one
 
-                    addOffset = rank;
-                    if(rank < 2) addOffset = 2;
-                    if(rank > items.length-3) addOffset = items.length-3; // 3 because of the index offset of 0
+            addOffset = rank;
+            if(rank < 2) addOffset = 2;
+            if(rank > rows.length-3) addOffset = rows.length-3; // 3 because of the index offset of 0
 
-                    for(i = 0; i < 5; i++) {
-                        embed.addFields([
-                            { name: '\n', value: `#${i-1+addOffset} ${userMention(items[i-2+addOffset].userID)} - ${items[i-2+addOffset].triviaScore}` }
-                        ])
-                    }
-
-            }).catch((err) => {
-                console.error(err);
-            });
+            for(i = 0; i < 5; i++) {
+                embed.addFields([
+                    { name: '\n', value: `#${i-1+addOffset} ${userMention(rows[i-2+addOffset].userID)} - ${rows[i-2+addOffset].triviaScore}` }
+                ])
+            }
         }
         else {
-            await User.find().sort({ triviaScore: -1 }).then((items) => {
-                for(i = 0; i < 10; i++) {
-                    if(items[[i]].triviaScore <= 0) break;
-                    embed.addFields([
-                        { name: '\n', value: `#${i+1} ${userMention(items[i].userID)} - ${items[i].triviaScore}` }
-                    ])
-                }
-    
-            }).catch((err) => {
-                console.error(err);
-            });
+            for(i = 0; i < 10; i++) {
+                if(!rows[i]) break; // if there arent enough existing rows
+                if(rows[i].triviaScore <= 0) break; // if the rest of the rows are 0
+                embed.addFields([
+                    { name: '\n', value: `#${i+1} ${userMention(rows[i].userID)} - ${rows[i].triviaScore}` }
+                ])
+            }
         }
 
         await interaction.reply({

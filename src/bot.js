@@ -33,30 +33,10 @@ client.login(token);
 (async () => {
     await connect(databaseToken, {
         serverSelectionTimeoutMS: 60_000 // default is 30_000
-      }).catch(err => {console.log(err)});
+    }).catch(err => {console.log(err)});
 })();
 
-var mysql = require('mysql');
-
-var con = mysql.createConnection({
-  host: "192.168.4.30", // pi
-  user: "admin",
-  password: "Pw113445"
-});
-
-// var sql = "SELECT * FROM Discord.user where userID = '189510396569190401'" // result[0] != null
-// var sql = "INSERT INTO Discord.user (userID,userName,pieCount) VALUES ('307350352594862080','kecatas',0) ON DUPLICATE KEY UPDATE pieCount=pieCount+1;"
-// var sql = "DELETE FROM Discord.user WHERE userName = 'dappernurd'"
-
-// con.connect(function(err) {
-//     if (err) throw err;
-//     console.log("Connected!");
-//     con.query(sql, (err, result) => {
-//         if (err) return console.log(chalk.red("[MYSQL ERROR]: " + err));
-//         console.log(result[0] != null);
-//     });
-// });
-
+// ------ CRON FORMATTING ------
 // *      *    *    *    *    *
 // ┬      ┬    ┬    ┬    ┬    ┬
 // │      │    │    │    │    │

@@ -3,7 +3,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('wowee')
         .setDescription('wow wow'),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Sends the embed message
         await interaction.reply({

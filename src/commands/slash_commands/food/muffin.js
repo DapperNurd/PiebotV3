@@ -1,9 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const User = require('../../../schemas/user');
-const Guild = require('../../../schemas/guild');
-const GlobalCount = require('../../../schemas/globalCount');
-const { GenerateNewUser, GenerateNewGuild } = require('../../../schemaBuilding.js');
-const { GiveAndReceive } = require('../../../extraFunctions.js');
+const mysql = require('mysql2/promise');
 
 const common = ["banana nut muffin", "blueberry muffin", "lemon poppy seed muffin", "coconut muffin", "oatmeal muffin", "raspberry muffin"
 ];
@@ -39,41 +35,20 @@ module.exports = {
             option.setName('user')
                   .setDescription('Give this user a muffin!')
         ),
-    async execute(interaction, client, con) {
-
-        // Database handling
-        const targetedUser = interaction.options.getUser("user") ?? interaction.user; // This is a little confusing so I'm going to explain it out: if the command is run without a user added, so like just /food, then targetedUser (and therefore userProfile)
-                                                                                      // belongs to the user of the command. If there IS a user added, so like /food @user, then targetedUser (and again, userProfile too) belong to the user mentioned.
-        let userProfile = await User.findOne({ userID: targetedUser.id }); // Searches database for a userProfile with a matching userID to id
-        if(!userProfile) userProfile = await GenerateNewUser(targetedUser.id, targetedUser.username); // If no userProfile is found, generate a new one
-
-        let guildProfile = await Guild.findOne({ guildID: interaction.guild.id }); // Searches database for a guildProfile with a matching userID to id
-        if(!guildProfile) guildProfile = await GenerateNewGuild(interaction.guild.id, interaction.guild.name); // If no guildProfile is found, generate a new one
-
-        let globalProfile = await GlobalCount.findOne({ globalID: "global" }); // Searches database for the globalProfile
-        if(!globalProfile) { // Should hopefully never happen... We do not build a new global profile because there is only ever one. Instead we error and intentionally stop.
-            await interaction.reply({ content: `I don't feel so good... something's not right. Where's ${userMention(author.id)}??`, ephemeral: true });
-            return console.error(chalk.red("[Bot Status]: Error finding global database!"));
-        }
-
-        // Username updating within the database (to new system)
-        if(userProfile.userName != interaction.user.username) await userProfile.updateOne({ userName: interaction.user.username }); // Checks if the username within the database is not the current username of the user
-
-        // Given / Receiving Handling... only if a food item is being given to a differnet user
-        if(interaction.options.getUser("user") && interaction.options.getUser("user") != interaction.user) await GiveAndReceive(interaction.user, userProfile, guildProfile, globalProfile);
+    async execute(interaction, client) {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
-        // Food Counts fetching, updating, and saving
-        const userCount = userProfile.muffinCount + 1; ///////
-        const guildCount = guildProfile.muffinCount + 1;    // Grabs the saved variables from the database and adds one to them
-        const globalCount = globalProfile.muffinCount + 1; ///
-
-        await userProfile.updateOne({ muffinCount: userCount }); ///////
-        await guildProfile.updateOne({ muffinCount: guildCount });    // Updates the database variables with the new ones (added one)
-        await globalProfile.updateOne({ muffinCount: globalCount }); ///
+        // Database handling
+        const columnName = 'muffinCount'; // Change this to change what value is read/written
+        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+        con.execute(`INSERT INTO Discord.user (userID,userName,${columnName}) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
+        con.execute(`INSERT INTO Discord.guild (guildID,guildName,${columnName}) VALUES ('${interaction.guild.id}','${interaction.guild.name}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
+        let [rows, fields] = await con.execute(`SELECT ${columnName} AS value FROM Discord.guild WHERE guildID = ${interaction.guild.id}`);
+        const guildCount = rows[0].value;
+        con.end();
         
         // Food Rarity calculation and assigning
         var food;

@@ -4,7 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('coinflip')
         .setDescription('Flip a coin!'),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Rarity calculation
         var coin = "";

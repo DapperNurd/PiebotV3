@@ -1,8 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
-const Reminder = require('../../../schemas/reminder');
-const mongoose = require('mongoose');
 const chalk = require('chalk');
 const { piebotColor } = require('../../../extraFunctions.js');
+const mysql = require('mysql2/promise');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -84,7 +83,7 @@ module.exports = {
             .setName('list')
             .setDescription('View current reminders!')
         ),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
             
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
@@ -138,13 +137,9 @@ module.exports = {
         let time = Date.now() + (minutes * 60_000) + (hours * 3_600_000) + (days * 86_400_000 ); // Multiplying to get the right values for each type... Condensed the multiplication to reduce amount of times to use multiply operation
 
         // Database handling
-        await Reminder.create({
-            _id: new mongoose.Types.ObjectId(),
-            userID: interaction.user.id,
-            userName: interaction.user.displayName,
-            time: time,
-            reminder: reminder,
-        })
+        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
+        con.execute(`INSERT INTO Global.reminders (userID, userName, reminder, time) VALUES (${interaction.user.id}, ${interaction.user.displayName}, ${reminder}, ${time})`);
+        con.end();
 
         // Embed building for confirmation message
         const embed = new EmbedBuilder()

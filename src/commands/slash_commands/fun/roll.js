@@ -21,7 +21,7 @@ module.exports = {
             .setName('next')
             .setDescription('Roll directly from the previously rolled number!')
         ),
-    async execute(interaction, client, con) {
+    async execute(interaction, client) {
 
         // Extra misc variables
         const user = userMention(interaction.user.id); // Converts user id into a mention for the string
