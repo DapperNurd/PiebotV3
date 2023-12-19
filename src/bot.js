@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { token } = process.env;
+const { token, hostIP, userPW } = process.env;
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const chalk = require('chalk');
@@ -26,7 +26,7 @@ for (const folder of functionFolders) {
         require(`./functions/${folder}/${file}`)(client); // For each of those files, we are passing in clients to the file
 }
 
-const pool = mysql.createPool({ host: "192.168.4.30", user: "admin", password: "Pw113445", multipleStatements: true });
+const pool = mysql.createPool({ host: hostIP, user: "admin", password: userPW, multipleStatements: true });
 const promisePool = pool.promise();
 
 client.handleEvents(promisePool);
