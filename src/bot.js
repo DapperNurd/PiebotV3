@@ -96,7 +96,7 @@ setInterval(async () => {
 
         rows.forEach(async clip => { // Goes through each document, as clip
 
-            let msg = (clip.clipName == "") ? `${clip.clipURL}\nclipped by ${clip.clipCreator}` : `${clip.clipURL}\n"${clip.clipName}" by ${clip.clipCreator}`
+            let msg = (clip.clipName == "") ? `${clip.clipURL}\nclipped by ${clip.creator}` : `${clip.clipURL}\n"${clip.clipName}" by ${clip.creator}`
 
             client.channels.fetch('515395913624322053').then( (channel) => { // Fetches the "twitch-clips" channel on The Trauma Center
                 channel.send({
