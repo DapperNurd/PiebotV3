@@ -53,7 +53,7 @@ const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 *
         const contextCommand = client.commands.get("trivia");
         if(!contextCommand) return;
         try {
-            await contextCommand.execute(null, client, con);
+            await contextCommand.execute(null, client, promisePool);
         } catch (err) {
             console.error(err);
         }
