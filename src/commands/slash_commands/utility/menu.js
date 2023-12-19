@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, EmbedBuilder, ComponentType } = require('discord.js');
-const mysql = require('mysql2/promise');
 const pies = require('../food/pie');
 const muffins = require('../food/muffin');
 const potatoes = require('../food/potato');
@@ -34,17 +33,15 @@ module.exports = {
                     { name: 'Brownie', value: 'brownie' },
                 )
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
         var menuCount = 0; // This is simply keeping track of how many individual menus there are, so I can accurately update the maximum selected values
 
         // Database handling
-        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-        let [rows, fields] = await con.execute('SELECT SUM(pieCount) AS pieCount, SUM(muffinCount) AS muffinCount, SUM(potatoCount) AS potatoCount, SUM(pizzaCount) AS pizzaCount, SUM(iceCreamCount) AS iceCreamCount, SUM(cakeCount) AS cakeCount, SUM(cookieCount) AS cookieCount, SUM(brownieCount) AS brownieCount, SUM(chocolateCount) AS chocolateCount, SUM(sandwichCount) AS sandwichCount, SUM(pastaCount) AS pastaCount, SUM(fishCount) AS fishCount, SUM(trashCount) AS trashCount FROM Discord.user;');
+        let [rows, fields] = await promisePool.execute('SELECT SUM(pieCount) AS pieCount, SUM(muffinCount) AS muffinCount, SUM(potatoCount) AS potatoCount, SUM(pizzaCount) AS pizzaCount, SUM(iceCreamCount) AS iceCreamCount, SUM(cakeCount) AS cakeCount, SUM(cookieCount) AS cookieCount, SUM(brownieCount) AS brownieCount, SUM(chocolateCount) AS chocolateCount, SUM(sandwichCount) AS sandwichCount, SUM(pastaCount) AS pastaCount, SUM(fishCount) AS fishCount, SUM(trashCount) AS trashCount FROM Discord.user;');
         const globalProfile = rows[0];
-        con.end();
 
         // Embed building (this is rough lol)
         menuCount++;

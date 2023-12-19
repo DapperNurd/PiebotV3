@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const mysql = require('mysql2/promise');
+const { piebotColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -31,7 +31,7 @@ module.exports = {
                     .setMaxLength(255)
             )
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Viewing banned users
         if(interaction.options.getSubcommand() == "list") {
@@ -44,7 +44,7 @@ module.exports = {
 
             // Embed building
             const embed = new EmbedBuilder()
-                .setColor('#FFFFFF')
+                .setColor(piebotColor)
                 .setAuthor({
                     iconURL: client.user.displayAvatarURL(),
                     name: `${client.user.displayName} Moderation`
@@ -56,9 +56,7 @@ module.exports = {
                 });
 
             // Database handling
-            const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-            let [rows, fields] = await con.execute('SELECT * FROM Discord.banned_user');
-            con.end();
+            let [rows, fields] = await promisePool.execute('SELECT * FROM Discord.banned_user');
 
             if(rows.length <= 0) embed.addFields([ { name: 'There are currently no banned users...', value: '\n' } ]) // If there are no user rows in the Discord.banned_user table
             else {
@@ -88,11 +86,10 @@ module.exports = {
             const bannedUser = interaction.options.getUser("user");
 
             // Database handling
-            const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-            let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = ${bannedUser.id}`);
+            let [rows, fields] = await promisePool.execute(`SELECT * FROM Discord.banned_user WHERE userID = ${bannedUser.id}`);
 
             if(rows.length <= 0) {
-                con.execute(`INSERT INTO Discord.banned_user (userID, userName, reason) VALUES ('${bannedUser.id}', '${bannedUser.username}', '${interaction.options.getString('reason') ?? 'No reason given.'}')`);
+                promisePool.execute(`INSERT INTO Discord.banned_user (userID, userName, reason) VALUES ('${bannedUser.id}', '${bannedUser.username}', '${interaction.options.getString('reason') ?? 'No reason given.'}')`);
                 return await interaction.reply({
                     content: "Successfully banned " + userMention(bannedUser.id),
                     ephemeral: hidden
@@ -103,8 +100,6 @@ module.exports = {
                     ephemeral: hidden
                 });
             }
-
-            con.end();
             return;
         }
     }

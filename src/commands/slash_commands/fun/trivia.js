@@ -1,13 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { piebotColor } = require('../../../extraFunctions.js');
-const mysql = require('mysql2/promise');
+const { piebotColor } = require('../../../extra.js');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('trivia')
         .setDescription('[MODS ONLY] Manually run trivia, does not count score!'),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
@@ -64,9 +63,6 @@ module.exports = {
             if(answers[i] == trivia.correctAnswer) correctID = i+1;
         }
 
-        // Database handling
-        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-
         // Button building
         const oneButton = new ButtonBuilder().setCustomId('1').setLabel('1').setStyle(ButtonStyle.Danger);
         const twoButton = new ButtonBuilder().setCustomId('2').setLabel('2').setStyle(ButtonStyle.Danger);
@@ -96,7 +92,7 @@ module.exports = {
             interacted.push(i.user.id); // Adds the guessing user to the interacted list
 
             if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                con.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
             if(answers[id-1] == trivia.correctAnswer) {
 
@@ -105,8 +101,8 @@ module.exports = {
                 if(trivia.difficulty == 'hard') scoreIncrement = 3;
 
                 if(useScore) {
-                    con.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
-                    con.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
                 }
 
                 guessed = true;
@@ -146,9 +142,8 @@ module.exports = {
             }
 
             if(useScore)
-                con.execute(`INSERT INTO Discord.guild (guildID,guildName,triviaPlayed) VALUES ('${pies_of_exile.guild.id}','${pies_of_exile.guild.name}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                promisePool.execute(`INSERT INTO Discord.guild (guildID,guildName,triviaPlayed) VALUES ('${pies_of_exile.guild.id}','${pies_of_exile.guild.name}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
-            con.end();
         });
     }
 }

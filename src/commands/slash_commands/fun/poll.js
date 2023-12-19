@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { piebotColor } = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -44,7 +44,7 @@ module.exports = {
                   .setMinValue(1)
                   .setMaxValue(60*24)
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         var interacted = [];
         var totalVotes = 0, aVotes = 0, bVotes = 0, cVotes = 0, dVotes = 0, eVotes = 0;

@@ -1,13 +1,12 @@
 require('dotenv').config();
-const { token, databaseToken } = process.env;
-const { connect } = require('mongoose');
-const { Client, Collection, GatewayIntentBits, EmbedBuilder } = require('discord.js');
-const Reminder = require('./schemas/reminder');
-const TwitchClips = require('./schemas/twitchClips');
+const { token } = process.env;
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const chalk = require('chalk');
-const { piebotColor } = require('./extraFunctions.js');
+const { piebotColor } = require('./extra.js');
 const schedule = require('node-schedule');
+// const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 client.commands = new Collection();
@@ -27,14 +26,12 @@ for (const folder of functionFolders) {
         require(`./functions/${folder}/${file}`)(client); // For each of those files, we are passing in clients to the file
 }
 
-client.handleEvents();
+const pool = mysql.createPool({ host: "192.168.4.30", user: "admin", password: "Pw113445", multipleStatements: true });
+const promisePool = pool.promise();
+
+client.handleEvents(promisePool);
 client.handleCommands();
 client.login(token);
-(async () => {
-    await connect(databaseToken, {
-        serverSelectionTimeoutMS: 60_000 // default is 30_000
-    }).catch(err => {console.log(err)});
-})();
 
 // ------ CRON FORMATTING ------
 // *      *    *    *    *    *
@@ -65,39 +62,39 @@ const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 *
 
 // Reminders Handling
 setInterval(async () => {
-    const reminders = await Reminder.find(); // Gets a list of all current documents in the reminder collection
-    if(!reminders) return; // Does nothing if none found
+
+    // Database fetching
+    let [rows, fields] = await promisePool.execute('SELECT * FROM Global.reminders');
+
+    if(rows.length <= 0) return; // Returns if no rows are found
     else {
-        reminders.forEach(async reminder => { // Goes through each document, as reminder
+        rows.forEach(async reminder => { // Goes through each document, as reminder
             let msg = `Reminding you about "${reminder.reminder}"`;
 
             if(reminder.time > Date.now()) return; // Does nothing if it is not time yet for the reminder
-            if(Date.now() - reminder.time > 3600) msg = `Reminding you about "${reminder.reminder}" (Reminder is late, sorry)` // Adds a late msg to the reminder if it is more than a minute late
+            if(Date.now() - reminder.time > 5000) msg = `Reminding you about "${reminder.reminder}" (Reminder is late, sorry)` // Adds a late msg to the reminder if it is more than a minute late
 
             const user = await client.users.fetch(reminder.userID);
             user?.send({
                 content: msg
             }).catch(err => {return;});
 
-            await Reminder.deleteMany({ // Deletes the completed reminder
-                _id: reminder._id,
-                userID: reminder.userID,
-                userName: reminder.userName,
-                time: reminder.time,
-                reminder: reminder.reminder
-            });
+            await promisePool.execute(`DELETE FROM Global.reminders WHERE reminder = '${reminder.reminder}'`);
         })
     }
 }, 5_000);
 
-// Reminders Handling
+// Twitch Clips Handling
 setInterval(async () => {
-    const clips = await TwitchClips.find(); // Gets a list of all current documents in the TwitchClips collection
-    if(!clips) return; // Does nothing if none found
+
+    // Database fetching
+    let [rows, fields] = await promisePool.execute('SELECT * FROM Global.twitch_clips');
+
+    if(rows.length <= 0) return; // Returns if no rows are found
     else {
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
-        clips.forEach(async clip => { // Goes through each document, as clip
+        rows.forEach(async clip => { // Goes through each document, as clip
 
             let msg = (clip.clipName == "") ? `${clip.clipURL}\nclipped by ${clip.clipCreator}` : `${clip.clipURL}\n"${clip.clipName}" by ${clip.clipCreator}`
 
@@ -107,14 +104,7 @@ setInterval(async () => {
                 });
             });
 
-            await TwitchClips.deleteMany({ // Deletes the clip from the database
-                _id: clip._id,
-                clipID: clip.clipID,
-                clipName: clip.clipName,
-                clipURL: clip.clipURL,
-                clipCreator: clip.clipCreator,
-                clipThumbnail: clip.clipThumbnail
-            });
+            await promisePool.execute(`DELETE FROM Global.twitch_clips WHERE clipID = '${clip.clipID}'`);
         })
     }
 }, 5_000);

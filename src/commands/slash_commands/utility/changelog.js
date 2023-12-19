@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { piebotColor } = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extra.js');
 
 const changes = ['**~** Slash commands! Commands are no longer based by text and now start with a /...',
 '**+** `/roll next` is now a feature for those who love playing Devil\'s Dice! It will automatically roll from the most recent roll.',
@@ -14,7 +14,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('changelog')
         .setDescription('See what\'s new!'),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user

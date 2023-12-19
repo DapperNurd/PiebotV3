@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const mysql = require('mysql2/promise');
-const { piebotColor } = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,15 +11,13 @@ module.exports = {
                 .setMinValue(1)
                 .setMaxValue(999)
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         // Database handling
-        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-        let [rows, fields] = await con.execute('SELECT * FROM Discord.user ORDER BY triviaScore DESC');
-        con.end();
+        let [rows, fields] = await promisePool.execute('SELECT * FROM Discord.user ORDER BY triviaScore DESC');
 
         const embed = new EmbedBuilder()
             .setColor(piebotColor)

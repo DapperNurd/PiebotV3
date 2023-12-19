@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const mysql = require('mysql2/promise');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,7 +13,7 @@ module.exports = {
             option.setName('hidden')
                 .setDescription('Hide the command from others?')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         const hidden = interaction.options.getBoolean('hidden') ?? false;
 
@@ -29,11 +28,10 @@ module.exports = {
         const bannedUser = interaction.options.getUser("user");
 
         // Database handling
-        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-        let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = ${bannedUser.id}`);
+        let [rows, fields] = await promisePool.execute(`SELECT * FROM Discord.banned_user WHERE userID = ${bannedUser.id}`);
 
         if(rows.length > 0) {
-            con.execute(`DELETE FROM Discord.banned_user WHERE userID = '${bannedUser.id}'`);
+            promisePool.execute(`DELETE FROM Discord.banned_user WHERE userID = '${bannedUser.id}'`);
             return await interaction.reply({
                 content: "Successfully unbanned " + userMention(bannedUser.id),
                 ephemeral: hidden
@@ -45,7 +43,6 @@ module.exports = {
             });
         }
 
-        con.end();
         return;
     }
 }

@@ -1,12 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const fs = require('fs');
-const { piebotColor } = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('help')
         .setDescription('List of commands to use!'),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user

@@ -1,4 +1,3 @@
-const BannedUser = require('../../schemas/bannedUsers')
 const chalk = require('chalk');
 const mysql = require('mysql2/promise');
 
@@ -7,7 +6,7 @@ const adminCommands = ['ban', 'unban'];
 
 module.exports = {
     name: 'interactionCreate',
-    async execute(interaction, client) {
+    async execute(interaction, client, db) {
         if (interaction.isChatInputCommand()) {
             const { commands } = client;
             const { commandName } = interaction;
@@ -17,11 +16,8 @@ module.exports = {
             const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
             // Database handling
-            const columnName = 'pieCount'; // Change this to change what value is read/written
-            const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-            let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${interaction.user.id}'`);
+            let [rows, fields] = await db.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${interaction.user.id}'`);
             const userIsBanned = (rows.length > 0); // If there are any rows returned from the banned_user list associating with their id, the user is marked as banned
-            con.end();
 
             // Running of commands
             try {
@@ -39,7 +35,7 @@ module.exports = {
                         ephemeral: true
                     });
                 }
-                await command.execute(interaction, client, con);
+                await command.execute(interaction, client, db);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({

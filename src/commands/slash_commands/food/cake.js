@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const mysql = require('mysql2/promise');
 
 const common = ["chocolate cake", "vanilla cake", "carrot cake", "birthday cake", "spice cake", "coffee cake", "ice cream cake"
 ];
@@ -35,7 +34,7 @@ module.exports = {
             option.setName('user')
                   .setDescription('Give this user some cake!')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
@@ -43,12 +42,10 @@ module.exports = {
 
        // Database handling
        const columnName = 'cakeCount'; // Change this to change what value is read/written
-       const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-       con.execute(`INSERT INTO Discord.user (userID,userName,${columnName}) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
-       con.execute(`INSERT INTO Discord.guild (guildID,guildName,${columnName}) VALUES ('${interaction.guild.id}','${interaction.guild.name}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
-       let [rows, fields] = await con.execute(`SELECT ${columnName} AS value FROM Discord.guild WHERE guildID = ${interaction.guild.id}`);
+       promisePool.execute(`INSERT INTO Discord.user (userID,userName,${columnName}) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
+       await promisePool.execute(`INSERT INTO Discord.guild (guildID,guildName,${columnName}) VALUES ('${interaction.guild.id}','${interaction.guild.name}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
+       let [rows, fields] = await promisePool.execute(`SELECT ${columnName} AS value FROM Discord.guild WHERE guildID = ${interaction.guild.id}`);
        const guildCount = rows[0].value;
-       con.end();
         
         // Food Rarity calculation and assigning
         var food;

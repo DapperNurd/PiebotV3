@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const chalk = require('chalk');
-const { piebotColor } = require('../../../extraFunctions.js');
-const mysql = require('mysql2/promise');
+const { piebotColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -83,7 +82,7 @@ module.exports = {
             .setName('list')
             .setDescription('View current reminders!')
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
             
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
@@ -137,9 +136,7 @@ module.exports = {
         let time = Date.now() + (minutes * 60_000) + (hours * 3_600_000) + (days * 86_400_000 ); // Multiplying to get the right values for each type... Condensed the multiplication to reduce amount of times to use multiply operation
 
         // Database handling
-        const con = await mysql.createConnection({ host: "192.168.4.30", user: "admin", password: "Pw113445" });
-        con.execute(`INSERT INTO Global.reminders (userID, userName, reminder, time) VALUES (${interaction.user.id}, ${interaction.user.displayName}, ${reminder}, ${time})`);
-        con.end();
+        promisePool.execute(`INSERT INTO Global.reminders (userID, userName, reminder, time) VALUES ('${interaction.user.id}', '${interaction.user.displayName}', '${reminder}', '${time}')`);
 
         // Embed building for confirmation message
         const embed = new EmbedBuilder()
@@ -184,12 +181,7 @@ module.exports = {
                         text: `PiebotV3 by ${author.username}`
                     });
 
-                await Reminder.deleteMany({ // Deletes the reminder in the database
-                    userID: interaction.user.id,
-                    userName: interaction.user.displayName,
-                    time: time,
-                    reminder: reminder,
-                });
+                await promisePool.execute(`DELETE FROM Global.reminders WHERE reminder = '${reminder.reminder}'`);
 
                 collector.stop();
                 await confirmMsg.edit({

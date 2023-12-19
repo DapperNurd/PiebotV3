@@ -1,5 +1,3 @@
-const BannedUser = require('../../schemas/bannedUsers')
-
 module.exports = {
     name: 'messageCreate',
     async execute(message, client) {
@@ -7,8 +5,8 @@ module.exports = {
 
         async function runCommand(command, bypassBan) { // command is the command to run, bypassBan is TRUE if it ignores banned status
             if(!bypassBan) {
-                let bannedUsersProfile = await BannedUser.findOne({ userID: message.author.id }); // Searches database for a userID matching the command user's id
-                if(bannedUsersProfile) return;
+                let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${message.author.id}'`);
+                if(rows.length > 0) return; // if there is a row including the message author's id in the banned_users table
             }
             try {
                 await client.textCommands.get(command).run(message, client);

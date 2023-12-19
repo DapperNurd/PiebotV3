@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
-const { piebotColor } = require('../../../extraFunctions.js');
+const { piebotColor } = require('../../../extra.js');
 
 const creators = [
     '189510396569190401', // nurd
@@ -20,7 +20,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('credits')
         .setDescription('Roll credits!'),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // Extra misc variables
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user

@@ -11,7 +11,7 @@ module.exports = {
                   .setRequired(true)
                   .setMaxLength(50)
         ),
-    async execute(interaction, client) {
+    async execute(interaction, client, promisePool) {
 
         // GIF Fetching handling
         var finalMsg = "";
