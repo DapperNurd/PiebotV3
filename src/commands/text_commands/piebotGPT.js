@@ -7,7 +7,7 @@ const prompt =
 module.exports = {
     name: 'piebotGPT',
     description: 'Code for chatGPT integration',
-    async run(message, client) {
+    async run(message, client, promisePool) {
         if(message.content.startsWith(".")) return; // Do nothing if it doesn't use the prefix
 
         await message.channel.sendTyping();

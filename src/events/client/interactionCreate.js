@@ -6,7 +6,7 @@ const adminCommands = ['ban', 'unban'];
 
 module.exports = {
     name: 'interactionCreate',
-    async execute(interaction, client, db) {
+    async execute(interaction, client, promisePool) {
         if (interaction.isChatInputCommand()) {
             const { commands } = client;
             const { commandName } = interaction;
@@ -16,7 +16,7 @@ module.exports = {
             const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
             // Database handling
-            let [rows, fields] = await db.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${interaction.user.id}'`);
+            let [rows, fields] = await promisePool.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${interaction.user.id}'`);
             const userIsBanned = (rows.length > 0); // If there are any rows returned from the banned_user list associating with their id, the user is marked as banned
 
             // Running of commands

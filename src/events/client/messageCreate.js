@@ -1,15 +1,15 @@
 module.exports = {
     name: 'messageCreate',
-    async execute(message, client) {
+    async execute(message, client, promisePool) {
         if(message.author.bot) return;
 
         async function runCommand(command, bypassBan) { // command is the command to run, bypassBan is TRUE if it ignores banned status
             if(!bypassBan) {
-                let [rows, fields] = await con.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${message.author.id}'`);
+                let [rows, fields] = await promisePool.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${message.author.id}'`);
                 if(rows.length > 0) return; // if there is a row including the message author's id in the banned_users table
             }
             try {
-                await client.textCommands.get(command).run(message, client);
+                await client.textCommands.get(command).run(message, client, promisePool);
             } catch (err) {
                 console.error(err);
             }

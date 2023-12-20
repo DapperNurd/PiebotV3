@@ -1,7 +1,7 @@
 module.exports = {
     name: 'ok',
     description: 'Code for when someone says "ok"',
-    async run(message, client) {
+    async run(message, client, promisePool) {
 
         var random = Math.floor(Math.random() * (17 - 7)) + 7; // it's weird but basically this makes it so piebot will send a message after a random number of messages that aren't piebot
                                                                    // from 7 to 17, though I'm not sure how much the 17 max actually affects it
@@ -23,7 +23,7 @@ module.exports = {
             if(message.channel.id == "459207634403196938") { // "ok" channel (id) in The Trauma Center
                 // Database handling
                 const columnName = 'okCount'; // Change this to change what value is read/written
-                promisePool.execute(`INSERT INTO Discord.user (userID,userName,${columnName}) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
+                promisePool.execute(`INSERT INTO Discord.user (userID,userName,${columnName}) VALUES ('${message.author.id}','${message.author.username}',1) ON DUPLICATE KEY UPDATE ${columnName}=${columnName}+1;`);
             }
         }
     }
