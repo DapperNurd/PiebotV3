@@ -92,7 +92,7 @@ module.exports = {
             interacted.push(i.user.id); // Adds the guessing user to the interacted list
 
             if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
             if(answers[id-1] == trivia.correctAnswer) {
 
@@ -101,8 +101,8 @@ module.exports = {
                 if(trivia.difficulty == 'hard') scoreIncrement = 3;
 
                 if(useScore) {
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${interaction.user.id}','${interaction.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
                 }
 
                 guessed = true;
