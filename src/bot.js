@@ -44,11 +44,15 @@ client.login(token);
 // │      └──────────────────── minute (0 - 59)
 // └─────────────────────────── second (0 - 59, OPTIONAL)
 
+// Trivia Handling
 const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
-    pies_of_exile.send({
+    const notify = pies_of_exile.send({
         content: "Trivia starting in 3 minutes!"
     })
+    try {
+        notify.react('<1082238978696159253>');
+    } catch { console.log("Unable to react with emoji to trivia notification..."); }
     setTimeout(async () => {
         const contextCommand = client.commands.get("trivia");
         if(!contextCommand) return;
@@ -109,7 +113,7 @@ setInterval(async () => {
     }
 }, 5_000);
 
-// Link code handling
+// Link Code Handling
 setInterval(async () => {
     // Database fetching
     let [rows, fields] = await promisePool.execute('SELECT * FROM Global.linking');

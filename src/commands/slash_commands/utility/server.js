@@ -35,7 +35,6 @@ module.exports = {
                 { name: '__Pizza Count__',       value: guildObject.pizzaCount.toString(),  inline: true },
                 { name: '__Ice Cream Count__',   value: guildObject.iceCreamCount.toString(),  inline: true },
                 { name: '__Cake Count__',        value: guildObject.cakeCount.toString(),  inline: true },
-                { name: '__Cookie Count__',      value: guildObject.cookieCount.toString(),  inline: true },
                 { name: '__Brownie Count__',     value: guildObject.brownieCount.toString(),  inline: true },
                 { name: '__Chocolate Count__',   value: guildObject.chocolateCount.toString(),  inline: true },
                 { name: '__Sandwich Count__',    value: guildObject.sandwichCount.toString(),  inline: true },

@@ -6,14 +6,12 @@ const columns = [
     'pizzaCount',
     'iceCreamCount',
     'cakeCount',
-    'cookieCount',
     'brownieCount',
     'chocolateCount',
     'sandwichCount',
     'pastaCount',
     'fishCount',
-    'trashCount',
-    'okCount'
+    'trashCount'
 ]
 
 module.exports = {

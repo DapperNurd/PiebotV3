@@ -36,7 +36,6 @@ module.exports = {
                 { name: '__Pizza Count__',       value: globalObject.pizzaCount.toString(),  inline: true },
                 { name: '__Ice Cream Count__',   value: globalObject.iceCreamCount.toString(),  inline: true },
                 { name: '__Cake Count__',        value: globalObject.cakeCount.toString(),  inline: true },
-                { name: '__Cookie Count__',      value: globalObject.cookieCount.toString(),  inline: true },
                 { name: '__Brownie Count__',     value: globalObject.brownieCount.toString(),  inline: true },
                 { name: '__Chocolate Count__',   value: globalObject.chocolateCount.toString(),  inline: true },
                 { name: '__Sandwich Count__',    value: globalObject.sandwichCount.toString(),  inline: true },
