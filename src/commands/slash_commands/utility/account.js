@@ -27,7 +27,7 @@ module.exports = {
         const userObject = rows[0];
         const triviaRank = result[0].rank;
         
-        let [twitchResult] = await promisePool.execute(`SELECT *, ${columns.join('+')} AS total FROM Twitch.user WHERE discordID = '${interaction.user.id}'`); // Should always find one because of the insert just before this
+        let [twitchResult] = await promisePool.execute(`SELECT *, ${columns.join('+')} AS total FROM Twitch.user WHERE discordID = '${targetedUser.id}'`); // Should always find one because of the insert just before this
         let twitchProfile = null;
         if(twitchResult.length > 0) { // If the user is already marked having a twitch account linked
             twitchProfile = twitchResult[0];

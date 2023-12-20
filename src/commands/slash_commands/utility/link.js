@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Roll a die!')
         .addSubcommand(command => command
             .setName('twitch')
-            .setDescription('Roll a custom die!')
+            .setDescription('Link your Discord Piebot profile with your Twitch Piebot profile!')
         ),
     async execute(interaction, client, promisePool) {
 
