@@ -26,7 +26,7 @@ for (const folder of functionFolders) {
         require(`./functions/${folder}/${file}`)(client); // For each of those files, we are passing in clients to the file
 }
 
-const pool = mysql.createPool({ host: hostIP, user: "admin", password: userPW, multipleStatements: true });
+const pool = mysql.createPool({ host: hostIP, user: "admin", password: userPW, port: '3306', multipleStatements: true, connectionLimit: 20 });
 const promisePool = pool.promise();
 
 client.handleEvents(promisePool);
@@ -79,7 +79,7 @@ setInterval(async () => {
                 content: msg
             }).catch(err => {return;});
 
-            await promisePool.execute(`DELETE FROM Global.reminders WHERE reminder = '${reminder.reminder}'`);
+            promisePool.execute(`DELETE FROM Global.reminders WHERE reminder = '${reminder.reminder}'`);
         })
     }
 }, 5_000);
@@ -104,7 +104,24 @@ setInterval(async () => {
                 });
             });
 
-            await promisePool.execute(`DELETE FROM Global.twitch_clips WHERE clipID = '${clip.clipID}'`);
+            promisePool.execute(`DELETE FROM Global.twitch_clips WHERE clipID = '${clip.clipID}'`);
+        })
+    }
+}, 5_000);
+
+// Link code handling
+setInterval(async () => {
+    // Database fetching
+    let [rows, fields] = await promisePool.execute('SELECT * FROM Global.linking');
+
+    if(rows.length <= 0) return; // Returns if no rows are found
+    else {
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        rows.forEach(async linkObj => { // Goes through each document, as clip
+            if(linkObj.expireTime > Date.now()) return; // Does nothing if it is not time yet for the reminder
+
+            promisePool.execute(`DELETE FROM Global.linking WHERE linkCode = '${linkObj.linkCode}'`);
         })
     }
 }, 5_000);

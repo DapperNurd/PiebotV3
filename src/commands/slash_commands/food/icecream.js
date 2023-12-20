@@ -38,6 +38,7 @@ module.exports = {
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+        const targetedUser = interaction.options.getUser("user") ?? interaction.user; // This is a little confusing so I'm going to explain it out: if the command is run without a user added, so like just /food, then targetedUser (and therefore userProfile)
         const userByMention = userMention(targetedUser.id); // Turns a user object id into a discord mention
 
         // Database handling
