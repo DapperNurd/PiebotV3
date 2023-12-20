@@ -35,7 +35,7 @@ module.exports = {
                         ephemeral: true
                     });
                 }
-                await command.execute(interaction, client, db);
+                await command.execute(interaction, client, promisePool);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({
