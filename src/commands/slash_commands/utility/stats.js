@@ -4,7 +4,7 @@ const { piebotColor, columns } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('account')
+        .setName('stats')
         .setDescription('Display a user\'s account info!')
         .addUserOption(option =>
             option.setName('user')
