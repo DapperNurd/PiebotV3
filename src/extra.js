@@ -1,3 +1,10 @@
+const rarities = {
+    common: 50, // Note that this is not included in the if statement, but must equal 100 - the rest of the rarities
+    uncommon: 39,
+    rare: 10,
+    legendary: 1
+}
+
 const piebotColor = '#be1a34';
 
 const columns = [
