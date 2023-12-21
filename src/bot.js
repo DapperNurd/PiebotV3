@@ -51,7 +51,7 @@ const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 *
         content: "Trivia starting in 3 minutes!"
     })
     try {
-        notify.react('<1082238978696159253>');
+        notify.react('<:traumzWaiting:1187271828822036580>');
     } catch { console.log("Unable to react with emoji to trivia notification..."); }
     setTimeout(async () => {
         const contextCommand = client.commands.get("trivia");
