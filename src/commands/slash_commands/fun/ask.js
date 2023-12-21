@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { GetRandomInt } = require("../../../extra.js");
 
 var yesOrNoResponses = ["Yep.", "Yes, definitely.", "Without a doubt.", "I believe so.", "Mhmm.",
     "I wouldn't count on it.", "I don't think so.", "No way.", "Nah.", "Doubting it."]
@@ -28,11 +29,10 @@ module.exports = {
         }
 
         // Response rarity calculation and assigning
-        const randomNum = Math.floor(Math.random() * (100 - 1) + 1); // generates a number from 1 to 100 ... Math.floor(Math.random() * (max - min) + min)
-        if (randomNum < 80)         response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];  // 79% chance
-        else if (randomNum < 92)    response = middleResponses[Math.floor(Math.random() * middleResponses.length)];    // 12% chance
-        else if (randomNum <= 100)  response = oddResponses[Math.floor(Math.random() * oddResponses.length)];          // 9% chance
-        else                        response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];  // Should never run, but just in case
+        const randomNum = GetRandomInt(1, 100); // generates a number from 1 to 100 ... Math.floor(Math.random() * (max - min) + min)
+        if (randomNum <= 9)       response = oddResponses[Math.floor(Math.random() * oddResponses.length)];
+        else if (randomNum <= 21) response = middleResponses[Math.floor(Math.random() * middleResponses.length)];
+        else                      yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];
 
         // Building the final message
         const msg = `> *${interaction.options.getString("question")}*\n${response}` // Formatting for the final message, including the question asked

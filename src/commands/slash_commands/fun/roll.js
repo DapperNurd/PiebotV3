@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
+const { GetRandomInt } = require("../../../extra.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -59,7 +60,7 @@ module.exports = {
         }
 
         // Calculation for roll command
-        const rolledNum = Math.floor(Math.random() * ((max+1) - min) + min);
+        const rolledNum = GetRandomInt(min, max);
 
         // Building final message
         const msg = (min == 1) // Changes message based on whether there is a minimum or not (to clarify for death rolls)

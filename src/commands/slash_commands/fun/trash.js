@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
+const { PercentTrue, CalculateFoodRarity, GetRandomInt } = require("../../../extra.js");
 
 // 13 Categories
 // 235 Total Items
@@ -320,7 +321,7 @@ module.exports = {
         
         // Food and Adjective Category calculation and assigning
         var item, adj;
-        const randomCategory = Math.floor(Math.random() * 13) + 1; // Generates a number from 1 to 13 to pick one of the 14 categories
+        const randomCategory = GetRandomInt(1, 13); // Generates a number from 1 to 13 to pick one of the 14 categories
         switch (randomCategory) {
             case (1):
                 item = food[Math.floor(Math.random() * food.length)];

@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { GetRandomInt } = require("../../../extra.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,11 +9,10 @@ module.exports = {
 
         // Rarity calculation
         var coin = "";
-        const rarityNum = Math.floor(Math.random() * (100 - 1) + 1)
-        if(rarityNum < 50)          coin = "Heads";                              // 49% chance of it being Heads
-        else if(rarityNum < 99)     coin = "Tails";                              // 49% chance of it being Tails
-        else if(rarityNum <= 100)   coin = "Oh my god! It landed on it's side!"; // 2% chance of it landing on the middle
-        else                        coin = "Heads";                              // In case my calculations are wrong it won't break, it will just default to Heads
+        const rarityNum = GetRandomInt(1, 101);
+        if(rarityNum <= 1) coin = "Oh my god! It landed on it's side!"; // Has a 1/101 chance
+        else if (rarityNum <= 51) coin = "Heads"; // Has a 50/101 chance
+        else coin = "Tails"; // Has a 50/101 chance
 
         // Sending the final message
         await interaction.reply({

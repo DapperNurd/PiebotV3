@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
+const { PercentTrue, CalculateFoodRarity } = require('../../../extra.js');
 
 const common = ["ham and cheese sandwich", "grilled cheese sandwich", "BLT sandwich", "roast beef sandwich", "turkey sandwich", "peanut butter and jelly sandwich", "bologna sandwich"
 ];
@@ -51,15 +52,14 @@ module.exports = {
         
         // Food Rarity calculation and assigning
         var food;
-        const rarityNum = Math.floor(Math.random() * (100 - 1) + 1) // Random from 1 to 100
-        if (rarityNum < 51)        food = common[Math.floor(Math.random() * common.length)];       // 50% (1 to 50 )
-        else if (rarityNum < 91)   food = uncommon[Math.floor(Math.random() * uncommon.length)];   // 40% ( 51 to 90 )
-        else if (rarityNum < 100)  food = rare[Math.floor(Math.random() * rare.length)];           // 9% ( 91 to 99 )
-        else if (rarityNum >= 100) food = legendary[Math.floor(Math.random() * legendary.length)]; // 1% ( 100 )
-        else                       food = common[Math.floor(Math.random() * common.length)];       // Should never run but just in case 
+        const rarity = CalculateFoodRarity();
+        if      (rarity == 'common')    food = common[Math.floor(Math.random() * common.length)];
+        else if (rarity == 'uncommon')  food = uncommon[Math.floor(Math.random() * uncommon.length)];
+        else if (rarity == 'rare')      food = rare[Math.floor(Math.random() * rare.length)];
+        else if (rarity == 'legendary') food = legendary[Math.floor(Math.random() * legendary.length)];
 
         // Adjective calculation and assigning
-        const adj = (Math.floor(Math.random() * (100 - 1) + 1)) > 10
+        const adj = PercentTrue(10)
             ? adjectives[Math.floor(Math.random() * adjectives.length)]
             : adjectivesBad[Math.floor(Math.random() * adjectivesBad.length)]; // Formatting this way just because it's a long line
         

@@ -1,3 +1,5 @@
+const { PercentTrue } = require("../../extra.js");
+
 module.exports = {
     name: 'ok',
     description: 'Code for when someone says "ok"',
@@ -17,7 +19,7 @@ module.exports = {
         });
 
         if (!botID) {
-            var msg = (Math.ceil(Math.random() * 10) == 1) ? "Ok" : "ok"; // 1 in 10 chance to send "Ok" instead of "ok"
+            var msg = PercentTrue(10) ? "Ok" : "ok"; // 10% chance to send "Ok" instead of "ok"
             message.channel.send(msg);
 
             if(message.channel.id == "459207634403196938") { // "ok" channel (id) in The Trauma Center

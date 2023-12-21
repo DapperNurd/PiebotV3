@@ -64,7 +64,7 @@ module.exports = {
 
                 // Builds the embed message
         const discordStatsEmbed = new EmbedBuilder()
-            .setColor(targetedUser.accentColor ?? piebotColor)
+            .setColor('#5865F2')
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.displayName} Stats`
