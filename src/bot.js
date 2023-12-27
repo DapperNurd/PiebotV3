@@ -45,10 +45,10 @@ client.login(token);
 // └─────────────────────────── second (0 - 59, OPTIONAL)
 
 // Trivia Handling
-const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
+const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
     const notify = pies_of_exile.send({
-        content: "Trivia starting in 3 minutes!"
+        content: "Trivia starts in 1 minute!"
     })
     try {
         const waitEmoji = await client.emojis.cache.find(emoji => emoji.id == '1187271828822036580');
@@ -62,7 +62,7 @@ const job = schedule.scheduleJob('57 */6 * * *', async function() { // '57 */6 *
         } catch (err) {
             console.error(err);
         }
-    }, 3 * 60_000);
+    }, 60_000);
 });
 
 // Reminders Handling
