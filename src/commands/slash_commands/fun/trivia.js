@@ -51,9 +51,12 @@ module.exports = {
 
         var useScore = true;
 
+        let triviaChannel = await client.channels.fetch('459566179615506442'); // #pies_of_exile
+
         if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
             if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command! Trivia starts automatically every 8 hours...`, ephemeral: true }); // Does not have Moderator or Nurdiest roles
             useScore = false; // Disables using of score
+            triviaChannel = interaction.channel; // sets to interaction channel
             await interaction.reply({ content: "Creating trivia...", ephemeral: true });
         }
 
@@ -108,11 +111,9 @@ module.exports = {
         const fourButton = new ButtonBuilder().setCustomId('4').setLabel('4').setStyle(ButtonStyle.Danger);
         const row = new ActionRowBuilder().addComponents(oneButton, twoButton, threeButton, fourButton);
 
-        // const pies_of_exile = await client.channels.fetch('459566179615506442');
-        const pies_of_exile = await client.channels.fetch('562136578265317388'); // #no FROM Nurds SERVER
-        if(pies_of_exile == null) return console.log("[TRIVIA ERROR]: Could not find pies_of_exile!");
+        if(triviaChannel == null) return console.log("[TRIVIA ERROR]: Could not find pies_of_exile!");
 
-        var triviaPost = await pies_of_exile.send({
+        var triviaPost = await triviaChannel.send({
             embeds: [triviaEmbed],
             components: [row]
         });
@@ -225,13 +226,13 @@ module.exports = {
                     resultsEmbed.addFields([{ name: 'Did not score', value: msg }])
                 }
                 
-                var resultsPost = await pies_of_exile.send({
+                var resultsPost = await triviaChannel.send({
                     embeds: [resultsEmbed]
                 });
             }
 
             if(useScore)
-                promisePool.execute(`INSERT INTO Discord.guild (guildID,guildName,triviaPlayed) VALUES ('${pies_of_exile.guild.id}','${pies_of_exile.guild.name}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                promisePool.execute(`INSERT INTO Discord.guild (guildID,guildName,triviaPlayed) VALUES ('${triviaChannel.guild.id}','${triviaChannel.guild.name}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
         });
     }
 }
