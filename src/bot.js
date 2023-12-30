@@ -48,7 +48,7 @@ client.login(token);
 // Trivia Handling
 const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
-    const notify = pies_of_exile.send({
+    const notify = await pies_of_exile.send({
         content: "Trivia starts in 1 minute!"
     })
     try {

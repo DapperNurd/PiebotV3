@@ -52,7 +52,7 @@ module.exports = {
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([ // ${userObject.triviaScore.toString()} (#${triviaRank})`
                 { name: '__Trivia Score__',      value: `${ (userObject.triviaScore == 0) ? '0 (Unranked)' : `${userObject.triviaScore.toString()} (#${triviaRank})` }`, inline: true },
-                { name: '__Twitch Account__',      value: `${ twitchProfile != null ? twitchProfile.userName : 'Twitch profile not linked...' }` },
+                { name: '__Twitch Account__',      value: `${ twitchProfile != null ? twitchProfile.userName : 'Twitch profile not linked...\nType `/link twitch` to get started!' }` },
             ])
             .setTimestamp()
             .setFooter({

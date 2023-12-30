@@ -29,6 +29,8 @@ module.exports = {
             .setDescription('[MODERATOR] Manually stats a trivia game, does not count score!')
         ),
     async execute(interaction, client, promisePool) {
+        
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         if(interaction && interaction.options.getSubcommand() == "help") {
             const helpEmbed = new EmbedBuilder()
@@ -37,17 +39,20 @@ module.exports = {
                     iconURL: client.user.displayAvatarURL(),
                     name: `${client.user.displayName} Trivia`
                 })
-                .setTitle(trivia.question)
-                .setDescription(`${trivia.category}\n${trivia.difficulty.toUpperCase()} Difficulty`)
+                .setTitle('Trivia Help')
+                .addFields([ 
+                    { name: 'There\'s trivia?',      value: 'Yep! Piebot hosts a trivia game three times a day, at the same times everyday (1am, 7am, 1pm, 7pm - PST). You can earn points by guessing correctly, and view your points with `/stats`... there is even a leaderboard, with `/scoreboard`!' },
+                    { name: 'How does it work?',      value: 'Trivia points are scored based on guessing correctly, and being the first to do so. A trivia game lasts 10 minutes, and everyone gets 2 attempts to guess it correctly. There is a 3 point reward for being the first person to guess it correctly **on their first try**. That is viewed as the top scorer. Note, it does *not* mean the first person to guess correctly in general. If you guess it correctly on your second try, or if someone has already guessed it first try, then you will still earn 1 point. After the 10 minutes are up, a results screen is posted showing who guessed, and who earned points.' },
+                    { name: 'Can I start a game manually?',      value: 'Nope. Only moderators have the ability to manually start a trivia game with `/trivia start`, and even then, a manually started trivia game *will not* count scores. It is purely for fun.' },
+                    { name: 'How does it get the questions?',      value: 'Piebot gets all trivia questions/answers from https://the-trivia-api.com/.' },
+                ])
                 .setTimestamp()
                 .setFooter({
                     iconURL: author.displayAvatarURL(),
                     text: `PiebotV3 by ${author.username}`
                 });
-                await interaction.reply({ content: "WIP", ephemeral: true });
+                return await interaction.reply({ embeds: [helpEmbed], ephemeral: true });
         }
-
-        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         var useScore = true;
 
@@ -225,10 +230,11 @@ module.exports = {
                     });
                     resultsEmbed.addFields([{ name: 'Did not score', value: msg }])
                 }
-                
-                var resultsPost = await triviaChannel.send({
-                    embeds: [resultsEmbed]
-                });
+
+                await triviaPost.edit({
+                    embeds: [triviaEmbed, resultsEmbed],
+                    components: []
+                }).catch(err => console.log('Error updating poll embed!'));
             }
 
             if(useScore)
