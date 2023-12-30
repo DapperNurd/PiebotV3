@@ -153,7 +153,7 @@ module.exports = {
                 await i.update({
                     embeds: [embeds[embedIndex]],
                     components: [navButtonRow]
-                });
+                }).catch(err => console.log('Error stats embed!'));
             }
             else if(i.customId == 'left') {
                 embedIndex--; // increases the page number index
@@ -162,7 +162,7 @@ module.exports = {
                 await i.update({
                     embeds: [embeds[embedIndex]],
                     components: [navButtonRow]
-                });
+                }).catch(err => console.log('Error stats embed!'));
             }
             else {
                 console.log('[ERROR]: Code missing for button on account command!')
@@ -173,7 +173,7 @@ module.exports = {
             embedMsg.edit({
                 embeds: [embeds[embedIndex]],
                 components: []
-            });
+            }).catch(err => console.log('Error stats embed!'));
         });
     }
 }
