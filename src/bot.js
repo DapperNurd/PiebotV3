@@ -44,6 +44,7 @@ client.login(token);
 // │      └──────────────────── minute (0 - 59)
 // └─────────────────────────── second (0 - 59, OPTIONAL)
 
+
 // Trivia Handling
 const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
@@ -53,7 +54,7 @@ const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 *
     try {
         const waitEmoji = await client.emojis.cache.find(emoji => emoji.id == '1187271828822036580');
         notify.react(waitEmoji);
-    } catch { console.log("Unable to react with emoji to trivia notification..."); }
+    } catch (err) { console.log("EMOJI REACTION ON TRIVIA: " + err) } // Unable to react for some reason
     setTimeout(async () => {
         const contextCommand = client.commands.get("trivia");
         if(!contextCommand) return;
