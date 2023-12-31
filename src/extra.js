@@ -67,11 +67,16 @@ function FormatTime(timeInMS) {
     return (minutes <= 0) ? `${seconds}s` : `${minutes}m ${seconds}s`;
 }
 
+function StartsWithVowel(str) {
+    return (str.startsWith("a") || str.startsWith("e") || str.startsWith("i") || str.startsWith("o") || str.startsWith("u"));
+}
+
 module.exports = {
     piebotColor,
     columns,
     GetRandomInt,
     PercentTrue,
     CalculateFoodRarity,
-    FormatTime
+    FormatTime,
+    StartsWithVowel
 }

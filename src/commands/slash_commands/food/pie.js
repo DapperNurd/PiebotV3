@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, userMention } = require('discord.js');
-const { PercentTrue, CalculateFoodRarity } = require('../../../extra.js');
+const { PercentTrue, CalculateFoodRarity, StartsWithVowel } = require('../../../extra.js');
 
 const common = ["pumpkin pie", "coconut cream pie", "banana cream pie", "strawberry rhubarb pie", "chocolate cream pie", "blueberry pie", "ice cream pie", "peach pie", "pear pie", "chicken pot pie", "cranberry pie", "pineapple pie", "turtle pie", "chocolate hazelnut pie", "mixed berry pie", "chestnut pie"
 ];
@@ -72,7 +72,7 @@ module.exports = {
         phrase = phrase.replace('[FOOD]', food); ////////////
 
         if(phrase.includes('[A]')) { // Proper grammar for adjective handling (whether to use "a" or "an" before the adjective)
-            const a = (adj.startsWith("a") || adj.startsWith("e") || adj.startsWith("i") || adj.startsWith("o") || adj.startsWith("u")) ? "an" : "a"; // Checking if adj starts with a vowel
+            const a = StartsWithVowel(adj) ? "an" : "a"; // Checking if adj starts with a vowel
             phrase = phrase.replace('[A]', a); // Replaces placeholder in the phrase with the proper term
             phrase = phrase.charAt(0).toUpperCase() + phrase.slice(1); // Captializes the first character in a string, in case [AN] is the first word
         }
