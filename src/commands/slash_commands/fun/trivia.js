@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { piebotColor } = require('../../../extra.js');
+const { piebotColor, FormatTime } = require('../../../extra.js');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
 const allowedGuesses = 2;
@@ -208,16 +208,16 @@ module.exports = {
                     });
 
                 const firstTryUser = interactedUsers.find(user => user.scoredPoints == 3)
-                if(firstTryUser) resultsEmbed.addFields([{ name: 'Top Scorer!', value: `${userMention(firstTryUser.userID)} ${Math.round((firstTryUser.time - startTime)/1000)} seconds` }])
+                if(firstTryUser) resultsEmbed.addFields([{ name: 'Top Scorer!', value: `${userMention(firstTryUser.userID)} ${FormatTime(firstTryUser.time - startTime)}` }])
 
                 const quickest = interactedUsers.sort((a, b) => { return a.time - b.time; }).filter((user) => user.scoredPoints > 0);
-                if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser!', value: `${userMention(quickest[0].userID)} ${Math.round((quickest[0].time - startTime)/1000)} seconds` }])
+                if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser!', value: `${userMention(quickest[0].userID)} ${FormatTime(quickest[0].time - startTime)}` }])
 
                 const scoredOne = interactedUsers.filter((user) => user.scoredPoints == 1);
                 if(scoredOne.length > 0) {
                     let msg = '';
                     scoredOne.forEach(user => {
-                        msg += userMention(user.userID) + ` ${Math.round((user.time - startTime)/1000)} seconds\n`;
+                        msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
                     });
                     resultsEmbed.addFields([{ name: 'Scored 1 Point', value: msg }])
                 }
@@ -226,7 +226,7 @@ module.exports = {
                 if(scoredNone.length > 0) {
                     let msg = '';
                     scoredNone.forEach(user => {
-                        msg += userMention(user.userID) + ` ${Math.round((user.time - startTime)/1000)} seconds\n`;
+                        msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
                     });
                     resultsEmbed.addFields([{ name: 'Did not score', value: msg }])
                 }

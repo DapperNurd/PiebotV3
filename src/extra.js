@@ -24,8 +24,8 @@ const columns = [
 
 /**
  * Gets a random integer between a given range, both inclusive
- * @param {*} min The lowest number possible
- * @param {*} max The highest number possible
+ * @param {number} min The lowest number possible
+ * @param {number} max The highest number possible
  * @returns randomized number
  */
 function GetRandomInt(min, max) {
@@ -36,7 +36,7 @@ function GetRandomInt(min, max) {
 
 /**
  * Calculates true based on a given percentage
- * @param {*} percentage The percent to calculate by
+ * @param {number} percentage The percent to calculate by
  * @returns True | False
  */
 function PercentTrue(percentage) {
@@ -55,10 +55,23 @@ function CalculateFoodRarity() {
     return 'common';
 }
 
+/**
+ * Takes in a time in miliseconds and formats it to minutes and seconds as a string
+ * @param {number} timeInMS 
+ * @returns a string, formatted with minutes and seconds
+ */
+function FormatTime(timeInMS) {
+    const totalSeconds = Math.round(timeInMS/1000);
+    const seconds = totalSeconds%60;
+    const minutes = (totalSeconds-seconds)/60;
+    return (minutes <= 0) ? `${seconds}s` : `${minutes}m ${seconds}s`;
+}
+
 module.exports = {
     piebotColor,
     columns,
     GetRandomInt,
     PercentTrue,
-    CalculateFoodRarity
+    CalculateFoodRarity,
+    FormatTime
 }
