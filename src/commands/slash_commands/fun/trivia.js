@@ -10,6 +10,7 @@ class InteractedUser { // This is for user interaction handling, so I can easily
         this.guessesLeft = allowedGuesses + modify;
         this.time = createdAt;
         this.scoredPoints = -1;
+        this.attemptsMade = 0;
     }
     SetPoints(num) {
         this.scoredPoints = num;
@@ -179,6 +180,7 @@ module.exports = {
             }
             guessed = true; // Does not necessarily mean someone got it right, but that someone tried.
             user.guessesLeft--; // subtracts from the user's guesses
+            user.attemptsMade++; // Adds an attempt to the user
         });
 
         collector.on('end', async i => { // Collector on end function
@@ -193,7 +195,9 @@ module.exports = {
                 components: []
             }).catch(err => console.log('Error updating poll embed!'));
 
+            // Sending the final results
             if(guessed) {
+                // Initial embed construction
                 const resultsEmbed = new EmbedBuilder()
                     .setColor(piebotColor)
                     .setAuthor({
@@ -207,34 +211,49 @@ module.exports = {
                         text: `PiebotV3 by ${author.username}`
                     });
 
-                const firstTryUser = interactedUsers.find(user => user.scoredPoints == 3)
-                if(firstTryUser) resultsEmbed.addFields([{ name: 'Top Scorer!', value: `${userMention(firstTryUser.userID)} ${FormatTime(firstTryUser.time - startTime)}` }])
-
-                const quickest = interactedUsers.sort((a, b) => { return a.time - b.time; }).filter((user) => user.scoredPoints > 0);
+                // Embed building
+                const quickest = interactedUsers.sort((a, b) => { return a.time - b.time; }).filter((user) => user.scoredPoints > 0); // Greater than zero means only if they got it
                 if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser!', value: `${userMention(quickest[0].userID)} ${FormatTime(quickest[0].time - startTime)}` }])
 
-                const scoredOne = interactedUsers.filter((user) => user.scoredPoints == 1);
-                if(scoredOne.length > 0) {
+                const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1);
+                if(firstTry.length > 0) {
                     let msg = '';
-                    scoredOne.forEach(user => {
-                        msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
+                    firstTry.forEach(user => {
+                        msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}`;
+                        if(user.scoredPoints == 3) msg += ' 👑';
+                        msg += '\n';
                     });
-                    resultsEmbed.addFields([{ name: 'Scored 1 Point', value: msg }])
+                    resultsEmbed.addFields([{ name: 'Guessed First Try', value: msg }])
                 }
 
-                const scoredNone = interactedUsers.filter((user) => user.scoredPoints == 0);
-                if(scoredNone.length > 0) {
+                const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2);
+                if(secondTry.length > 0) {
                     let msg = '';
-                    scoredNone.forEach(user => {
+                    secondTry.forEach(user => {
                         msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
                     });
-                    resultsEmbed.addFields([{ name: 'Did not score', value: msg }])
+                    resultsEmbed.addFields([{ name: 'Guessed Second Try', value: msg }])
                 }
 
-                await triviaPost.edit({
-                    embeds: [triviaEmbed, resultsEmbed],
-                    components: []
-                }).catch(err => console.log('Error updating poll embed!'));
+                const didNotGet = interactedUsers.filter((user) => user.attemptsMade > 2);
+                if(didNotGet.length > 0) {
+                    let msg = '';
+                    didNotGet.forEach(user => {
+                        msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
+                    });
+                    resultsEmbed.addFields([{ name: 'Guessed Incorrectly', value: msg }])
+                }
+
+                // Embed updating/sending
+                    await triviaPost.edit({
+                        embeds: [triviaEmbed, resultsEmbed],
+                        components: []
+                    }).catch(async (err) => {
+                        await interaction.channel.send({
+                            embeds: [resultsEmbed]
+                        }).catch(err => console.log('Error updating trivia: could not send results!'));
+    
+                    });
             }
 
             if(useScore)
