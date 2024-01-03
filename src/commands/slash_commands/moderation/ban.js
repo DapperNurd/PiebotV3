@@ -4,7 +4,7 @@ const { piebotColor } = require('../../../extra.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ban')
-        .setDescription('Ban a user from using Piebot!')
+        .setDescription('[OWNER] Ban a user from using Piebot!')
         .addSubcommand(command => command
             .setName('list')
             .setDescription('Display a list of banned users!')
@@ -15,7 +15,7 @@ module.exports = {
         )
         .addSubcommand(command => command
             .setName('user')
-            .setDescription('Display a list of banned users!')
+            .setDescription('[OWNER] Display a list of banned users!')
             .addUserOption(option =>
                 option.setName('user')
                     .setDescription('User to ban')
