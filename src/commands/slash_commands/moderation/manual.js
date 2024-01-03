@@ -28,7 +28,7 @@ module.exports = {
         // There is no checking if the options were inputted, because they are both required
 
         // Sends message
-        return await interaction.options.getChannel('channel').send(interaction.getString(text)).catch(err => console.log('Error stats embed!'));
+        return await interaction.options.getChannel('channel').send(interaction.getString('text')).catch(err => console.log('Error stats embed!'));
 
     }
 }
