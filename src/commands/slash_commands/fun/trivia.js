@@ -213,7 +213,7 @@ module.exports = {
 
                 // Embed building
                 const quickest = interactedUsers.sort((a, b) => { return a.time - b.time; }).filter((user) => user.scoredPoints > 0); // Greater than zero means only if they got it
-                if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser!', value: `${userMention(quickest[0].userID)} ${FormatTime(quickest[0].time - startTime)}` }])
+                if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser', value: `${userMention(quickest[0].userID)} ${FormatTime(quickest[0].time - startTime)}` }])
 
                 const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1);
                 if(firstTry.length > 0) {
