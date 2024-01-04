@@ -92,7 +92,6 @@ module.exports = {
                 { name: '__Total Count__',       value: userObject.total.toString()},
                 { name: '\n',                    value: '\n'},
                 { name: '__Ok Count__',          value: okString, inline: true },
-
             ])
             .setTimestamp()
             .setFooter({
