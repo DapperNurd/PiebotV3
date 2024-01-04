@@ -27,7 +27,7 @@ module.exports = {
             )
             .addStringOption(option =>
                 option.setName('reason')
-                    .setDescription('Hide the command from others?')
+                    .setDescription('What is their reasoning for being banned?')
                     .setMaxLength(255)
             )
         ),

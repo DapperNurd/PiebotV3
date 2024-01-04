@@ -71,6 +71,16 @@ function StartsWithVowel(str) {
     return (str.startsWith("a") || str.startsWith("e") || str.startsWith("i") || str.startsWith("o") || str.startsWith("u"));
 }
 
+/**
+ * Returns the color code for the given user
+ * @param {User} user The user to get the color for
+ * @returns The hexadecimal form of the user's accent color, or just piebotColor if null
+ */
+async function GetUserAccentColor(user) {
+    const found = await user.fetch(true); // This for some reason makes it consistently be able to get accentColor
+    return found.accentColor ?? piebotColor;
+}
+
 module.exports = {
     piebotColor,
     columns,
@@ -78,5 +88,6 @@ module.exports = {
     PercentTrue,
     CalculateFoodRarity,
     FormatTime,
-    StartsWithVowel
+    StartsWithVowel,
+    GetUserAccentColor
 }

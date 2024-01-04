@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const chalk = require('chalk');
-const { piebotColor, columns } = require('../../../extra.js');
+const { piebotColor, columns, GetUserAccentColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,6 +9,10 @@ module.exports = {
         .addUserOption(option =>
             option.setName('user')
                   .setDescription('User to display stats for')
+        )
+        .addBooleanOption(option =>
+            option.setName('hidden')
+                .setDescription('Hide the command from others?')
         ),
     async execute(interaction, client, promisePool) {
 
@@ -16,6 +20,7 @@ module.exports = {
         const targetedUser = interaction.options.getUser("user") ?? interaction.user; // Sets the targetedUser to the input parameter if included, otherwise the command user
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
         const namePossesive = (targetedUser.displayName.endsWith('s')) ? targetedUser.displayName+ "'" : targetedUser.displayName + "'s" // Proper spelling for when a user's displayName ends with an s... (Kecatas' instead of Kecatas's)
+        const hidden = interaction.options.getBoolean('hidden') ?? false;
 
         // Database handling
         try { 
@@ -43,7 +48,7 @@ module.exports = {
 
         // Builds the embed message
         const accountEmbed = new EmbedBuilder()
-            .setColor(targetedUser.accentColor ?? piebotColor)
+            .setColor(await GetUserAccentColor(client, targetedUser))
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.displayName} Stats`
@@ -137,7 +142,8 @@ module.exports = {
         // Sends the embed message
         const embedMsg = await interaction.reply({
             embeds: [embeds[embedIndex]],
-            components: [navButtonRow]
+            components: [navButtonRow],
+            ephemeral: hidden
         });
 
         // Collection handling
