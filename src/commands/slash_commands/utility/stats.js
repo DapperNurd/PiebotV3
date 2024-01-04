@@ -41,14 +41,14 @@ module.exports = {
         const okString = (userObject.okCount < 0) ? '😠' : userObject.okCount.toString();
 
         // Building the buttons
-        const leftButton = new ButtonBuilder().setCustomId('left').setLabel('<').setStyle(ButtonStyle.Danger);
-        const rightBButton = new ButtonBuilder().setCustomId('right').setLabel('>').setStyle(ButtonStyle.Danger);
+        const leftButton = new ButtonBuilder().setCustomId('left').setLabel('<').setStyle(ButtonStyle.Secondary);
+        const rightBButton = new ButtonBuilder().setCustomId('right').setLabel('>').setStyle(ButtonStyle.Secondary);
 
         const navButtonRow = new ActionRowBuilder().addComponents(leftButton, rightBButton);
 
         // Builds the embed message
         const accountEmbed = new EmbedBuilder()
-            .setColor(await GetUserAccentColor(client, targetedUser))
+            .setColor(await GetUserAccentColor(targetedUser))
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.displayName} Stats`
@@ -56,7 +56,7 @@ module.exports = {
             .setTitle(`${namePossesive} User Info`)
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([ // ${userObject.triviaScore.toString()} (#${triviaRank})`
-                { name: '__Trivia Score__',      value: `${ (userObject.triviaScore == 0) ? '0 (Unranked)' : `${userObject.triviaScore.toString()} (#${triviaRank})` }`, inline: true },
+                { name: '__Trivia Score__',      value: `${userObject.triviaScore.toString()} (${userObject.triviaScore == 0 ? 'Unranked' : '#' + triviaRank})${triviaRank == 1 ? ' 👑' : ''}`, inline: true },
                 { name: '__Twitch Account__',      value: `${ twitchProfile != null ? twitchProfile.userName : 'Twitch profile not linked...\nType `/link twitch` to get started!' }` },
             ])
             .setTimestamp()

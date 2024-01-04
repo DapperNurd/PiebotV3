@@ -166,7 +166,7 @@ const tools = [     "[A] [ADJ] bucket",
                     "[A] [ADJ] shopping cart"     ];
 const toolsAdj = [ "broken", "advanced", "old", "worn", "factory-new", "dirty" ];
 
-const kitchen = [   "[A] [ADJ] tubberware container",
+const kitchen = [   "[A] [ADJ] tupperware container",
                     "[A] [ADJ] pot",
                     "[A] [ADJ] whole oven",
                     "[A] [ADJ] kitchen sink",
