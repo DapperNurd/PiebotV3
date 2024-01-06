@@ -9,11 +9,8 @@ class InteractedUser { // This is for user interaction handling, so I can easily
         this.userID = id;
         this.guessesLeft = allowedGuesses + modify;
         this.time = createdAt;
-        this.scoredPoints = -1;
+        this.scoredPoints = 0;
         this.attemptsMade = 0;
-    }
-    SetPoints(num) {
-        this.scoredPoints = num;
     }
 }
 
@@ -201,7 +198,7 @@ module.exports = {
                         promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
                     }
                     guessMsg += `, you've earned ${scoreIncrement} point${scoreIncrement > 1 ? 's' : ''}`
-                    user.SetPoints(scoreIncrement);
+                    user.scoredPoints += scoreIncrement;
 
                     await i.reply({
                         content: `${guessMsg}!`,
@@ -211,7 +208,6 @@ module.exports = {
                 }
                 else {
                     await i.reply({ content: "Incorrect answer...", ephemeral: true });
-                    user.SetPoints(0);
                 }
                 guessed = true; // Does not necessarily mean someone got it right, but that someone tried.
                 user.guessesLeft--; // subtracts from the user's guesses
@@ -250,7 +246,7 @@ module.exports = {
                     const quickest = interactedUsers.sort((a, b) => { return a.time - b.time; }).filter((user) => user.scoredPoints > 0); // Greater than zero means only if they got it
                     if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser', value: `${userMention(quickest[0].userID)} ${FormatTime(quickest[0].time - startTime)}` }])
 
-                    const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1);
+                    const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1 && user.scoredPoints > 0); // They made one attempt and scored points
                     if(firstTry.length > 0) {
                         let msg = '';
                         firstTry.forEach(user => {
@@ -261,7 +257,7 @@ module.exports = {
                         resultsEmbed.addFields([{ name: 'Guessed First Try', value: msg }])
                     }
 
-                    const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2);
+                    const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2 && user.scoredPoints > 0); // They took 2 attempts and scored points
                     if(secondTry.length > 0) {
                         let msg = '';
                         secondTry.forEach(user => {
@@ -270,7 +266,7 @@ module.exports = {
                         resultsEmbed.addFields([{ name: 'Guessed Second Try', value: msg }])
                     }
 
-                    const didNotGet = interactedUsers.filter((user) => user.attemptsMade > 2);
+                    const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
                     if(didNotGet.length > 0) {
                         let msg = '';
                         didNotGet.forEach(user => {
