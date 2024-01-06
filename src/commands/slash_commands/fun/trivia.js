@@ -71,13 +71,13 @@ module.exports = {
                     return i.reply({ content: "I don't feel so good...", ephemeral: true })
                 }
                 try { 
-                    if(interaction.member.roles.cache.has(role.id)) { // If the user has the role, remove it
-                        interaction.member.roles.remove(role);
-                        i.reply({ content: "Successfully removed role!", ephemeral: true })
+                    if(i.member.roles.cache.has(role.id)) { // If the user has the role, remove it
+                        i.member.roles.remove(role);
+                        await i.reply({ content: "Successfully removed Trivia role!", ephemeral: true })
                     }
                     else { // If the user does not have the role, add it
-                        interaction.member.roles.add(role);
-                        i.reply({ content: "Successfully added role!", ephemeral: true })
+                        i.member.roles.add(role);
+                        await i.reply({ content: "Successfully added Trivia role!", ephemeral: true })
                     }
                 }
                 catch { console.log('Unable to add/remove trivia role...'); } // This try/catch is mainly for permission stuff
@@ -92,7 +92,7 @@ module.exports = {
 
             var useScore = true;
 
-            let triviaChannel = await client.channels.fetch('459566179615506442'); // #pies_of_exile
+            let triviaChannel = await client.channels.fetch('562136578265317388'); //   562136578265317388 <- nurd server | pies of exile -> 459566179615506442
 
             if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
                 if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command! Trivia starts automatically every 8 hours...`, ephemeral: true }); // Does not have Moderator or Nurdiest roles

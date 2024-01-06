@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { token, hostIP, userPW } = process.env;
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const fs = require('fs');
 const chalk = require('chalk');
 const { piebotColor } = require('./extra.js');
@@ -46,15 +46,19 @@ client.login(token);
 
 
 // Trivia Handling
-const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
-    const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+const job = schedule.scheduleJob('* * * * *', async function() { // '59 */6 * * *' runs every 6 hours at 59 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
+
+    // NOTE: This does NOT change the channel that the Trivia game gets ran in, ONLY the one that gets notified! To change the actual game channel, do that in the trivia.js file
+    const channelToSend = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+
+    const role = channelToSend.guild.roles.cache.find(role => role.name === 'Trivia')
 
     // // Builds button for notifying
-    const roleButton = new ButtonBuilder().setCustomId('notify').setLabel('Get Trivia Role!').setStyle(ButtonStyle.Secondary);
+    const roleButton = new ButtonBuilder().setCustomId('notify').setLabel('Get pinged for Trivia!').setStyle(ButtonStyle.Secondary);
     const row = new ActionRowBuilder().addComponents(roleButton);
 
     // Sending the message
-    const notify = await pies_of_exile.send({ content: "Trivia starts in 1 minute!", components: [row] })
+    const notify = await channelToSend.send({ content: `Trivia starts in 1 minute! <@&${role.id}>`, components: [row] })
 
     // Reacting with the waiting emoji
     try {
@@ -73,22 +77,21 @@ const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 *
     // Creating the collector for the buttons
     const collector = notify.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); 
     collector.on('collect', async i => { // Collector on collect function
-        const role = interaction.guild.roles.cache.find(role => role.name === 'Trivia')
         if(!role) {
             console.log("Error finding Trivia role!");
-            return i.reply({ content: "I don't feel so good...", ephemeral: true })
+            return await i.reply({ content: "I don't feel so good...", ephemeral: true })
         }
         try { 
-            if(interaction.member.roles.cache.has(role.id)) {
-                interaction.member.roles.remove(role);
-                i.reply({ content: "Successfully removed role!", ephemeral: true })
+            if(await i.member.roles.cache.has(role.id)) {
+                i.member.roles.remove(role);
+                await i.reply({ content: "Successfully removed Trivia role!", ephemeral: true })
             }
             else {
-                interaction.member.roles.add(role);
-                i.reply({ content: "Successfully added role!", ephemeral: true })
+                i.member.roles.add(role);
+                await i.reply({ content: "Successfully added Trivia role!", ephemeral: true })
             }
         }
-        catch { console.log('Unable to add/remove trivia role...'); }
+        catch (err) { console.log('Unable to add/remove trivia role: ' + err); }
         return;
     });
 
