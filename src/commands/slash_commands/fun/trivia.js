@@ -41,7 +41,7 @@ module.exports = {
                 .setTitle('Trivia Help')
                 .addFields([ 
                     { name: 'There\'s trivia?',      value: 'Yep! Piebot hosts a trivia game four times a day, at the same times everyday (<t:32400:t>, <t:54000:t>, <t:75600:t>, <t:97200:t>). You can earn points by guessing correctly, and view your points with `/stats`... there is even a leaderboard, with `/scoreboard`!' },
-                    { name: 'How does it work?',      value: 'Trivia points are scored based on guessing correctly, and being the first to do so. A trivia game lasts 10 minutes, and everyone gets 2 attempts to guess it correctly. There is a 3 point reward for being the first person to guess it correctly **on their first try**. That is viewed as the top scorer. Note, it does *not* mean the first person to guess correctly in general. If you guess it correctly on your second try, or if someone has already guessed it first try, then you will still earn 1 point. After the 10 minutes are up, a results screen is posted showing who guessed, and who earned points.' },
+                    { name: 'How does it work?',      value: 'Trivia points are scored based on guessing correctly, and being the first to do so. A trivia game lasts 10 minutes, and everyone gets 2 attempts to guess it correctly. There is a 2 point reward for being the first person to guess it correctly **on their first try**. That is viewed as the top scorer. Note, it does *not* mean the first person to guess correctly in general. If you guess it correctly on your second try, or if someone has already guessed it first try, then you will still earn 1 point. After the 10 minutes are up, a results screen is posted showing who guessed, and who earned points.' },
                     { name: 'Can I start a game manually?',      value: 'Nope. Only moderators have the ability to manually start a trivia game with `/trivia start`, and even then, a manually started trivia game *will not* count scores. It is purely for fun.' },
                     { name: 'How does it get the questions?',      value: 'Piebot gets all trivia questions/answers from https://the-trivia-api.com/.' },
                     { name: 'Can I get notified when Trivia is starting?', value: 'Yes! Trivia will automatically signal a minute before each game starts, but if you want to get a mention notifcation, you can click the button to add (or remove) the Trivia role!' },
@@ -184,7 +184,7 @@ module.exports = {
                     let scoreIncrement = 1; // Sets the score increment based on whether or not it's a user's first guess
 
                     if(!firstTryGuessed && user.guessesLeft >= allowedGuesses) { // If the trivia has not been guessed first try by someone before, and the guessing user's first try guess IS the right one...
-                        scoreIncrement = 3;
+                        scoreIncrement = 2;
                         firstTryGuessed = true;
                         const msg = `${userMention(i.user.id)} guessed correctly on their first try!`;
                         triviaEmbed.addFields([{ name: '\n', value: msg }]);
@@ -251,7 +251,7 @@ module.exports = {
                         let msg = '';
                         firstTry.forEach(user => {
                             msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}`;
-                            if(user.scoredPoints == 3) msg += ' 👑';
+                            if(user.scoredPoints == 2) msg += ' 👑';
                             msg += '\n';
                         });
                         resultsEmbed.addFields([{ name: 'Guessed First Try', value: msg }])
