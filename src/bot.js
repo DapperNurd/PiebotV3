@@ -48,22 +48,53 @@ client.login(token);
 // Trivia Handling
 const job = schedule.scheduleJob('59 */6 * * *', async function() { // '57 */6 * * *' runs every 6 hours at 57 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     const pies_of_exile = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
-    const notify = await pies_of_exile.send({
-        content: "Trivia starts in 1 minute!"
-    })
+
+    // // Builds button for notifying
+    const roleButton = new ButtonBuilder().setCustomId('notify').setLabel('Get Trivia Role!').setStyle(ButtonStyle.Secondary);
+    const row = new ActionRowBuilder().addComponents(roleButton);
+
+    // Sending the message
+    const notify = await pies_of_exile.send({ content: "Trivia starts in 1 minute!", components: [row] })
+
+    // Reacting with the waiting emoji
     try {
-        const waitEmoji = await client.emojis.cache.find(emoji => emoji.id == '1187271828822036580');
-        notify.react(waitEmoji);
-    } catch (err) { console.log("EMOJI REACTION ON TRIVIA: " + err) } // Unable to react for some reason
+        const waitEmoji = await client.emojis.cache.find(emoji => emoji.id == '1187271828822036580'); // Finds emoji by id
+        notify.react(waitEmoji); // reacts with emoji
+    } catch (err) { console.log("EMOJI REACTION ON TRIVIA: " + err) }
+
+    // Timeout to start the actual game
     setTimeout(async () => {
-        const contextCommand = client.commands.get("trivia");
+        const contextCommand = client.commands.get("trivia"); // Gets the trivia command from the trivia.js file
         if(!contextCommand) return;
-        try {
-            await contextCommand.execute(null, client, promisePool);
-        } catch (err) {
-            console.error(err);
+        try { await contextCommand.execute(null, client, promisePool); } // Runs the twitch command with interaction parameter set to null
+        catch (err) { console.error(err); }
+    }, 60_000); // 60 second delay
+
+    // Creating the collector for the buttons
+    const collector = notify.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); 
+    collector.on('collect', async i => { // Collector on collect function
+        const role = interaction.guild.roles.cache.find(role => role.name === 'Trivia')
+        if(!role) {
+            console.log("Error finding Trivia role!");
+            return i.reply({ content: "I don't feel so good...", ephemeral: true })
         }
-    }, 60_000);
+        try { 
+            if(interaction.member.roles.cache.has(role.id)) {
+                interaction.member.roles.remove(role);
+                i.reply({ content: "Successfully removed role!", ephemeral: true })
+            }
+            else {
+                interaction.member.roles.add(role);
+                i.reply({ content: "Successfully added role!", ephemeral: true })
+            }
+        }
+        catch { console.log('Unable to add/remove trivia role...'); }
+        return;
+    });
+
+    collector.on('end', async i => { // Collector on end function
+        await notify.edit({ components: [] }).catch((err) => { console.log("Error removing buttons on /trivia help..."); }); // Removes buttons from the reply after collector times out
+    });
 });
 
 // Reminders Handling
