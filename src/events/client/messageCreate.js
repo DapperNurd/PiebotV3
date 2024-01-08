@@ -29,12 +29,12 @@ module.exports = {
         // Thonk Emoji reacting handling
         else if(message.content.toLowerCase().includes('hmm') || message.content.toLowerCase().includes('thonk')) {
             const thonkEmoji = await client.emojis.cache.find(emoji => emoji.id == '983576552488984586');
-            message.react(thonkEmoji).catch(err => { return console.log(`Error reacting to ${message}\n${err}`) });
+            if(message.channel.id != '312815511887151105') message.react(thonkEmoji).catch(err => { return console.log(`Error reacting to ${message}\n${err}`) }); // reacts if not in announcement channel
         }
         // Wowee Emoji reacting handling
         else if(message.content.toLowerCase().includes('wowee')) { 
             const woweeEmoji = await client.emojis.cache.find(emoji => emoji.id == '758396947769196575');
-            message.react(woweeEmoji).catch(err => { return console.log(`Error reacting to ${message}\n${err}`) });;
+            if(message.channel.id != '312815511887151105') message.react(woweeEmoji).catch(err => { return console.log(`Error reacting to ${message}\n${err}`) });; // reacts if not in announcement channel
         }
         // Slash Command Notifier handling
         else if(message.content.startsWith("!") || message.content.startsWith(".")) { // If someone tries to use a command using the old way.
