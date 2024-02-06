@@ -29,10 +29,11 @@ module.exports = {
         }
 
         // Response rarity calculation and assigning
+        var response;
         const randomNum = GetRandomInt(1, 100); // generates a number from 1 to 100 ... Math.floor(Math.random() * (max - min) + min)
         if (randomNum <= 9)       response = oddResponses[Math.floor(Math.random() * oddResponses.length)];
         else if (randomNum <= 21) response = middleResponses[Math.floor(Math.random() * middleResponses.length)];
-        else                      yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];
+        else                      response = yesOrNoResponses[Math.floor(Math.random() * yesOrNoResponses.length)];
 
         // Building the final message
         const msg = `> *${interaction.options.getString("question")}*\n${response}` // Formatting for the final message, including the question asked
