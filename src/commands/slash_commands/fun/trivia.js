@@ -164,54 +164,57 @@ module.exports = {
             var guessed = false;
 
             collector.on('collect', async i => { // Collector on collect function
-                const id = Number(i.customId);
-                if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
+                try {
+                    const id = Number(i.customId);
+                    if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
 
-                let user = interactedUsers.find(user => user.userID === i.user.id)
-                if(user) {
-                    if(user.guessesLeft <= 0) return await i.reply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
-                }
-                else {
-                    user = new InteractedUser(i.user.id)
-                    interactedUsers.push(user); // Adds a new user object to the array if user has not interacted yet, and subtracts one from remaining guesses
-                }
-
-                if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
-
-                if(answers[id-1] == trivia.correctAnswer) { // If the guessed answer is the correct answer
-
-                    let scoreIncrement = 1; // Sets the score increment based on whether or not it's a user's first guess
-
-                    if(!firstTryGuessed && user.guessesLeft >= allowedGuesses) { // If the trivia has not been guessed first try by someone before, and the guessing user's first try guess IS the right one...
-                        scoreIncrement = 2;
-                        firstTryGuessed = true;
-                        const msg = `${userMention(i.user.id)} guessed correctly on their first try!`;
-                        triviaEmbed.addFields([{ name: '\n', value: msg }]);
-                        await triviaPost.edit({ embeds: [triviaEmbed] }).catch(err => console.log('Error updating poll embed!')); 
+                    let user = interactedUsers.find(user => user.userID === i.user.id)
+                    if(user) {
+                        if(user.guessesLeft <= 0) return await i.reply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
+                    }
+                    else {
+                        user = new InteractedUser(i.user.id)
+                        interactedUsers.push(user); // Adds a new user object to the array if user has not interacted yet, and subtracts one from remaining guesses
                     }
 
-                    let guessMsg = 'Correct answer'
+                    if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
+                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
-                    if(useScore) {
-                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
-                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
+                    if(answers[id-1] == trivia.correctAnswer) { // If the guessed answer is the correct answer
+
+                        let scoreIncrement = 1; // Sets the score increment based on whether or not it's a user's first guess
+
+                        if(!firstTryGuessed && user.guessesLeft >= allowedGuesses) { // If the trivia has not been guessed first try by someone before, and the guessing user's first try guess IS the right one...
+                            scoreIncrement = 2;
+                            firstTryGuessed = true;
+                            const msg = `${userMention(i.user.id)} guessed correctly on their first try!`;
+                            triviaEmbed.addFields([{ name: '\n', value: msg }]);
+                            await triviaPost.edit({ embeds: [triviaEmbed] }).catch(err => console.log('Error updating poll embed!')); 
+                        }
+
+                        let guessMsg = 'Correct answer'
+
+                        if(useScore) {
+                            promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
+                            promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
+                        }
+                        guessMsg += `, you've earned ${scoreIncrement} point${scoreIncrement > 1 ? 's' : ''}`
+                        user.scoredPoints += scoreIncrement;
+
+                        await i.reply({
+                            content: `${guessMsg}!`,
+                            ephemeral: true
+                        });
+                        user.guessesLeft-=allowedGuesses; // Ensures they have no more guesses available
                     }
-                    guessMsg += `, you've earned ${scoreIncrement} point${scoreIncrement > 1 ? 's' : ''}`
-                    user.scoredPoints += scoreIncrement;
-
-                    await i.reply({
-                        content: `${guessMsg}!`,
-                        ephemeral: true
-                    });
-                    user.guessesLeft-=allowedGuesses; // Ensures they have no more guesses available
+                    else {
+                        await i.reply({ content: "Incorrect answer...", ephemeral: true });
+                    }
+                    guessed = true; // Does not necessarily mean someone got it right, but that someone tried.
+                    user.guessesLeft--; // subtracts from the user's guesses
+                    user.attemptsMade++; // Adds an attempt to the user
                 }
-                else {
-                    await i.reply({ content: "Incorrect answer...", ephemeral: true });
-                }
-                guessed = true; // Does not necessarily mean someone got it right, but that someone tried.
-                user.guessesLeft--; // subtracts from the user's guesses
-                user.attemptsMade++; // Adds an attempt to the user
+                catch (err) {console.log("TRIVIA BUTTON ERROR THING:  " + err)}
             });
 
             collector.on('end', async i => { // Collector on end function
