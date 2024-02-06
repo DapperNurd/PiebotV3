@@ -57,7 +57,7 @@ module.exports = {
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([ // ${userObject.triviaScore.toString()} (#${triviaRank})`
                 { name: '__Trivia Score__',      value: `${userObject.triviaScore.toString()} (${userObject.triviaScore == 0 ? 'Unranked' : '#' + triviaRank})${triviaRank == 1 ? ' 👑' : ''}`, inline: true },
-                { name: '__Twitch Account__',      value: `${ twitchProfile != null ? twitchProfile.userName : 'Twitch profile not linked...\nType `/link twitch` to get started!' }` },
+                { name: '__Twitch Account__',      value: `${ twitchProfile != null ? twitchProfile.userName : 'No Twitch profile not linked...' }` },
             ])
             .setTimestamp()
             .setFooter({
@@ -126,6 +126,25 @@ module.exports = {
                 { name: '__Fish Fillet Count__', value: twitchProfile.fishCount.toString(), inline: true },
                 { name: '__Trash Count__',       value: twitchProfile.trashCount.toString(), inline: true },
                 { name: '__Total Count__',       value: twitchProfile.total.toString()},
+            ])
+            .setTimestamp()
+            .setFooter({
+                iconURL: author.displayAvatarURL(),
+                text: `PiebotV3 by ${author.username}`
+            });
+            embeds.push(twitchStatsEmbed);
+        }
+        else {
+            twitchStatsEmbed
+            .setColor('#9146FF') // Twitch purple
+            .setAuthor({
+                iconURL: client.user.displayAvatarURL(),
+                name: `${client.user.displayName} Stats`
+            })
+            .setTitle(`${namePossesive} Twitch Stats`)
+            .setThumbnail(targetedUser.displayAvatarURL())
+            .addFields([
+                { name: 'Twitch profile not linked!', value: `${targetedUser.displayName} has not linked their Twitch account yet.\nType \`/link twitch\` to get started!`, inline: true },
             ])
             .setTimestamp()
             .setFooter({
