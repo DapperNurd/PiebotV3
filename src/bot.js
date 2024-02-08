@@ -47,7 +47,7 @@ client.login(token);
 // Trivia Handling
 const job = schedule.scheduleJob('59 */6 * * *', async function() { // '59 */6 * * *' runs every 6 hours at 59 minutes... PST based... https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules for more info
     // NOTE: This does NOT change the channel that the Trivia game gets ran in, ONLY the one that gets notified! To change the actual game channel, do that in the trivia.js file
-    const channelToSend = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+    const channelToSend = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
 
     const role = channelToSend.guild.roles.cache.find(role => role.name === 'Trivia')
 
