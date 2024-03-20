@@ -31,7 +31,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
     var trivia = null;
 
-    await fetch(`https://the-trivia-api.com/api/questions?categories=general_knowledge,film_and_tv,food_and_drink,science,arts_and_literature,geography,music,history&limit=1`) // https://the-trivia-api.com/docs/
+    await fetch(`https://the-trivia-api.com/api/questions?categories=general_knowledge,film_and_tv,food_and_drink,science,arts_and_literature,geography,history,music,society_and_culture&limit=1`) // https://the-trivia-api.com/docs/
     .then(async (response) => {
         var questionArray = await response.json();
         trivia = questionArray[0];
