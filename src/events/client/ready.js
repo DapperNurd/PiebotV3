@@ -18,8 +18,8 @@ const options = [
         status: "online"
     },
     {
-        type: ActivityType.Playing,
-        text: "Devil's Dice",
+        type: ActivityType.Competing,
+        text: "in Trivia",
         status: "online"
     }
 ]

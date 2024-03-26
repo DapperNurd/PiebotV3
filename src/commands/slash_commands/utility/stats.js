@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const chalk = require('chalk');
-const { piebotColor, columns, GetUserAccentColor } = require('../../../extra.js');
+const { currentTriviaSeason, columns, GetUserAccentColor } = require('../../../extra.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,10 +27,12 @@ module.exports = {
             await promisePool.execute(`INSERT INTO Discord.user (userID, userName) VALUES ('${targetedUser.id}', '${targetedUser.username}')`);
             console.log(chalk.yellow(`[Database Status]: Generated new user profile for user: ${targetedUser.username}`));
         } catch {} // Tries to insert a row, errors if row with that id exists... catches the error so it doesn't stop the app
+
         let [result] = await promisePool.execute(`SELECT COUNT(*) AS rank FROM Discord.user WHERE triviaScore >= (SELECT triviaScore FROM Discord.user WHERE userID = '${targetedUser.id}')`);
+        const currTriviaRank = result[0].rank;
+
         let [rows, fields] = await promisePool.execute(`SELECT *, ${columns.join('+')} AS total FROM Discord.user WHERE userID = '${targetedUser.id}'`);
         const userObject = rows[0];
-        const triviaRank = result[0].rank;
         
         let [twitchResult] = await promisePool.execute(`SELECT *, ${columns.join('+')} AS total FROM Twitch.user WHERE discordID = '${targetedUser.id}'`); // Should always find one because of the insert just before this
         let twitchProfile = null;
@@ -56,7 +58,7 @@ module.exports = {
             .setTitle(`${namePossesive} User Info`)
             .setThumbnail(targetedUser.displayAvatarURL())
             .addFields([ // ${userObject.triviaScore.toString()} (#${triviaRank})`
-                { name: '__Trivia Score__',      value: `${userObject.triviaScore.toString()} (${userObject.triviaScore == 0 ? 'Unranked' : '#' + triviaRank})${triviaRank == 1 ? ' 👑' : ''}`, inline: true },
+                { name: `__Trivia Season ${currentTriviaSeason} Score__`,      value: `${userObject.triviaScore.toString()} (${userObject.triviaScore == 0 ? 'Unranked' : '#' + currTriviaRank})${currTriviaRank == 1 ? ' 👑' : ''}`, inline: true },
                 { name: '__Twitch Account__',      value: `${ twitchProfile != null ? twitchProfile.userName : 'No Twitch profile currently linked...' }` },
             ])
             .setTimestamp()

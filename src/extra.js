@@ -5,6 +5,10 @@ const rarities = {
     legendary: 1
 }
 
+const currentTriviaSeason = 1;
+const previousTriviaDates = `Season ${currentTriviaSeason}: Jan 05, 2024 - Mar 31, 2024`;
+const currentTriviaDates = previousTriviaDates;//`Season ${currentTriviaSeason+1}: Apr 01, 2024 - Apr 30, 2024`;
+
 const piebotColor = '#be1a34';
 
 const columns = [
@@ -84,6 +88,9 @@ async function GetUserAccentColor(user) {
 module.exports = {
     piebotColor,
     columns,
+    currentTriviaSeason,
+    currentTriviaDates,
+    previousTriviaDates,
     GetRandomInt,
     PercentTrue,
     CalculateFoodRarity,
