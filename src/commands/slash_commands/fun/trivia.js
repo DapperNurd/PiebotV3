@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { piebotColor, FormatTime } = require('../../../extra.js');
+const { currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
 const allowedGuesses = 2;
@@ -259,7 +259,7 @@ module.exports = {
                 .setColor(piebotColor)
                 .setAuthor({
                     iconURL: client.user.displayAvatarURL(),
-                    name: `${client.user.displayName} Trivia`
+                    name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
                 })
                 .setTitle('Trivia Help')
                 .addFields([ 
