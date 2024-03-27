@@ -75,18 +75,19 @@ const job = schedule.scheduleJob('59 */6 * * *', async function() { // '59 */6 *
     // Creating the collector for the buttons
     const collector = notify.createMessageComponentCollector({ componentType: ComponentType.Button, time: 11 * 60_000 }); 
     collector.on('collect', async i => { // Collector on collect function
+        await i.deferReply({ ephemeral: true });
         if(!role) {
             console.log("Error finding Trivia role!");
-            return await i.reply({ content: "I don't feel so good...", ephemeral: true })
+            return await i.editReply({ content: "I don't feel so good...", ephemeral: true })
         }
         try {
             if(await i.member.roles.cache.has(role.id)) {
                 i.member.roles.remove(role);
-                await i.reply({ content: "Successfully removed Trivia role!", ephemeral: true })
+                await i.editReply({ content: "Successfully removed Trivia role!", ephemeral: true })
             }
             else {
                 i.member.roles.add(role);
-                await i.reply({ content: "Successfully added Trivia role!", ephemeral: true })
+                await i.editReply({ content: "Successfully added Trivia role!", ephemeral: true })
             }
         }
         catch (err) { console.log('Unable to add/remove trivia role: ' + err); }

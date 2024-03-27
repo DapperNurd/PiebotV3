@@ -7,7 +7,7 @@ const rarities = {
 
 const currentTriviaSeason = 1;
 const previousTriviaDates = `Season ${currentTriviaSeason}: Jan 05, 2024 - Mar 31, 2024`;
-const currentTriviaDates = previousTriviaDates;//`Season ${currentTriviaSeason+1}: Apr 01, 2024 - Apr 30, 2024`;
+const currentTriviaDates = previousTriviaDates;//`Season ${currentTriviaSeason+1}: Apr 01, 2024 - Jun 30, 2024`;
 
 const piebotColor = '#be1a34';
 
@@ -66,9 +66,10 @@ function CalculateFoodRarity() {
  */
 function FormatTime(timeInMS) {
     const totalSeconds = Math.round(timeInMS/1000);
+    const miliseconds = timeInMS%1000;
     const seconds = totalSeconds%60;
     const minutes = (totalSeconds-seconds)/60;
-    return (minutes <= 0) ? `${seconds}s` : `${minutes}m ${seconds}s`;
+    return (minutes <= 0) ? `${seconds}s` : `${minutes}m ${seconds}s ${miliseconds}ms`;
 }
 
 function StartsWithVowel(str) {

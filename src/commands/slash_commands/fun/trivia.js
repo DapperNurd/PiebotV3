@@ -97,12 +97,13 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
     collector.on('collect', async i => { // Collector on collect function
         try {
+            await i.deferReply({ ephemeral: true });
             const id = Number(i.customId);
             if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
 
             let user = interactedUsers.find(user => user.userID === i.user.id)
             if(user) {
-                if(user.guessesLeft <= 0) return await i.reply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
+                if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
             }
             else {
                 user = new InteractedUser(i.user.id)
@@ -133,14 +134,14 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 guessMsg += `, you've earned ${scoreIncrement} point${scoreIncrement > 1 ? 's' : ''}`
                 user.scoredPoints += scoreIncrement;
 
-                await i.reply({
+                await i.editReply({
                     content: `${guessMsg}!`,
                     ephemeral: true
                 });
                 user.guessesLeft-=allowedGuesses; // Ensures they have no more guesses available
             }
             else {
-                await i.reply({ content: "Incorrect answer...", ephemeral: true });
+                await i.editReply({ content: "Incorrect answer...", ephemeral: true });
             }
             guessed = true; // Does not necessarily mean someone got it right, but that someone tried.
             user.guessesLeft--; // subtracts from the user's guesses
@@ -285,19 +286,20 @@ module.exports = {
             // Starts collectors
             const collector = reply.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); // Creating the collector for the buttons
             collector.on('collect', async i => { // Collector on collect function
+                await i.deferReply({ ephemeral: true });
                 const role = interaction.guild.roles.cache.find(role => role.name === 'Trivia')
                 if(!role) { // If role is not found
                     console.log("Error finding Trivia role!");
-                    return i.reply({ content: "I don't feel so good...", ephemeral: true })
+                    return await i.editReply({ content: "I don't feel so good...", ephemeral: true })
                 }
                 try { 
                     if(i.member.roles.cache.has(role.id)) { // If the user has the role, remove it
                         i.member.roles.remove(role);
-                        await i.reply({ content: "Successfully removed Trivia role!", ephemeral: true })
+                        await i.editReply({ content: "Successfully removed Trivia role!", ephemeral: true })
                     }
                     else { // If the user does not have the role, add it
                         i.member.roles.add(role);
-                        await i.reply({ content: "Successfully added Trivia role!", ephemeral: true })
+                        await i.editReply({ content: "Successfully added Trivia role!", ephemeral: true })
                     }
                 }
                 catch { console.log('Unable to add/remove trivia role...'); } // This try/catch is mainly for permission stuff

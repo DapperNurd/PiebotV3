@@ -50,7 +50,7 @@ module.exports = {
             const button = buttons.get(customId);
             if(!button) return new Error("There is no code for this button.");
             try {
-                await button.execute(interaction, client);
+                await button.execute(interaction, client, promisePool);
             } catch (err) {
                 console.error(err);
             }
@@ -61,7 +61,7 @@ module.exports = {
             const menu = selectMenus.get(customId);
             if(!menu) return new Error("There is no code for this select menu.");
             try {
-                await menu.execute(interaction, client);
+                await menu.execute(interaction, client, promisePool);
             } catch (err) {
                 console.error(err);
             }
@@ -73,7 +73,7 @@ module.exports = {
             if(!contextCommand) return;
 
             try {
-                await contextCommand.execute(interaction, client);
+                await contextCommand.execute(interaction, client, promisePool);
             } catch (err) {
                 console.error(err);
             }
