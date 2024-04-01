@@ -48,8 +48,8 @@ module.exports = {
                 text: `PiebotV3 by ${author.username}`
             });
 
-        Canvas.GlobalFonts.registerFromPath("~\\.fonts\\gg sans Regular.ttf", "gg sans")
-        Canvas.GlobalFonts.registerFromPath("~\\.fonts\\gg sans SemiBold.ttf", "gg sans bold")
+        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Bold.ttf", "gg sans")
+        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
 
         const resolution = 6;
         const offset = 0*resolution;
@@ -80,7 +80,7 @@ module.exports = {
         var rowCount = 0;
         var paragraphCount = 0;
 
-        CreateTextRow(context, circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans bold`, ["", "User", "Scored", "Played"]);
+        CreateTextRow(context, circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, ["", "User", "Scored", "Played"]);
         rowCount++;
         paragraphCount++;
 
