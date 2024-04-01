@@ -48,7 +48,7 @@ module.exports = {
                 text: `PiebotV3 by ${author.username}`
             });
 
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Bold.ttf", "gg sans")
+        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Regular.ttf", "gg sans")
         Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
 
         const resolution = 6;
