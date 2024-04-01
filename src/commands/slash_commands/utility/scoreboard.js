@@ -177,7 +177,7 @@ module.exports = {
                 }).catch(err => console.log('Error stats embed!'));
             }
             else {
-                console.log('[ERROR]: Code missing for button on account command!')
+                console.log('[ERROR]: Code missing for button on scoreboard command!')
             }
         });
  
