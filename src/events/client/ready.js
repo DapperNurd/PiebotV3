@@ -19,7 +19,7 @@ const options = [
     },
     {
         type: ActivityType.Competing,
-        text: "in Trivia",
+        text: "Trivia",
         status: "online"
     }
 ]

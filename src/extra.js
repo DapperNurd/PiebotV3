@@ -5,9 +5,9 @@ const rarities = {
     legendary: 1
 }
 
-const currentTriviaSeason = 1;
-const previousTriviaDates = `Season ${currentTriviaSeason}: Jan 05, 2024 - Mar 31, 2024`;
-const currentTriviaDates = previousTriviaDates;//`Season ${currentTriviaSeason+1}: Apr 01, 2024 - Jun 30, 2024`;
+const currentTriviaSeason = 2;
+const previousTriviaDates = `Season ${currentTriviaSeason-1}: Jan 05, 2024 - Mar 31, 2024`;
+const currentTriviaDates = `Season ${currentTriviaSeason}: Apr 01, 2024 - Jun 30, 2024`;
 
 const piebotColor = '#be1a34';
 
@@ -25,6 +25,15 @@ const columns = [
     'fishCount',
     'trashCount'
 ]
+
+class Column {
+    width;
+    alignment;
+    constructor(width, alignment = "left") {
+        this.width = width;
+        this.alignment = alignment;
+    }
+}
 
 /**
  * Gets a random integer between a given range, both inclusive
@@ -66,10 +75,26 @@ function CalculateFoodRarity() {
  */
 function FormatTime(timeInMS) {
     const totalSeconds = Math.round(timeInMS/1000);
-    const miliseconds = timeInMS%1000;
+    const miliseconds = Math.round(timeInMS%1000/10);
     const seconds = totalSeconds%60;
     const minutes = (totalSeconds-seconds)/60;
-    return (minutes <= 0) ? `${seconds}s` : `${minutes}m ${seconds}s ${miliseconds}ms`;
+    return [minutes + "m", seconds.toString() + "s", miliseconds.toString() + "ms"];
+}
+
+function FormatTimeLeadingZeroes(timeInMS) {
+    const totalSeconds = Math.round(timeInMS/1000);
+    const miliseconds = Math.round(timeInMS%1000/10);
+    const seconds = totalSeconds%60;
+    const minutes = (totalSeconds-seconds)/60;
+    return [`${minutes}m`, `${TrailingZeroes(seconds, 2)}s`, `${TrailingZeroes(miliseconds, 2)}ms`];
+}
+
+function TrailingZeroes(str, outputLength) {
+    var rtn = str;
+    for(i = 0; i < outputLength-str.toString().length; i++) {
+        rtn = "0" + rtn;
+    }
+    return rtn;
 }
 
 function StartsWithVowel(str) {
@@ -89,6 +114,7 @@ async function GetUserAccentColor(user) {
 module.exports = {
     piebotColor,
     columns,
+    Column,
     currentTriviaSeason,
     currentTriviaDates,
     previousTriviaDates,
@@ -96,6 +122,8 @@ module.exports = {
     PercentTrue,
     CalculateFoodRarity,
     FormatTime,
+    FormatTimeLeadingZeroes,
+    TrailingZeroes,
     StartsWithVowel,
     GetUserAccentColor
 }

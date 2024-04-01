@@ -1,12 +1,14 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
+const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
+const { Column, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
+const Canvas = require('@napi-rs/canvas');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
 const allowedGuesses = 2;
  
 class InteractedUser { // This is for user interaction handling, so I can easily adjust how many guesses are allowed on trivia
-    constructor(id, modify = 0, createdAt = Date.now()) {
-        this.userID = id;
+    constructor(member, modify = 0, createdAt = Date.now()) {
+        this.member = member;
+        this.userName = this.member.displayName;
         this.guessesLeft = allowedGuesses + modify;
         this.time = createdAt;
         this.scoredPoints = 0;
@@ -20,7 +22,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     
     var useScore = (interaction == null || override); // This could cause issues where you override when interaction is null, but just don't ever call it like that lol
 
-    const triviaChannel = channel; //   562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+    const triviaChannel = channel;
+    // const triviaChannel = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
 
     if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
         if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true }); // Does not have Moderator or Nurdiest roles
@@ -47,7 +50,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
         .setColor(piebotColor)
         .setAuthor({
             iconURL: client.user.displayAvatarURL(),
-            name: `${client.user.displayName} Trivia`
+            name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
         })
         .setTitle(trivia.question)
         .setDescription(`${trivia.category}\n${trivia.difficulty.toUpperCase()} Difficulty`)
@@ -101,14 +104,16 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             const id = Number(i.customId);
             if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
 
-            let user = interactedUsers.find(user => user.userID === i.user.id)
+            let user = interactedUsers.find(user => user.member === i.member)
             if(user) {
                 if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
             }
             else {
-                user = new InteractedUser(i.user.id)
-                interactedUsers.push(user); // Adds a new user object to the array if user has not interacted yet, and subtracts one from remaining guesses
+                user = new InteractedUser(i.member);
+                interactedUsers.push(user); // Adds a new user object to the array
             }
+
+            user.time = Date.now(); // Updates time to when the latest guess was made
 
             if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
                 promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
@@ -133,7 +138,6 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 }
                 guessMsg += `, you've earned ${scoreIncrement} point${scoreIncrement > 1 ? 's' : ''}`
                 user.scoredPoints += scoreIncrement;
-
                 await i.editReply({
                     content: `${guessMsg}!`,
                     ephemeral: true
@@ -169,7 +173,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 .setColor(piebotColor)
                 .setAuthor({
                     iconURL: client.user.displayAvatarURL(),
-                    name: `${client.user.displayName} Trivia`
+                    name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
                 })
                 .setTitle('Results')
                 .setTimestamp()
@@ -178,49 +182,145 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                     text: `PiebotV3 by ${author.username}`
                 });
 
-            // Embed building
-            const quickest = interactedUsers.sort((a, b) => { return a.time - b.time; }).filter((user) => user.scoredPoints > 0); // Greater than zero means only if they got it
-            if(quickest.length > 0) resultsEmbed.addFields([{ name: 'Quickest Guesser', value: `${userMention(quickest[0].userID)} ${FormatTime(quickest[0].time - startTime)}` }])
+            Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Regular.ttf", "gg sans")
+            Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
 
+            interactedUsers = interactedUsers.sort((a, b) => { return a.time - b.time; }); // Sorts it by time 
+
+            interactedUsers.forEach(user => {
+                user.time = FormatTime(user.time - startTime); // Formats the time
+                user.userName = user.userName.replace(/[^\x00-\x7F]/g, ""); // Removes non-ascii characters from username
+            });
+
+            const resolution = 7;
+            const offset = 0*resolution;
+            const spacing = 1.5*resolution;
+            const circumferance = 8*resolution;
+            const radius = circumferance/2;
+
+            const columns = [
+                new Column(75),
+                new Column(13, "right"),
+                new Column(13, "right"),
+                new Column(18, "right"),
+                new Column(25) // I have this column just to add space to the right to make the text a bit smaller
+            ];
+    
+            if(resolution != 0) for(var i = 0; i < columns.length; i++) columns[i].width = columns[i].width * resolution;
+            var width = 0;
+            columns.forEach(column => { width += column.width + spacing; });
+    
             const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1 && user.scoredPoints > 0); // They made one attempt and scored points
-            if(firstTry.length > 0) {
-                let msg = '';
-                firstTry.forEach(user => {
-                    msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}`;
-                    if(user.scoredPoints == 2) msg += ' 👑';
-                    msg += '\n';
-                });
-                resultsEmbed.addFields([{ name: 'Guessed First Try', value: msg }])
-            }
-
             const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2 && user.scoredPoints > 0); // They took 2 attempts and scored points
-            if(secondTry.length > 0) {
-                let msg = '';
-                secondTry.forEach(user => {
-                    msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
-                });
-                resultsEmbed.addFields([{ name: 'Guessed Second Try', value: msg }])
+            const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
+
+            const paragraphs = 1 + (firstTry.length > 0 ? 1 : 0) + (secondTry.length > 0 ? 1 : 0) + (didNotGet.length > 0 ? 1 : 0);
+    
+            const canvasWidth = circumferance+spacing+offset*2 + width;
+            const canvasHeight = (offset*2) + circumferance*(interactedUsers.length+paragraphs+1) + spacing*(interactedUsers.length+paragraphs) + (spacing*2*paragraphs);
+    
+            const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
+            const context = canvas.getContext('2d');
+
+            var rowCount = 0;
+            var paragraphCount = 0;
+
+            if(interactedUsers.length > 0) {
+                CreateTextRow(0, rowCount, "white", `${circumferance * 0.8}px gg sans bold`, ["Quickest Guesser"]);
+                rowCount++;
+
+                await CreateProfilePicture(rowCount, interactedUsers[0].member.displayAvatarURL({ extension: 'png' }));
+                CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [interactedUsers[0].userName, interactedUsers[0].time[0] == "0m" ? "" : interactedUsers[0].time[0], interactedUsers[0].time[1], interactedUsers[0].time[2]]);
+                rowCount++;
+                paragraphCount++;
             }
 
-            const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
-            if(didNotGet.length > 0) {
-                let msg = '';
-                didNotGet.forEach(user => {
-                    msg += userMention(user.userID) + ` ${FormatTime(user.time - startTime)}\n`;
-                });
-                resultsEmbed.addFields([{ name: 'Guessed Incorrectly', value: msg }])
+            if(firstTry.length > 0) {
+                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans bold`, ["Guessed First Try"]);
+                for(var i = 0; i < firstTry.length; i++) {
+                    await CreateProfilePicture(rowCount, firstTry[i].member.displayAvatarURL({ extension: 'png' }));
+                    CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]]);
+                    rowCount++;
+                }
+                paragraphCount++;
             }
+
+            if(secondTry.length > 0) {
+                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans bold`, ["Guessed Second Try"]);
+                for(var i = 0; i < secondTry.length; i++) {
+                    await CreateProfilePicture(rowCount, secondTry[i].member.displayAvatarURL({ extension: 'png' }));
+                    CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]]);
+                    rowCount++;
+                }
+                paragraphCount++;
+            }
+
+            if(didNotGet.length > 0) {
+                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans bold`, ["Guessed Incorrectly"]);
+                for(var i = 0; i < didNotGet.length; i++) {
+                    await CreateProfilePicture(rowCount, didNotGet[i].member.displayAvatarURL({ extension: 'png' }));
+                    CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]]);
+                    rowCount++;
+                }
+                paragraphCount++;
+            }
+
+            // Use the helpful Attachment class structure to process the file for you
+            const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'trivia_results.png' });
+
+            resultsEmbed.setImage("attachment://trivia_results.png")
 
             // Embed updating/sending
-                await triviaPost.edit({
-                    embeds: [triviaEmbed, resultsEmbed],
-                    components: []
-                }).catch(async (err) => {
-                    await interaction.channel.send({
-                        embeds: [resultsEmbed]
-                    }).catch(err => console.log('Error updating trivia: could not send results!'));
+            await triviaPost.edit({
+                embeds: [triviaEmbed, resultsEmbed],
+                files: [attachment],
+                components: []
+            }).catch(async (err) => {
+                await interaction.channel.send({
+                    embeds: [resultsEmbed]
+                }).catch(err => console.log('Error updating trivia: could not send results!'));
 
-                });
+            });
+
+            function CreateTextRow(xOffset, row, color, font, textArr) {
+                var columnsWidthTracking = 0;
+                for(var i = 0; i < columns.length; i++) {
+                    context.font = font;
+                    context.textAlign = columns[i].alignment;
+                    const alignmentOffset = (context.textAlign == "left") ? 0 : columns[i].width;
+    
+                    var str = textArr[i] ?? "";
+                    if(context.measureText(str).width > columns[i].width) {
+                        while(context.measureText(str).width > columns[i]) str = str.slice(0, -1);
+                        str = str.slice(0, -2) + "...";
+                    }
+    
+                    context.fillStyle = color;
+                    context.strokeStyle = "#2b2d31";
+                    context.lineWidth = 5;
+                    context.strokeText(str, xOffset + offset + columnsWidthTracking + alignmentOffset, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row) + circumferance/2 + context.measureText(str).actualBoundingBoxAscent/2);
+                    context.fillText(str, xOffset + offset + columnsWidthTracking + alignmentOffset, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row) + circumferance/2 + context.measureText(str).actualBoundingBoxAscent/2);
+    
+    
+                    columnsWidthTracking += columns[i].width + spacing;
+                }
+            }
+    
+            async function CreateProfilePicture(row, pfpUrl) {
+                context.save();
+                context.beginPath();
+                context.arc(offset + radius, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row) + radius, radius, 0, Math.PI * 2, true);
+                context.clip();
+    
+                const avatar = await Canvas.loadImage(pfpUrl);
+    
+                // image, x offset, y offset, width, height
+                context.drawImage(avatar, offset, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row), circumferance, circumferance);
+    
+                // console.log(offset + "," + offset+(circumferance*row)+(spacing*row))
+    
+                context.restore();
+            }
         }
 
         if(useScore)
@@ -260,7 +360,7 @@ module.exports = {
                 .setColor(piebotColor)
                 .setAuthor({
                     iconURL: client.user.displayAvatarURL(),
-                    name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
+                    name: `${client.user.displayName} Trivia`
                 })
                 .setTitle('Trivia Help')
                 .addFields([ 
