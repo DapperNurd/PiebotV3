@@ -80,7 +80,7 @@ module.exports = {
         var rowCount = 0;
         var paragraphCount = 0;
 
-        CreateTextRow(context, circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, ["", "User", "Scored", "Played"]);
+        CreateTextRow(context, circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans bold`, ["", "User", "Scored", "Played"]);
         rowCount++;
         paragraphCount++;
 
