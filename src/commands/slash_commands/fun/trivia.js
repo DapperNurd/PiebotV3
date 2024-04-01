@@ -226,7 +226,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             var paragraphCount = 0;
 
             if(interactedUsers.length > 0) {
-                CreateTextRow(0, rowCount, "white", `${circumferance * 0.8}px gg sans bold`, ["Quickest Guesser"]);
+                CreateTextRow(0, rowCount, "white", `${circumferance * 0.8}px gg sans`, ["Quickest Guesser"]);
                 rowCount++;
 
                 await CreateProfilePicture(rowCount, interactedUsers[0].member.displayAvatarURL({ extension: 'png' }));
@@ -236,7 +236,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             }
 
             if(firstTry.length > 0) {
-                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans bold`, ["Guessed First Try"]);
+                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans`, ["Guessed First Try"]);
                 for(var i = 0; i < firstTry.length; i++) {
                     await CreateProfilePicture(rowCount, firstTry[i].member.displayAvatarURL({ extension: 'png' }));
                     CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]]);
@@ -246,7 +246,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             }
 
             if(secondTry.length > 0) {
-                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans bold`, ["Guessed Second Try"]);
+                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans`, ["Guessed Second Try"]);
                 for(var i = 0; i < secondTry.length; i++) {
                     await CreateProfilePicture(rowCount, secondTry[i].member.displayAvatarURL({ extension: 'png' }));
                     CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]]);
@@ -256,7 +256,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             }
 
             if(didNotGet.length > 0) {
-                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans bold`, ["Guessed Incorrectly"]);
+                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans`, ["Guessed Incorrectly"]);
                 for(var i = 0; i < didNotGet.length; i++) {
                     await CreateProfilePicture(rowCount, didNotGet[i].member.displayAvatarURL({ extension: 'png' }));
                     CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]]);
