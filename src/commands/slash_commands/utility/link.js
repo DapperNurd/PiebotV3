@@ -8,10 +8,22 @@ module.exports = {
         .addSubcommand(command => command
             .setName('twitch')
             .setDescription('Link your Discord Piebot profile with your Twitch Piebot profile!')
+            .addBooleanOption(command => command
+                .setName('unlink')
+                .setDescription('Unlink your twitch account from your Discord profile.')
+            )
         ),
     async execute(interaction, client, promisePool) {
 
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        if(interaction.options.getBoolean("unlink")) {
+            await promisePool.execute(`UPDATE Twitch.user SET discordID = null WHERE discordID = '${interaction.user.id}'`)
+            return await interaction.reply({
+                content: `Successfully unlinked Twitch account.`,
+                ephemeral: true
+            });
+        }
 
         // NOTES:
 
@@ -31,7 +43,7 @@ module.exports = {
         let [rows, fields] = await promisePool.execute(`SELECT * FROM Twitch.user WHERE discordID = '${interaction.user.id}'`); // Should always find one because of the insert just before this
         if(rows.length > 0) { // If the user is already marked having a twitch account linked
             return await interaction.reply({
-                content: `You already have a linked twitch account! If you feel this is wrong, please contact ${userMention(author.id)}...`,
+                content: `You already have a linked Twitch account! You can unlink it with \`/link twitch unlink:true\`.`,
                 ephemeral: true
             });
         }
