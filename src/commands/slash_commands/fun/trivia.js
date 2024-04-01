@@ -111,12 +111,13 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             else {
                 user = new InteractedUser(i.member);
                 interactedUsers.push(user); // Adds a new user object to the array
+
+                // putting it in here SHOULD make it only update this value once
+                if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
             }
 
             user.time = Date.now(); // Updates time to when the latest guess was made
-
-            if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
 
             if(answers[id-1] == trivia.correctAnswer) { // If the guessed answer is the correct answer
 
