@@ -48,8 +48,8 @@ module.exports = {
                 text: `PiebotV3 by ${author.username}`
             });
 
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Regular.ttf", "gg sans")
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
+        Canvas.GlobalFonts.registerFromPath("~\\.fonts\\gg sans Regular.ttf", "gg sans")
+        Canvas.GlobalFonts.registerFromPath("~\\.fonts\\gg sans SemiBold.ttf", "gg sans bold")
 
         const resolution = 6;
         const offset = 0*resolution;
