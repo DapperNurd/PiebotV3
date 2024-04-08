@@ -8,7 +8,7 @@ const schedule = require('node-schedule');
 // const mysql = require('mysql2/promise');
 const mysql = require('mysql2');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
 client.commands = new Collection();
 client.textCommands = new Collection();
 client.buttons = new Collection();

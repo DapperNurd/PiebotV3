@@ -22,8 +22,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     
     var useScore = (interaction == null || override); // This could cause issues where you override when interaction is null, but just don't ever call it like that lol
 
-    const triviaChannel = channel;
-    // const triviaChannel = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+    // const triviaChannel = channel;
+    const triviaChannel = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
 
     if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
         if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true }); // Does not have Moderator or Nurdiest roles
@@ -100,6 +100,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
     collector.on('collect', async i => { // Collector on collect function
         try {
+            if(i.customId != "1" && i.customId != "2" && i.customId != "3" && i.customId != "4") return; // skips other button interactions
             await i.deferReply({ ephemeral: true });
             const id = Number(i.customId);
             if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
@@ -386,7 +387,8 @@ module.exports = {
 
             // Starts collectors
             const collector = reply.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); // Creating the collector for the buttons
-            collector.on('collect', async i => { // Collector on collect function
+            collector.on('collect', async i => { // Collector on collect function'
+                if(i.customId != 'notify') return; // skips any unknown button interactions
                 await i.deferReply({ ephemeral: true });
                 const role = interaction.guild.roles.cache.find(role => role.name === 'Trivia')
                 if(!role) { // If role is not found
