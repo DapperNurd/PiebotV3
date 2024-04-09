@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { Column, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
+const { Table, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
 const Canvas = require('@napi-rs/canvas');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
@@ -22,8 +22,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     
     var useScore = (interaction == null || override); // This could cause issues where you override when interaction is null, but just don't ever call it like that lol
 
-    const triviaChannel = channel;
-    // const triviaChannel = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+    // const triviaChannel = channel;
+    const triviaChannel = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
 
     if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
         if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true }); // Does not have Moderator or Nurdiest roles
@@ -93,7 +93,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
     var interactedUsers = [];
 
-    const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); // Creating the collector for the buttons
+    const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: .3 * 60_000 }); // Creating the collector for the buttons
 
     var firstTryGuessed = false;
     var guessed = false;
@@ -106,17 +106,17 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
 
             let user = interactedUsers.find(user => user.member === i.member)
-            if(user) {
-                if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
-            }
-            else {
+            // if(user) {
+            //     if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
+            // }
+            // else {
                 user = new InteractedUser(i.member);
                 interactedUsers.push(user); // Adds a new user object to the array
 
                 // putting it in here SHOULD make it only update this value once
-                if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
-            }
+            //     if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
+            //         promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+            // }
 
             user.time = Date.now(); // Updates time to when the latest guess was made
 
@@ -191,81 +191,86 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
             interactedUsers.forEach(user => {
                 user.time = FormatTime(user.time - startTime); // Formats the time
-                user.userName = user.userName.replace(/[^\x00-\x7F]/g, ""); // Removes non-ascii characters from username
             });
-
-            const resolution = 7;
-            const offset = 0*resolution;
-            const spacing = 1.5*resolution;
-            const circumferance = 8*resolution;
-            const radius = circumferance/2;
-
-            const columns = [
-                new Column(75),
-                new Column(13, "right"),
-                new Column(13, "right"),
-                new Column(18, "right"),
-                new Column(25) // I have this column just to add space to the right to make the text a bit smaller
-            ];
-    
-            if(resolution != 0) for(var i = 0; i < columns.length; i++) columns[i].width = columns[i].width * resolution;
-            var width = 0;
-            columns.forEach(column => { width += column.width + spacing; });
     
             const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1 && user.scoredPoints > 0); // They made one attempt and scored points
             const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2 && user.scoredPoints > 0); // They took 2 attempts and scored points
             const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
 
-            const paragraphs = 1 + (firstTry.length > 0 ? 1 : 0) + (secondTry.length > 0 ? 1 : 0) + (didNotGet.length > 0 ? 1 : 0);
-    
-            const canvasWidth = circumferance+spacing+offset*2 + width;
-            const canvasHeight = (offset*2) + circumferance*(interactedUsers.length+paragraphs+1) + spacing*(interactedUsers.length+paragraphs) + (spacing*2*paragraphs);
-    
-            const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
-            const context = canvas.getContext('2d');
-
-            var rowCount = 0;
-            var paragraphCount = 0;
-
-            if(interactedUsers.length > 0) {
-                CreateTextRow(0, rowCount, "white", `${circumferance * 0.8}px gg sans`, ["Quickest Guesser"]);
-                rowCount++;
-
-                await CreateProfilePicture(rowCount, interactedUsers[0].member.displayAvatarURL({ extension: 'png' }));
-                CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [interactedUsers[0].userName, interactedUsers[0].time[0] == "0m" ? "" : interactedUsers[0].time[0], interactedUsers[0].time[1], interactedUsers[0].time[2]]);
-                rowCount++;
-                paragraphCount++;
-            }
+            const rowHeight = 45;
+            const tableRows = [rowHeight + 8, rowHeight]; // Quickest Guesser header + person
 
             if(firstTry.length > 0) {
-                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans`, ["Guessed First Try"]);
+                tableRows.push(rowHeight + 8); // Header
+                for(var i = 0; i < firstTry.length; i++) tableRows.push(rowHeight); // One row for each person
+            }
+            if(secondTry.length > 0) {
+                tableRows.push(rowHeight + 8); // Header
+                for(var i = 0; i < secondTry.length; i++) tableRows.push(rowHeight); // One row for each person
+            }
+            if(didNotGet.length > 0) {
+                tableRows.push(rowHeight + 8); // Header
+                for(var i = 0; i < didNotGet.length; i++) tableRows.push(rowHeight); // One row for each person
+            }
+
+            // Table setup
+            var table = new Table(tableRows, [rowHeight + 10, 500, 100, 80, 100]);
+
+            table.SetTableStyle(36, "gg sans");
+
+            table.SetColumnTextWrap(2, Table.TextWrap.clamp);
+            table.SetColumnAlignment(2, Table.TextAlignment.right, Table.TextAlignment.center);
+            table.SetColumnAlignment(3, Table.TextAlignment.right, Table.TextAlignment.center);
+            table.SetColumnAlignment(4, Table.TextAlignment.right, Table.TextAlignment.center);
+
+            table.SetColumnTextWrap(1, Table.TextWrap.scale);
+            table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
+
+            table.SetRowText(0, ["Quickest Guesser"])
+            table.SetRowStyle(0, table.fontSize+2, "gg sans bold");
+
+            table.SetRowText(1, ["", interactedUsers[0].userName, interactedUsers[0].time[0] == "0m" ? "" : interactedUsers[0].time[0], interactedUsers[0].time[1], interactedUsers[0].time[2]])
+            table.SetCellImage(1, 0, interactedUsers[i].member.displayAvatarURL({ extension: 'png' }));
+
+            var currRowIndex = 2;
+
+            if(firstTry.length > 0) {
+                table.SetRowText(currRowIndex, ["Guessed First Try"]);
+                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+                currRowIndex++;
                 for(var i = 0; i < firstTry.length; i++) {
-                    await CreateProfilePicture(rowCount, firstTry[i].member.displayAvatarURL({ extension: 'png' }));
-                    CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]]);
-                    rowCount++;
+                    table.SetRowText(currRowIndex, ["", firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]])
+                    table.SetCellImage(currRowIndex, 0, firstTry[i].member.displayAvatarURL({ extension: 'png' }));
+                    currRowIndex++;
                 }
-                paragraphCount++;
             }
 
             if(secondTry.length > 0) {
-                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans`, ["Guessed Second Try"]);
+                table.SetRowText(currRowIndex, ["Guessed Second Try"]);
+                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+                currRowIndex++;
                 for(var i = 0; i < secondTry.length; i++) {
-                    await CreateProfilePicture(rowCount, secondTry[i].member.displayAvatarURL({ extension: 'png' }));
-                    CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]]);
-                    rowCount++;
+                    table.SetRowText(currRowIndex, ["", secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]])
+                    table.SetCellImage(currRowIndex, 0, secondTry[i].member.displayAvatarURL({ extension: 'png' }));
+                    currRowIndex++;
                 }
-                paragraphCount++;
             }
 
             if(didNotGet.length > 0) {
-                CreateTextRow(0, rowCount++, "white", `${circumferance * 0.8}px gg sans`, ["Guessed Incorrectly"]);
+                table.SetRowText(currRowIndex, ["Guessed Incorrectly"]);
+                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+                currRowIndex++;
                 for(var i = 0; i < didNotGet.length; i++) {
-                    await CreateProfilePicture(rowCount, didNotGet[i].member.displayAvatarURL({ extension: 'png' }));
-                    CreateTextRow(circumferance+spacing, rowCount, "white", `${circumferance * 0.8}px gg sans`, [didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]]);
-                    rowCount++;
+                    table.SetRowText(currRowIndex, ["", didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]])
+                    table.SetCellImage(currRowIndex, 0, didNotGet[i].member.displayAvatarURL({ extension: 'png' }));
+                    currRowIndex++;
                 }
-                paragraphCount++;
             }
+
+            const canvas = Canvas.createCanvas(table.width, table.height);
+            const context = canvas.getContext('2d');
+
+            await table.DrawTable(context);
 
             // Use the helpful Attachment class structure to process the file for you
             const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'trivia_results.png' });
@@ -283,46 +288,6 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 }).catch(err => console.log('Error updating trivia: could not send results!'));
 
             });
-
-            function CreateTextRow(xOffset, row, color, font, textArr) {
-                var columnsWidthTracking = 0;
-                for(var i = 0; i < columns.length; i++) {
-                    context.font = font;
-                    context.textAlign = columns[i].alignment;
-                    const alignmentOffset = (context.textAlign == "left") ? 0 : columns[i].width;
-    
-                    var str = textArr[i] ?? "";
-                    if(context.measureText(str).width > columns[i].width) {
-                        while(context.measureText(str).width > columns[i]) str = str.slice(0, -1);
-                        str = str.slice(0, -2) + "...";
-                    }
-    
-                    context.fillStyle = color;
-                    context.strokeStyle = "#2b2d31";
-                    context.lineWidth = 5;
-                    context.strokeText(str, xOffset + offset + columnsWidthTracking + alignmentOffset, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row) + circumferance/2 + context.measureText(str).actualBoundingBoxAscent/2);
-                    context.fillText(str, xOffset + offset + columnsWidthTracking + alignmentOffset, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row) + circumferance/2 + context.measureText(str).actualBoundingBoxAscent/2);
-    
-    
-                    columnsWidthTracking += columns[i].width + spacing;
-                }
-            }
-    
-            async function CreateProfilePicture(row, pfpUrl) {
-                context.save();
-                context.beginPath();
-                context.arc(offset + radius, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row) + radius, radius, 0, Math.PI * 2, true);
-                context.clip();
-    
-                const avatar = await Canvas.loadImage(pfpUrl);
-    
-                // image, x offset, y offset, width, height
-                context.drawImage(avatar, offset, (paragraphCount*spacing*2)+offset+(circumferance*row)+(spacing*row), circumferance, circumferance);
-    
-                // console.log(offset + "," + offset+(circumferance*row)+(spacing*row))
-    
-                context.restore();
-            }
         }
 
         if(useScore)

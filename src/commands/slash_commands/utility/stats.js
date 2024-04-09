@@ -190,9 +190,6 @@ module.exports = {
                     components: [navButtonRow]
                 }).catch(err => console.log('Error stats embed!'));
             }
-            else {
-                console.log('[ERROR]: Code missing for button on account command!')
-            }
         });
  
         collector.on('end', () => { // Collector on end function

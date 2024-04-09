@@ -144,7 +144,7 @@ class Table {
 
     table = [];
 
-    padding = 4;
+    padding = 2;
     paddingColor = "";
 
     fillColor = "";
@@ -152,7 +152,7 @@ class Table {
     fontSize = '16px';
     font = 'roboto'
     textColor = "white";
-    textWrap = Table.TextWrap.clamp;
+    textWrap = Table.TextWrap.overflow;
     
     horizontalAlignment = Table.TextAlignment.left;
     verticalAlignment = Table.TextAlignment.center;
@@ -167,11 +167,15 @@ class Table {
 
         this.table = new Array(rows.length); // initalize table to empty array
 
+        var cumulativeHeight = 0;
         for(var i = 0; i < this.rows.length; i++) {
+            var cumulativeWidth = 0;
             this.table[i] = new Array(this.columns.length); // Adds an array of column length size (array of arrays)
             for(var j = 0; j < this.columns.length; j++) {
-                this.table[i][j] = new Cell(this); // set each column of this "row" to a new cell
+                this.table[i][j] = new Cell(this, cumulativeWidth + this.padding*i, cumulativeHeight * this.padding*i); // set each column of this "row" to a new cell, as well as sets the top left coordinates for each cell
+                cumulativeWidth += this.columns[j];
             }
+            cumulativeHeight += this.rows[i];
         }
 
         var _width = 0;
@@ -183,8 +187,16 @@ class Table {
         this.height = _height + this.padding*(this.rows.length-1);
     }
 
-    GetCell(rowIndex, colIndex) {
-        return this.table[rowIndex][colIndex];
+    GetCell(rowIndex, colIndex) { return this.table[rowIndex][colIndex]; }
+
+    GetRowCount() { return this.rows.length; }
+    GetColumnCount() { return this.columns.length; }
+
+    GetCellCoords(rowIndex, colIndex) {
+        return {
+            x: this.GetCell(rowIndex, colIndex).x,
+            y: this.GetCell(rowIndex, colIndex).y
+        };
     }
 
     PrintTable() {
@@ -204,6 +216,7 @@ class Table {
             context.fillRect(0, 0, this.width, this.height);
         }
 
+        // Run through and do all the clearing/filling of the background first, so as to not overrite any text or images
         for(var i = 0; i < this.rows.length; i++) {
             var cumulativeWidth = 0;
             for(var j = 0; j < this.columns.length; j++) {
@@ -215,6 +228,15 @@ class Table {
 
                     context.fillRect(cumulativeWidth + this.padding*j, cumulativeHeight + this.padding*i, this.columns[j], this.rows[i]);
                 }
+                cumulativeWidth += this.columns[j];
+            }
+            cumulativeHeight += this.rows[i];
+        }
+
+        cumulativeHeight = 0;
+        for(var i = 0; i < this.rows.length; i++) {
+            var cumulativeWidth = 0;
+            for(var j = 0; j < this.columns.length; j++) {
                 if(this.GetCell(i, j).image != "") {
                     const pic = await Canvas.loadImage(this.GetCell(i, j).image);
                     
@@ -254,25 +276,32 @@ class Table {
                     context.restore();
                 }
                 if(this.GetCell(i, j).text != "") {
-                    var printText = this.GetCell(i, j).text.replace(/[^\x00-\x7F]/g, "").trim();
+                    var printText = this.GetCell(i, j).text.toString().replace(/[^\x00-\x7F]/g, "").trim();
 
-                    if(this.GetCell(i, j).textWrap == Table.TextWrap.clamp) {
-                        // change printText
-                    }
-                    else if(this.GetCell(i, j).textWrap == Table.TextWrap.clamp) {
-                        // change fontSize
-                    }
-                    
                     context.font = this.GetCell(i, j).fontSize + " " + this.GetCell(i, j).font;
                     context.fillStyle = this.GetCell(i, j).textColor;
 
+                    if(this.GetCell(i, j).textWrap == Table.TextWrap.clamp) {
+                        if(context.measureText(printText).width > this.columns[j]) {
+                            while(context.measureText(printText).width > this.columns[j]) printText = printText.slice(0, -1);
+                            printText = printText.slice(0, -2) + "...";
+                        }
+                    }
+                    else if(this.GetCell(i, j).textWrap == Table.TextWrap.scale) {
+                        var scaledFontSize = this.GetCell(i, j).fontSize; // starts at the cell's font size, rather than the max size it could be (row height)
+                        context.font = scaledFontSize + " " + this.GetCell(i, j).font;
+                        while(context.measureText(printText).width > this.columns[j]) {
+                            context.font = --scaledFontSize + " " + this.GetCell(i, j).font;
+                        }
+                    }
+
                     var verticalOffset = this.rows[i]; // bottom
-                    if(this.GetCell(i, j).verticalAlignment == Table.TextAlignment.center)verticalOffset = this.rows[i]/2 + context.measureText(printText).actualBoundingBoxAscent/2
+                    if(this.GetCell(i, j).verticalAlignment == Table.TextAlignment.center) verticalOffset = this.rows[i]/2 + context.measureText(printText).actualBoundingBoxAscent/2
                     else if(this.GetCell(i, j).verticalAlignment == Table.TextAlignment.top) verticalOffset = context.measureText(printText).actualBoundingBoxAscent;
 
                     var horizontalOffset = 0; // left
-                    if(this.GetCell(i, j).horizontalAlignment == Table.TextAlignment.center) horizontalOffset = this.columns[j]/2;
-                    else if(this.GetCell(i, j).horizontalAlignment == Table.TextAlignment.right) horizontalOffset = this.columns[j];
+                    if(this.GetCell(i, j).horizontalAlignment == Table.TextAlignment.center) horizontalOffset = this.columns[j]/2 - context.measureText(printText).width/2;
+                    else if(this.GetCell(i, j).horizontalAlignment == Table.TextAlignment.right) horizontalOffset = this.columns[j] - context.measureText(printText).width;
 
                     context.textAlign = this.GetCell(i, j).horizontalAlignment;
                     
@@ -285,6 +314,97 @@ class Table {
             cumulativeHeight += this.rows[i];
         }
     }
+    
+    // #region Clear Functions
+
+    ClearTable(context) {
+        for(var i = 0; i < this.rows.length; i++) {
+            for(var j = 0; j < this.columns.length; j++) {
+                // first draws fill, then image, then text... order indicates layers basically, so to make fill the background, it draws first.
+                context.clearRect(this.GetCellCoords(i, j).x, this.GetCellCoords(i, j).y, this.columns[j], this.rows[i]);
+                this.GetCell(i, j).text = "";
+                this.GetCell(i, j).image = "";
+            }
+        }
+    }
+
+    ClearRow(context, rowIndex) {
+        // this.table[i] = new Array(this.columns.length); // Adds an array of column length size (array of arrays)
+        for(var j = 0; j < this.columns.length; j++) {
+            context.clearRect(this.GetCellCoords(rowIndex, j).x, this.GetCellCoords(rowIndex, j).y, this.columns[j], this.rows[rowIndex]);
+            this.GetCell(rowIndex, j).text = "";
+            this.GetCell(rowIndex, j).image = "";
+        }
+    }
+
+    ClearCol(context, colIndex) {
+        // this.table[i] = new Array(this.columns.length); // Adds an array of column length size (array of arrays)
+        for(var i = 0; i < this.columns.length; i++) {
+            context.clearRect(this.GetCellCoords(i, colIndex).x, this.GetCellCoords(i, colIndex).y, this.columns[j], this.rows[i]);
+            this.GetCell(i, colIndex).text = "";
+            this.GetCell(i, colIndex).image = "";
+        }
+    }
+
+    ClearCell(context, rowIndex, colIndex) {
+        context.clearRect(this.GetCellCoords(rowIndex, colIndex).x, this.GetCellCoords(rowIndex, colIndex).y, this.columns[j], this.rows[i]);
+        this.GetCell(rowIndex, colIndex).text = "";
+        this.GetCell(rowIndex, colIndex).image = "";
+    }
+
+    // #endregion
+
+    // #region SetTable Functions
+
+    SetTableStyle(fontSize, font) {
+        this.fontSize = fontSize;
+        this.font = font;
+
+        for(var i = 0; i < this.rows.length; i++) {
+            for(var j = 0; j < this.columns.length; j++) {
+                this.GetCell(i, j).fontSize = fontSize;
+                this.GetCell(i, j).font = font;
+            }
+        }
+    }
+
+    SetTableAlignment(horizontalAlignment, verticalAlignment) {
+        this.horizontalAlignment = horizontalAlignment;
+        this.verticalAlignment = verticalAlignment;
+
+        for(var i = 0; i < this.rows.length; i++) {
+            for(var j = 0; j < this.columns.length; j++) {
+                this.GetCell(i, j).horizontalAlignment = horizontalAlignment;
+                this.GetCell(i, j).verticalAlignment = verticalAlignment;
+            }
+        }
+    }
+
+    SetTableColor(fillColor, textColor) {
+        this.fillColor = fillColor;
+        this.textColor = textColor;
+
+        for(var i = 0; i < this.rows.length; i++) {
+            for(var j = 0; j < this.columns.length; j++) {
+                this.GetCell(i, j).fillColor = fillColor;
+                this.GetCell(i, j).textColor = textColor;
+            }
+        }
+    }
+
+    SetTableTextWrap(wrapping) {
+        this.textWrap = wrapping;
+
+        for(var i = 0; i < this.rows.length; i++) {
+            for(var j = 0; j < this.columns.length; j++) {
+                this.GetCell(i, j).textWrap = wrapping;
+            }
+        }
+    }
+
+    // #endregion
+
+    // #region SetRow Functions
 
     SetRowText(rowIndex, textArr) {
         for(var j = 0; j < this.columns.length; j++) {
@@ -298,74 +418,97 @@ class Table {
         }
     }
 
+    SetRowStyle(rowIndex, fontSize, font) {
+        if(rowIndex > this.rows.length-1) rowIndex = this.rows.length-1;
+        if(rowIndex < 0) rowIndex = 0;
+        
+        for(var j = 0; j < this.columns.length; j++) {
+            this.GetCell(rowIndex, j).fontSize = fontSize;
+            this.GetCell(rowIndex, j).font = font;
+        }
+    }
+
+    SetRowAlignment(rowIndex, horizontalAlignment, verticalAlignment) {
+        for(var j = 0; j < this.columns.length; j++) {
+            this.GetCell(rowIndex, j).horizontalAlignment = horizontalAlignment;
+            this.GetCell(rowIndex, j).verticalAlignment = verticalAlignment;
+        }
+    }
+
+    SetRowColor(rowIndex, fillColor, textColor) {
+        if(rowIndex > this.rows.length-1) rowIndex = this.rows.length-1;
+        if(rowIndex < 0) rowIndex = 0;
+
+        for(var j = 0; j < this.columns.length; j++) {
+            this.GetCell(rowIndex, j).fillColor = fillColor;
+            this.GetCell(rowIndex, j).textColor = textColor;
+        }
+    }
+
+    // #endregion
+
+    // #region SetColumn Functions
+
+    ClearColumn(colIndex) {
+        // this.table[i] = new Array(this.columns.length); // Adds an array of column length size (array of arrays)
+        for(var i = 0; i < this.rows.length; i++) {
+            this.table[i][colIndex] = new Cell(this); // set each column of this "row" to a new cell
+        }
+    }
+
+    SetColumnTextWrap(colIndex, wrapping) {
+        for(var i = 0; i < this.rows.length; i++) {
+            this.GetCell(i, colIndex).textWrap = wrapping;
+        }
+    }
+
+    SetColumnText(colIndex, textArr) {
+        for(var i = 0; i < this.rows.length; i++) {
+            this.GetCell(i, colIndex).text = textArr[i] ?? "";
+        }
+    }
+
+    SetColumnAlignment(colIndex, horizontalAlignment, verticalAlignment) {
+        for(var i = 0; i < this.rows.length; i++) {
+            this.GetCell(i, colIndex).horizontalAlignment = horizontalAlignment;
+            this.GetCell(i, colIndex).verticalAlignment = verticalAlignment;
+        }
+    }
+
+    SetColumnStyle(colIndex, fontSize, font) {
+        if(colIndex > this.columns.length-1) colIndex = this.columns.length-1;
+        if(colIndex < 0) colIndex = 0;
+
+        for(var i = 0; i < this.rows.length; i++) {
+            this.GetCell(i, colIndex).fontSize = fontSize;
+            this.GetCell(i, colIndex).font = font;
+        }
+    }
+
+    SetColumnColor(colIndex, fillColor, textColor) {
+        if(colIndex > this.columns.length-1) colIndex = this.columns.length-1;
+        if(colIndex < 0) colIndex = 0;
+
+        for(var i = 0; i < this.rows.length; i++) {
+            this.GetCell(i, colIndex).fillColor = fillColor;
+            this.GetCell(i, colIndex).textColor = textColor;
+        }
+    }
+
+    // #endregion
+
+    // #region SetCell Functions
+
+    ClearCell(rowIndex, colIndex) {
+        this.table[rowIndex][colIndex] = new Cell(this);
+    }
+
     SetCellText(rowIndex, colIndex, text) {
         this.GetCell(rowIndex, colIndex).text = text;
     }
 
     SetCellTextWrap(rowIndex, colIndex, wrapping) {
         this.GetCell(rowIndex, colIndex).textWrap = wrapping;
-    }
-
-    SetTableStyle(fontSize, font) {
-        for(var i = 0; i < this.rows.length; i++) {
-            for(var j = 0; j < this.columns.length; j++) {
-                this.GetCell(i, j).fontSize = fontSize;
-                this.GetCell(i, j).font = font;
-            }
-        }
-    }
-
-    SetTableAlignment(horizontalAlignment, verticalAlignment) {
-        for(var i = 0; i < this.rows.length; i++) {
-            for(var j = 0; j < this.columns.length; j++) {
-                this.GetCell(i, j).horizontalAlignment = horizontalAlignment;
-                this.GetCell(i, j).verticalAlignment = verticalAlignment;
-            }
-        }
-    }
-
-    SetTableColor(fillColor, textColor) {
-        for(var i = 0; i < this.rows.length; i++) {
-            for(var j = 0; j < this.columns.length; j++) {
-                this.GetCell(i, j).fillColor = fillColor;
-                this.GetCell(i, j).textColor = textColor;
-            }
-        }
-    }
-
-    SetTableTextWrap(wrapping) {
-        for(var i = 0; i < this.rows.length; i++) {
-            for(var j = 0; j < this.columns.length; j++) {
-                this.GetCell(i, j).textWrap = wrapping;
-            }
-        }
-    }
-
-    SetRowStyle(index, fontSize, font) {
-        if(index > this.rows.length-1) index = this.rows.length-1;
-        if(index < 0) index = 0;
-        
-        for(var j = 0; j < this.columns.length; j++) {
-            this.table[index][j].fontSize = fontSize;
-            this.table[index][j].font = font;
-        }
-    }
-
-    SetRowAlignment(index, horizontalAlignment, verticalAlignment) {
-        for(var j = 0; j < this.columns.length; j++) {
-            this.table[index][j].horizontalAlignment = horizontalAlignment;
-            this.table[index][j].verticalAlignment = verticalAlignment;
-        }
-    }
-
-    SetRowColor(index, fillColor, textColor) {
-        if(index > this.rows.length-1) index = this.rows.length-1;
-        if(index < 0) index = 0;
-
-        for(var j = 0; j < this.columns.length; j++) {
-            this.table[index][j].fillColor = fillColor;
-            this.table[index][j].textColor = textColor;
-        }
     }
 
     SetCellStyle(rowIndex, colIndex, fontSize, font) {
@@ -398,9 +541,14 @@ class Table {
         this.table[rowIndex][colIndex].mode = mode;
         this.table[rowIndex][colIndex].clip = clip;
     }
+
+    // #endregion
 }
 
 class Cell {
+    x = 0;
+    y = 0;
+
     fillColor;
     
     fontSize;
@@ -416,7 +564,7 @@ class Cell {
     mode = "fit";
     clip = true;
 
-    constructor(table) {
+    constructor(table, x, y) {
         this.fontSize = table.fontSize;
         this.font = table.font;
         this.fillColor = table.fillColor;
@@ -424,6 +572,9 @@ class Cell {
         this.textWrap = table.textWrap;
         this.horizontalAlignment = table.horizontalAlignment;
         this.verticalAlignment = table.verticalAlignment;
+
+        this.x = x;
+        this.y = y;
     }
 }
 
