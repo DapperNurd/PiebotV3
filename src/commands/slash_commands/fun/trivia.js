@@ -385,7 +385,7 @@ module.exports = {
                 const role = triviaChannel.guild.roles.cache.find(role => role.name === 'Trivia')
     
                 // Sending the message
-                const notify = await triviaChannel.send({ content: `Trivia starts in 30 seconds! <@&${role.id}>` })
+                const notify = await triviaChannel.send({ content: `Trivia starts in 60 seconds! <@&${role.id}>` })
     
                 // Reacting with the waiting emoji
                 try {
@@ -393,7 +393,7 @@ module.exports = {
                     notify.react(waitEmoji); // reacts with emoji
                 } catch (err) { console.log("EMOJI REACTION ON TRIVIA: " + err) }
     
-                delay = 30_000;
+                delay = 60_000;
             }
             // Timeout to start the actual game
             setTimeout(async () => {
