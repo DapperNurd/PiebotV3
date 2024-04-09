@@ -198,18 +198,18 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
 
             const rowHeight = 45;
-            const tableRows = [rowHeight + 8, rowHeight]; // Quickest Guesser header + person
+            const tableRows = [rowHeight + 12, rowHeight]; // Quickest Guesser header + person
 
             if(firstTry.length > 0) {
-                tableRows.push(rowHeight + 8); // Header
+                tableRows.push(rowHeight + 12); // Header
                 for(var i = 0; i < firstTry.length; i++) tableRows.push(rowHeight); // One row for each person
             }
             if(secondTry.length > 0) {
-                tableRows.push(rowHeight + 8); // Header
+                tableRows.push(rowHeight + 12); // Header
                 for(var i = 0; i < secondTry.length; i++) tableRows.push(rowHeight); // One row for each person
             }
             if(didNotGet.length > 0) {
-                tableRows.push(rowHeight + 8); // Header
+                tableRows.push(rowHeight + 12); // Header
                 for(var i = 0; i < didNotGet.length; i++) tableRows.push(rowHeight); // One row for each person
             }
 
@@ -227,7 +227,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
 
             table.SetRowText(0, ["Quickest Guesser"])
-            table.SetRowStyle(0, table.fontSize+2, "gg sans bold");
+            table.SetRowStyle(0, table.fontSize+2, "gg sans");
 
             table.SetRowText(1, ["", interactedUsers[0].userName, interactedUsers[0].time[0] == "0m" ? "" : interactedUsers[0].time[0], interactedUsers[0].time[1], interactedUsers[0].time[2]])
             table.SetCellImage(1, 0, interactedUsers[i].member.displayAvatarURL({ extension: 'png' }));
@@ -236,7 +236,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
             if(firstTry.length > 0) {
                 table.SetRowText(currRowIndex, ["Guessed First Try"]);
-                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans");
                 currRowIndex++;
                 for(var i = 0; i < firstTry.length; i++) {
                     table.SetRowText(currRowIndex, ["", firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]])
@@ -247,7 +247,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
             if(secondTry.length > 0) {
                 table.SetRowText(currRowIndex, ["Guessed Second Try"]);
-                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans");
                 currRowIndex++;
                 for(var i = 0; i < secondTry.length; i++) {
                     table.SetRowText(currRowIndex, ["", secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]])
@@ -258,7 +258,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
             if(didNotGet.length > 0) {
                 table.SetRowText(currRowIndex, ["Guessed Incorrectly"]);
-                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+                table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans");
                 currRowIndex++;
                 for(var i = 0; i < didNotGet.length; i++) {
                     table.SetRowText(currRowIndex, ["", didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]])

@@ -55,11 +55,11 @@ module.exports = {
         const rowHeight = 65;
         var table = new Table([rowHeight+5, rowHeight, rowHeight, rowHeight, rowHeight, rowHeight], [70, 70, 400, 150, 150]);
 
-        table.SetTableStyle(36, "gg sans");
+        table.SetTableStyle(36, "roboto");
 
         table.SetRowText(0, ["", "User", "", "Wins", "Played"])
         table.SetRowAlignment(0, Table.TextAlignment.center, Table.TextAlignment.center);
-        table.SetRowStyle(0, table.fontSize+5, "gg sans bold");
+        table.SetRowStyle(0, table.fontSize+5, "gg sans");
 
         table.SetColumnTextWrap(2, Table.TextWrap.clamp);
         table.SetColumnAlignment(1, Table.TextAlignment.center, Table.TextAlignment.center);
