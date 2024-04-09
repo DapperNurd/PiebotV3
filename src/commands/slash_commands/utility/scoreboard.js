@@ -57,7 +57,7 @@ module.exports = {
 
         table.SetTableStyle(36, "roboto");
 
-        table.SetRowText(0, ["", "User", "", "Wins", "Played"])
+        table.SetRowText(0, ["", "User", "", "Score", "Played"])
         table.SetRowAlignment(0, Table.TextAlignment.center, Table.TextAlignment.center);
         table.SetRowStyle(0, table.fontSize+5, "gg sans");
 

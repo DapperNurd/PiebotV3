@@ -93,7 +93,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
     var interactedUsers = [];
 
-    const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: .3 * 60_000 }); // Creating the collector for the buttons
+    const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); // Creating the collector for the buttons
 
     var firstTryGuessed = false;
     var guessed = false;
