@@ -55,7 +55,7 @@ module.exports = {
         const rowHeight = 65;
         var table = new Table([rowHeight+5, rowHeight, rowHeight, rowHeight, rowHeight, rowHeight], [70, 70, 400, 150, 150]);
 
-        table.SetTableStyle(36, "roboto");
+        table.SetTableStyle(36, "gg sans");
 
         table.SetRowText(0, ["", "User", "", "Score", "Played"])
         table.SetRowAlignment(0, Table.TextAlignment.center, Table.TextAlignment.center);
