@@ -214,7 +214,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             }
 
             // Table setup
-            var table = new Table(tableRows, [rowHeight + 10, 500, 100, 80, 100]);
+            var table = new Table(tableRows, [rowHeight + 10, 500, 80, 80, 100]);
 
             table.SetTableStyle(36, "gg sans");
 
