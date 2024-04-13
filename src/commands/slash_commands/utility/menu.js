@@ -40,7 +40,7 @@ module.exports = {
         var menuCount = 0; // This is simply keeping track of how many individual menus there are, so I can accurately update the maximum selected values
 
         // Database handling
-        let [rows, fields] = await promisePool.execute('SELECT SUM(pieCount) AS pieCount, SUM(muffinCount) AS muffinCount, SUM(potatoCount) AS potatoCount, SUM(pizzaCount) AS pizzaCount, SUM(iceCreamCount) AS iceCreamCount, SUM(cakeCount) AS cakeCount, SUM(cookieCount) AS cookieCount, SUM(brownieCount) AS brownieCount, SUM(chocolateCount) AS chocolateCount, SUM(sandwichCount) AS sandwichCount, SUM(pastaCount) AS pastaCount, SUM(fishCount) AS fishCount, SUM(trashCount) AS trashCount FROM Discord.user;');
+        let [rows, fields] = await promisePool.execute('SELECT SUM(pieCount) AS pieCount, SUM(muffinCount) AS muffinCount, SUM(potatoCount) AS potatoCount, SUM(pizzaCount) AS pizzaCount, SUM(iceCreamCount) AS iceCreamCount, SUM(cakeCount) AS cakeCount, SUM(brownieCount) AS brownieCount, SUM(chocolateCount) AS chocolateCount, SUM(sandwichCount) AS sandwichCount, SUM(pastaCount) AS pastaCount, SUM(fishCount) AS fishCount, SUM(trashCount) AS trashCount FROM Discord.user;');
         const globalProfile = rows[0];
 
         // Embed building (this is rough lol)

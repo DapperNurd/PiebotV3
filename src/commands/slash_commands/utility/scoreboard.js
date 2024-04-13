@@ -155,7 +155,7 @@ module.exports = {
                 if(!rows[index]) continue; // if there arent enough existing rows
 
                 const member = await client.users.fetch(rows[index].userID);
-                table.SetCellImage(i+1, 0, member.displayAvatarURL({ extension: 'png' }), Table.ImageSize.fit, true);
+                table.SetCellImage(i+1, 0, member.displayAvatarURL({ extension: 'png' }));
                 table.SetRowText(i+1, ["", "#" + (index+1), member.displayName, rows[index].triviaScore, rows[index].triviaPlayed]);
             }
         }

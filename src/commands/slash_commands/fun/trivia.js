@@ -184,6 +184,9 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                     text: `PiebotV3 by ${author.username}`
                 });
 
+            // key
+            resultsEmbed.addFields([{name: '\n', value: '<:top:1228543895999086623> Top Guesser', inline: true}, {name: '\n', value: '<:quickest:1228543686321635348> Quickest Guesser', inline: true }]);
+
             Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Regular.ttf", "gg sans")
             Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
 
@@ -198,7 +201,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
 
             const rowHeight = 45;
-            const tableRows = [rowHeight + 15, rowHeight]; // Quickest Guesser header + person
+            const tableRows = [];
 
             if(firstTry.length > 0) {
                 tableRows.push(rowHeight + 15); // Header
@@ -214,7 +217,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             }
 
             // Table setup
-            var table = new Table(tableRows, [rowHeight + 10, 500, 80, 80, 100]);
+            var table = new Table(tableRows, [rowHeight + 10, 500, 80, 80, 100, rowHeight + 4, rowHeight]);
 
             table.SetTableStyle(36, "gg sans");
 
@@ -223,16 +226,16 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             table.SetColumnAlignment(3, Table.TextAlignment.right, Table.TextAlignment.center);
             table.SetColumnAlignment(4, Table.TextAlignment.right, Table.TextAlignment.center);
 
+            table.SetColumnAlignment(5, Table.TextAlignment.right, Table.TextAlignment.center);
+            table.SetColumnAlignment(6, Table.TextAlignment.right, Table.TextAlignment.center);
+
             table.SetColumnTextWrap(1, Table.TextWrap.scale);
             table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
 
-            table.SetRowText(0, ["Quickest Guesser"])
-            table.SetRowStyle(0, table.fontSize+2, "gg sans");
+            const crown = "src\\pics\\crown.png";
+            const lightning = "src\\pics\\lightning.png";
 
-            table.SetRowText(1, ["", interactedUsers[0].userName, interactedUsers[0].time[0] == "0m" ? "" : interactedUsers[0].time[0], interactedUsers[0].time[1], interactedUsers[0].time[2]])
-            table.SetCellImage(1, 0, interactedUsers[0].member.displayAvatarURL({ extension: 'png' }));
-
-            var currRowIndex = 2;
+            var currRowIndex = 0;
 
             if(firstTry.length > 0) {
                 table.SetRowText(currRowIndex, ["Guessed First Try"]);
@@ -241,6 +244,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 for(var i = 0; i < firstTry.length; i++) {
                     table.SetRowText(currRowIndex, ["", firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]])
                     table.SetCellImage(currRowIndex, 0, firstTry[i].member.displayAvatarURL({ extension: 'png' }));
+                    if(firstTry[i].scoredPoints == 2) table.SetCellImage(currRowIndex, 5, crown); // Sets the first image column to crown if they scored 2 points
+                    if(firstTry[i] == interactedUsers[0]) table.SetCellImage(currRowIndex, table.GetCell(currRowIndex, 5).image == "" ? 5 : 6, lightning); // If quickest user, sets the lightning image to first image column, or second if it already has an image
                     currRowIndex++;
                 }
             }
@@ -252,6 +257,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 for(var i = 0; i < secondTry.length; i++) {
                     table.SetRowText(currRowIndex, ["", secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]])
                     table.SetCellImage(currRowIndex, 0, secondTry[i].member.displayAvatarURL({ extension: 'png' }));
+                    if(secondTry[i].scoredPoints == 2) table.SetCellImage(currRowIndex, 5, crown); // Sets the first image column to crown if they scored 2 points
+                    if(secondTry[i] == interactedUsers[0]) table.SetCellImage(currRowIndex, table.GetCell(currRowIndex, 5).image == "" ? 5 : 6, lightning); // If quickest user, sets the lightning image to first image column, or second if it already has an image
                     currRowIndex++;
                 }
             }
@@ -263,6 +270,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 for(var i = 0; i < didNotGet.length; i++) {
                     table.SetRowText(currRowIndex, ["", didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]])
                     table.SetCellImage(currRowIndex, 0, didNotGet[i].member.displayAvatarURL({ extension: 'png' }));
+                    if(didNotGet[i].scoredPoints == 2) table.SetCellImage(currRowIndex, 5, crown); // Sets the first image column to crown if they scored 2 points
+                    if(didNotGet[i] == interactedUsers[0]) table.SetCellImage(currRowIndex, table.GetCell(currRowIndex, 5).image == "" ? 5 : 6, lightning); // If quickest user, sets the lightning image to first image column, or second if it already has an image
                     currRowIndex++;
                 }
             }

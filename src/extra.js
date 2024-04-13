@@ -144,7 +144,7 @@ class Table {
 
     table = [];
 
-    padding = 2;
+    padding = 3;
     paddingColor = "";
 
     fillColor = "";
@@ -307,7 +307,7 @@ class Table {
                     
                     context.measureText(printText).actualBoundingBoxAscent;
 
-                    context.fillText(printText, cumulativeWidth + horizontalOffset + this.padding*j, cumulativeHeight + verticalOffset + this.padding*i);
+                    context.fillText(printText, cumulativeWidth + horizontalOffset + this.padding*j + this.GetCell(i, j).posOffset[0], cumulativeHeight + verticalOffset + this.padding*i + this.GetCell(i, j).posOffset[1]);
                 }
                 cumulativeWidth += this.columns[j];
             }
@@ -500,7 +500,7 @@ class Table {
     // #region SetCell Functions
 
     ClearCell(rowIndex, colIndex) {
-        this.table[rowIndex][colIndex] = new Cell(this);
+        this.GetCell(rowIndex, colIndex) = new Cell(this);
     }
 
     SetCellText(rowIndex, colIndex, text) {
@@ -517,13 +517,17 @@ class Table {
         if(colIndex > this.columns.length-1) colIndex = this.columns.length-1;
         if(colIndex < 0) colIndex = 0;
 
-        this.table[rowIndex][colIndex].fontSize = fontSize;
-        this.table[rowIndex][colIndex].font = font;
+        this.GetCell(rowIndex, colIndex).fontSize = fontSize;
+        this.GetCell(rowIndex, colIndex).font = font;
     }
 
     SetCellAlignment(rowIndex, colIndex, horizontalAlignment, verticalAlignment) {
-        this.table[rowIndex][colIndex].horizontalAlignment = horizontalAlignment;
-        this.table[rowIndex][colIndex].verticalAlignment = verticalAlignment;
+        this.GetCell(rowIndex, colIndex).horizontalAlignment = horizontalAlignment;
+        this.GetCell(rowIndex, colIndex).verticalAlignment = verticalAlignment;
+    }
+
+    SetCellTextOffset(rowIndex, colIndex, xOffset, yOffset) {
+        this.GetCell(rowIndex, colIndex).posOffset = [xOffset, yOffset];
     }
 
     SetCellColor(rowIndex, colIndex, fillColor, textColor) {
@@ -532,14 +536,14 @@ class Table {
         if(colIndex > this.columns.length-1) colIndex = this.columns.length-1;
         if(colIndex < 0) colIndex = 0;
 
-        this.table[rowIndex][colIndex].fillColor = fillColor;
-        this.table[rowIndex][colIndex].textColor = textColor;
+        this.GetCell(rowIndex, colIndex).fillColor = fillColor;
+        this.GetCell(rowIndex, colIndex).textColor = textColor;
     }
 
     SetCellImage(rowIndex, colIndex, path, mode = "fit", clip = false) {
-        this.table[rowIndex][colIndex].image = path;
-        this.table[rowIndex][colIndex].mode = mode;
-        this.table[rowIndex][colIndex].clip = clip;
+        this.GetCell(rowIndex, colIndex).image = path;
+        this.GetCell(rowIndex, colIndex).mode = mode;
+        this.GetCell(rowIndex, colIndex).clip = clip;
     }
 
     // #endregion
@@ -548,6 +552,7 @@ class Table {
 class Cell {
     x = 0;
     y = 0;
+    posOffset = [0, 0];
 
     fillColor;
     
@@ -575,6 +580,7 @@ class Cell {
 
         this.x = x;
         this.y = y;
+        this.posOffset = [0, 0];
     }
 }
 
