@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, userMention, RateLimitError } = require('discord.js');
-const { IsOnPI, debugMode, Table, GetRandomInt, piebotColor, FormatTime, FormatTimeLeadingZeroes } = require('../../../extra.js');
+const { IsOnPi, debugMode, Table, GetRandomInt, piebotColor, FormatTime, FormatTimeLeadingZeroes } = require('../../../extra.js');
 const Canvas = require('@napi-rs/canvas');
 
 module.exports = {
@@ -7,8 +7,6 @@ module.exports = {
         .setName('dev')
         .setDescription('shhhh'),
     async execute(interaction, client, promisePool) {
-
-        IsOnPI();
 
         interaction.deferReply();
 
@@ -86,13 +84,9 @@ module.exports = {
         table.SetColumnTextWrap(1, Table.TextWrap.scale);
         table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
 
-        // These are the paths on the pi
-        // const crown = "/home/pi/PiebotV3/src/pics/crown.png";
-        // const lightning = "/home/pi/PiebotV3/src/pics/lightning.png";
-
-        // // These are the paths for vscode in windows
-        const crown = "src/pics/crown.png";
-        const lightning = "src/pics/lightning.png";
+        // Different image  paths for pi vs windows environments
+        const crown = IsOnPi() ? "/home/pi/PiebotV3/src/pics/crown.png" : "src/pics/crown.png";
+        const lightning = IsOnPi() ? "/home/pi/PiebotV3/src/pics/lightning.png" : "src/pics/lightning.png";
 
         table.SetCellImage(0, 0, crown);
         table.SetCellImage(1, 0, lightning);

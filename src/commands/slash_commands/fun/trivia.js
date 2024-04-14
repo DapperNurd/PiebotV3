@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { debugMode, Table, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
+const { IsOnPi, debugMode, Table, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
 const Canvas = require('@napi-rs/canvas');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
@@ -22,8 +22,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     
     var useScore = (interaction == null || override); // This could cause issues where you override when interaction is null, but just don't ever call it like that lol
 
-    const triviaChannel = channel;
-    // const triviaChannel = await client.channels.fetch('562136578265317388'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+    const triviaChannel = debugMode ? await client.channels.fetch('562136578265317388') : channel;
+    // 562136578265317388 <- nurd server   |   pies of exile -> 459566179615506442
 
     if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
         if(!interaction.member.roles.cache.has('320264951597891586') && !interaction.member.roles.cache.has('560348438026387457')) return interaction.reply({ content:`You cannot use this command!`, ephemeral: true }); // Does not have Moderator or Nurdiest roles
@@ -93,7 +93,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
     var interactedUsers = [];
 
-    const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10 * 60_000 }); // Creating the collector for the buttons
+    const triviaMinutes = debugMode ? 0.2 : 10;
+    const collector = triviaPost.createMessageComponentCollector({ componentType: ComponentType.Button, time: triviaMinutes * 60_000 }); // Creating the collector for the buttons
 
     var firstTryGuessed = false;
     var guessed = false;
@@ -106,16 +107,23 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             if(isNaN(id)) return console.log("Error on button input retrival for trivia...");
 
             let user = interactedUsers.find(user => user.member === i.member)
-            if(user) {
-                if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
-            }
-            else {
+
+            if(debugMode) { // basically if debug mde 
                 user = new InteractedUser(i.member);
                 interactedUsers.push(user); // Adds a new user object to the array
+            }
+            else {
+                if(user) {
+                    if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
+                }
+                else {
+                    user = new InteractedUser(i.member);
+                    interactedUsers.push(user); // Adds a new user object to the array
 
-                // putting it in here SHOULD make it only update this value once
-                if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                    // putting it in here SHOULD make it only update this value once
+                    if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
+                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                }
             }
 
             user.time = Date.now(); // Updates time to when the latest guess was made
@@ -177,6 +185,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                     iconURL: client.user.displayAvatarURL(),
                     name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
                 })
+                .setDescription('<:top:1228543895999086623> Top Guesser          <:quickest:1228543686321635348> Quickest Guesser')
                 .setTitle('Results')
                 .setTimestamp()
                 .setFooter({
@@ -185,7 +194,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 });
 
             // key
-            resultsEmbed.addFields([{name: '\n', value: '<:top:1228543895999086623> Top Guesser                <:quickest:1228543686321635348> Quickest Guesser', inline: true}]);
+            //resultsEmbed.addFields([{name: '\n', value: '<:top:1228543895999086623> Top Guesser          <:quickest:1228543686321635348> Quickest Guesser', inline: true}]);
 
             interactedUsers = interactedUsers.sort((a, b) => { return a.time - b.time; }); // Sorts it by time 
 
@@ -229,13 +238,9 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             table.SetColumnTextWrap(1, Table.TextWrap.scale);
             table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
             
-            // These are the paths on the pi
-            const crown = "/home/pi/PiebotV3/src/pics/crown.png";
-            const lightning = "/home/pi/PiebotV3/src/pics/lightning.png";
-
-            // // These are the paths for vscode in windows
-            // const crown = "src/pics/crown.png";
-            // const lightning = "src/pics/lightning.png";
+            // Different image  paths for pi vs windows environments
+            const crown = IsOnPi() ? "/home/pi/PiebotV3/src/pics/crown.png" : "src/pics/crown.png";
+            const lightning = IsOnPi() ? "/home/pi/PiebotV3/src/pics/lightning.png" : "src/pics/lightning.png";
 
             var currRowIndex = 0;
 

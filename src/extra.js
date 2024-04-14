@@ -8,7 +8,7 @@ const rarities = {
     legendary: 1
 }
 
-const debugMode = 1;
+const debugMode = 0;
 
 const currentTriviaSeason = 2;
 const previousTriviaDates = `Season ${currentTriviaSeason-1}: Jan 05, 2024 - Mar 31, 2024`;
@@ -40,8 +40,10 @@ class Column {
     }
 }
 
-function IsOnPI() {
-    console.log(os.platform());
+function IsOnPi() {
+    // linux = pi
+    // windows = win32
+    return os.platform() == "linux";
 }
 
 /**
@@ -592,7 +594,7 @@ class Cell {
 }
 
 module.exports = {
-    IsOnPI,
+    IsOnPi,
     debugMode,
     piebotColor,
     columns,
