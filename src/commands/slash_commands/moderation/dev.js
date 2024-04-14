@@ -87,8 +87,13 @@ module.exports = {
         table.SetColumnTextWrap(1, Table.TextWrap.scale);
         table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
 
-        const crown = "src\\crown6.png";
-        const lightning = "src\\lightning6.png";
+        // These are the paths on the pi
+        const crown = "/home/pi/PiebotV3/src/pics/crown.png";
+        const lightning = "/home/pi/PiebotV3/src/pics/lightning.png";
+
+        // // These are the paths for vscode in windows
+        // const crown = "/src/pics/crown.png";
+        // const lightning = "/src/pics/lightning.png";
 
         table.SetCellImage(0, 0, crown);
         table.SetCellImage(1, 0, lightning);
@@ -146,8 +151,10 @@ module.exports = {
         const canvas = Canvas.createCanvas(table.width, table.height);
 		const context = canvas.getContext('2d');
 
-        try { await table.DrawTable(context); }
-        catch (err) { return console.log("Error drawing trivia table: " + err); }
+        await table.DrawTable(context);
+        // try { await table.DrawTable(context); }
+        // catch (err) { return console.log("Error drawing trivia table: " + err); }
+
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'built-canvas.png' });
     
