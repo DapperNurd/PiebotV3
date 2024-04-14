@@ -57,15 +57,15 @@ module.exports = {
         const tableRows = [rowHeight/1.3, rowHeight/1.3]; // for the key
 
         if(firstTry.length > 0) {
-            tableRows.push(rowHeight + 15); // Header
+            tableRows.push(rowHeight + 20); // Header
             for(var i = 0; i < firstTry.length; i++) tableRows.push(rowHeight); // One row for each person
         }
         if(secondTry.length > 0) {
-            tableRows.push(rowHeight + 15); // Header
+            tableRows.push(rowHeight + 20); // Header
             for(var i = 0; i < secondTry.length; i++) tableRows.push(rowHeight); // One row for each person
         }
         if(didNotGet.length > 0) {
-            tableRows.push(rowHeight + 15); // Header
+            tableRows.push(rowHeight + 20); // Header
             for(var i = 0; i < didNotGet.length; i++) tableRows.push(rowHeight); // One row for each person
         }
 
@@ -108,7 +108,7 @@ module.exports = {
 
         if(firstTry.length > 0) {
             table.SetRowText(currRowIndex, ["Guessed First Try"]);
-            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+            table.SetRowStyle(currRowIndex, table.fontSize+5, "gg sans");
             currRowIndex++;
             for(var i = 0; i < firstTry.length; i++) {
                 table.SetRowText(currRowIndex, ["", firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]])
@@ -121,7 +121,7 @@ module.exports = {
 
         if(secondTry.length > 0) {
             table.SetRowText(currRowIndex, ["Guessed Second Try"]);
-            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
+            table.SetRowStyle(currRowIndex, table.fontSize+5, "gg sans");
             currRowIndex++;
             for(var i = 0; i < secondTry.length; i++) {
                 table.SetRowText(currRowIndex, ["", secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]])
@@ -134,7 +134,7 @@ module.exports = {
 
         if(didNotGet.length > 0) {
             table.SetRowText(currRowIndex, ["Guessed Incorrectly"]);
-            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans");
+            table.SetRowStyle(currRowIndex, table.fontSize+5, "gg sans");
             currRowIndex++;
             for(var i = 0; i < didNotGet.length; i++) {
                 table.SetRowText(currRowIndex, ["", didNotGet[i].userName, didNotGet[i].time[0] == "0m" ? "" : didNotGet[i].time[0], didNotGet[i].time[1], didNotGet[i].time[2]])
