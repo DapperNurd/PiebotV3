@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, userMention, RateLimitError } = require('discord.js');
-const { Table, GetRandomInt, piebotColor, FormatTime, FormatTimeLeadingZeroes } = require('../../../extra.js');
+const { IsOnPI, debugMode, Table, GetRandomInt, piebotColor, FormatTime, FormatTimeLeadingZeroes } = require('../../../extra.js');
 const Canvas = require('@napi-rs/canvas');
 
 module.exports = {
@@ -7,6 +7,8 @@ module.exports = {
         .setName('dev')
         .setDescription('shhhh'),
     async execute(interaction, client, promisePool) {
+
+        IsOnPI();
 
         interaction.deferReply();
 

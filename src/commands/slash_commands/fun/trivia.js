@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { Table, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
+const { debugMode, Table, currentTriviaSeason, piebotColor, FormatTime } = require('../../../extra.js');
 const Canvas = require('@napi-rs/canvas');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
@@ -185,7 +185,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 });
 
             // key
-            resultsEmbed.addFields([{name: '\n', value: '<:top:1228543895999086623> Top Guesser', inline: true}, {name: '\n', value: '<:quickest:1228543686321635348> Quickest Guesser', inline: true }]);
+            resultsEmbed.addFields([{name: '\n', value: '<:top:1228543895999086623> Top Guesser                <:quickest:1228543686321635348> Quickest Guesser', inline: true}]);
 
             interactedUsers = interactedUsers.sort((a, b) => { return a.time - b.time; }); // Sorts it by time 
 

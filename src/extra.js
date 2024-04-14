@@ -1,4 +1,5 @@
 const Canvas = require('@napi-rs/canvas');
+const os = require('os');
 
 const rarities = {
     common: 50, // Note that this is not included in the if statement, but must equal 100 - the rest of the rarities
@@ -6,6 +7,8 @@ const rarities = {
     rare: 10,
     legendary: 1
 }
+
+const debugMode = 1;
 
 const currentTriviaSeason = 2;
 const previousTriviaDates = `Season ${currentTriviaSeason-1}: Jan 05, 2024 - Mar 31, 2024`;
@@ -35,6 +38,10 @@ class Column {
         this.width = width;
         this.alignment = alignment;
     }
+}
+
+function IsOnPI() {
+    console.log(os.platform());
 }
 
 /**
@@ -585,6 +592,8 @@ class Cell {
 }
 
 module.exports = {
+    IsOnPI,
+    debugMode,
     piebotColor,
     columns,
     Table,
