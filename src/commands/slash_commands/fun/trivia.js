@@ -284,7 +284,8 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             const canvas = Canvas.createCanvas(table.width, table.height);
             const context = canvas.getContext('2d');
 
-            await table.DrawTable(context);
+            try { await table.DrawTable(context); }
+            catch (err) { return console.log("Error drawing trivia results image: " + err); }
 
             // Use the helpful Attachment class structure to process the file for you
             const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'trivia_results.png' });

@@ -151,9 +151,8 @@ module.exports = {
         const canvas = Canvas.createCanvas(table.width, table.height);
 		const context = canvas.getContext('2d');
 
-        await table.DrawTable(context);
-        // try { await table.DrawTable(context); }
-        // catch (err) { return console.log("Error drawing trivia table: " + err); }
+        try { await table.DrawTable(context); }
+        catch (err) { return console.log("Error drawing dev table: " + err); }
 
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'built-canvas.png' });
