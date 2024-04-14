@@ -12,9 +12,6 @@ module.exports = {
 
         const startTime = Date.now();
 
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Regular.ttf", "gg sans")
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
-
         class InteractedUser { // This is for user interaction handling, so I can easily adjust how many guesses are allowed on trivia
             constructor(member, modify = 0, createdAt = Date.now()) {
                 this.member = member;
@@ -88,12 +85,12 @@ module.exports = {
         table.SetCellTextWrap(0,  1, Table.TextWrap.overflow);
 
         // These are the paths on the pi
-        const crown = "/home/pi/PiebotV3/src/pics/crown.png";
-        const lightning = "/home/pi/PiebotV3/src/pics/lightning.png";
+        // const crown = "/home/pi/PiebotV3/src/pics/crown.png";
+        // const lightning = "/home/pi/PiebotV3/src/pics/lightning.png";
 
         // // These are the paths for vscode in windows
-        // const crown = "/src/pics/crown.png";
-        // const lightning = "/src/pics/lightning.png";
+        const crown = "src/pics/crown.png";
+        const lightning = "src/pics/lightning.png";
 
         table.SetCellImage(0, 0, crown);
         table.SetCellImage(1, 0, lightning);
@@ -111,7 +108,7 @@ module.exports = {
 
         if(firstTry.length > 0) {
             table.SetRowText(currRowIndex, ["Guessed First Try"]);
-            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans");
+            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
             currRowIndex++;
             for(var i = 0; i < firstTry.length; i++) {
                 table.SetRowText(currRowIndex, ["", firstTry[i].userName, firstTry[i].time[0] == "0m" ? "" : firstTry[i].time[0], firstTry[i].time[1], firstTry[i].time[2]])
@@ -124,7 +121,7 @@ module.exports = {
 
         if(secondTry.length > 0) {
             table.SetRowText(currRowIndex, ["Guessed Second Try"]);
-            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans");
+            table.SetRowStyle(currRowIndex, table.fontSize+2, "gg sans bold");
             currRowIndex++;
             for(var i = 0; i < secondTry.length; i++) {
                 table.SetRowText(currRowIndex, ["", secondTry[i].userName, secondTry[i].time[0] == "0m" ? "" : secondTry[i].time[0], secondTry[i].time[1], secondTry[i].time[2]])

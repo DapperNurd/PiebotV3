@@ -159,8 +159,8 @@ class Table {
 
     constructor(rows, columns) {
 
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans Regular.ttf", "gg sans")
-        Canvas.GlobalFonts.registerFromPath("src\\fonts\\gg sans SemiBold.ttf", "gg sans bold")
+        Canvas.GlobalFonts.registerFromPath("/home/pi/PiebotV3/src/fonts/gg sans Regular.ttf", "gg sans")
+        Canvas.GlobalFonts.registerFromPath("/home/pi/PiebotV3/src/fonts/gg sans SemiBold.ttf", "gg sans bold")
 
         this.rows = rows;
         this.columns = columns;
