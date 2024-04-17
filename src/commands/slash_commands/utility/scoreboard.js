@@ -19,7 +19,7 @@ module.exports = {
         const msg = interaction.options.getBoolean("previous") ? "Global.previous_trivia" : "Discord.user";
         const dates = interaction.options.getBoolean("previous") ? previousTriviaDates : currentTriviaDates;
 
-        let [rows, fields] = await promisePool.execute(`SELECT * FROM ${msg} WHERE triviaPlayed != 0 ORDER BY triviaScore DESC`);
+        let [rows, fields] = await promisePool.execute(`SELECT * FROM ${msg} WHERE triviaPlayed != 0 ORDER BY triviaScore DESC, triviaPlayed ASC`);
 
         // Button navigation
         const leftButton = new ButtonBuilder().setCustomId('left').setLabel('<').setStyle(ButtonStyle.Secondary);
