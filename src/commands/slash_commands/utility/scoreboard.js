@@ -90,7 +90,10 @@ module.exports = {
         // Collection handling
         const collector = replyMsg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 600_000 }); // Creating the collector for the buttons
         collector.on('collect', async buttonInteraction => { // Collector on collect function
-            if(buttonInteraction.user.id != interaction.user.id) return await buttonInteraction.reply({ content: 'Only the command user can change pages.', ephemeral: true });
+
+            // this was causing errors and idk why (Unknown Interaction)
+            // if(buttonInteraction.user.id != interaction.user.id) return await buttonInteraction.reply({ content: 'Only the command user can change pages.', ephemeral: true });
+            
             navButtonRow.components[0].setDisabled(false); // Enables left and right button before potentially disabling
             navButtonRow.components[1].setDisabled(false); // 
 
