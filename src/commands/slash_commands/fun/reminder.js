@@ -104,16 +104,11 @@ module.exports = {
                     text: `PiebotV3 by ${author.username}`
                 });
 
-            const reminders = await Reminder.find({ userID: interaction.user.id }); // Gets a list of all current documents in the reminder collection by the userID of the command user
-            if(!reminders) {
-                remindersEmbed.setDescription('You do not have any active reminders...');
-            }
+            let [rows, fields] = await promisePool.execute(`SELECT * FROM Global.reminders where userID = '${interaction.user.id}'`);
+
+            if(rows.length <= 0) remindersEmbed.setDescription('You do not have any active reminders...'); // If there are no user rows in the Discord.banned_user table
             else {
-                reminders.forEach(async reminder => { // Goes through each document, as reminder
-                    remindersEmbed.addFields([
-                        { name: reminder.reminder, value: `<t:${Math.floor(reminder.time/1000)}:F> (<t:${Math.floor(reminder.time/1000)}:R>)` }
-                    ])
-                })
+                rows.forEach(async reminder => { remindersEmbed.addFields([ { name: reminder.reminder, value: `<t:${Math.floor(reminder.time/1000)}:F> (<t:${Math.floor(reminder.time/1000)}:R>)` } ]); });
             }
 
             return await interaction.reply({
