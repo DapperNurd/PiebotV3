@@ -12,6 +12,8 @@ module.exports = {
 
         await message.channel.sendTyping();
 
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
         let prevMessages = await message.channel.messages.fetch({limit: 15});
 
         const configuration = new Configuration({
@@ -50,10 +52,12 @@ module.exports = {
 
         // console.log(conversationLog);
 
+        const model = (client.user == author) ? 'gpt-4o' : 'gpt-3.5-turbo';
+
         const result = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
+            model: model,
             messages: conversationLog,
-            max_tokens: 3036,
+            max_tokens: 300,
             temperature: 0.8,
             frequency_penalty: 1.3,
             presence_penalty: 0.5
@@ -64,6 +68,8 @@ module.exports = {
         if(!result) return message.reply("sorry, but I couldn't think of what to say...");
 
         botMsg = result.data.choices[0].message.content;
+
+        console.log("Tokens used: " + result.data.usage.total_tokens);
 
         if(botMsg.startsWith("Piebot: ")) botMsg = botMsg.replace("Piebot: ", "");
         if(botMsg.length > 2000) botMsg = "sorry, but I couldn't think of what to say...";
