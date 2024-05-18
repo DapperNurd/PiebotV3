@@ -26,7 +26,7 @@ for (const folder of functionFolders) {
         require(`./functions/${folder}/${file}`)(client); // For each of those files, we are passing in clients to the file
 }
 
-const pool = mysql.createPool({ host: hostIP, user: "admin", password: userPW, port: '3306', multipleStatements: true, connectionLimit: 20 });
+const pool = mysql.createPool({ host: hostIP, user: "admin", password: userPW, port: '3306', multipleStatements: true, connectionLimit: 20, idleTimeout: 240_000 });
 const promisePool = pool.promise();
 
 client.handleEvents(promisePool);
