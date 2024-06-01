@@ -12,6 +12,8 @@ module.exports = {
         ),
     async execute(interaction, client, promisePool) {
 
+        interaction.deferReply();
+
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
@@ -81,7 +83,7 @@ module.exports = {
         const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'scoreboard.png' });
         embed.setImage("attachment://scoreboard.png")
 
-        const replyMsg = await interaction.reply({
+        const replyMsg = await interaction.editReply({
             embeds: [embed],
             files: [attachment],
             components: [navButtonRow]
