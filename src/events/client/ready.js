@@ -2,26 +2,31 @@ const { ActivityType } = require('discord.js');
 const chalk = require("chalk");
 
 const options = [
-    {
-        type: ActivityType.Competing,
-        text: "a pie eating competition",
-        status: "online"
-    },
-    {
-        type: ActivityType.Playing,
-        text: "Pie Clicker™",
-        status: "online"
-    },
-    {
-        type: ActivityType.Watching,
-        text: "www.twitch.tv/traumz",
-        status: "online"
-    },
+    // {
+    //     type: ActivityType.Competing,
+    //     text: "a pie eating competition",
+    //     status: "online"
+    // },
+    // {
+    //     type: ActivityType.Playing,
+    //     text: "Pie Clicker™",
+    //     status: "online"
+    // },
+    // {
+    //     type: ActivityType.Watching,
+    //     text: "www.twitch.tv/traumz",
+    //     status: "online"
+    // },
     {
         type: ActivityType.Competing,
         text: "Trivia",
         status: "online"
-    }
+    },
+    {
+        type: ActivityType.Playing,
+        text: "Modded Minecraft",
+        status: "online"
+    },
 ]
 
 module.exports = {
