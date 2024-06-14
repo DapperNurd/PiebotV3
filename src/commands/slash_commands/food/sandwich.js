@@ -16,7 +16,7 @@ const adjectives = ["delicious", "tasty", "scrumptious", "heavenly", "delectable
 const adjectivesBad = ["day-old", "dry"];
 
 const phrases = [ "Here, [USER]! Manton wants you to have [A] [ADJ] [FOOD]!",
-"You watch in awe as Manton assembles [AN] [ADJ] [FOOD] piece by piece. It's like he is a machine! After it's done, he hands it to you, [USER]!",
+"You watch in awe as Manton assembles [A] [ADJ] [FOOD] piece by piece. It's like he is a machine! After it's done, he hands it to you, [USER]!",
 "Manton bought you, [USER], [A] [ADJ] [FOOD] for lunch. You're not sure where the lunch money came from though...",
 "[USER] snatched Manton's [ADJ] [FOOD] while he was distracted by a dancing bunny girl gif!",
 "Manton couldn't finish his [ADJ] [FOOD] and he offers [USER] the other half!",
