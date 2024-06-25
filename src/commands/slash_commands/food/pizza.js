@@ -61,7 +61,7 @@ module.exports = {
         else if (rarity == 'legendary') food = legendary[Math.floor(Math.random() * legendary.length)];
 
         // Adjective calculation and assigning
-        const adj = PercentTrue(10)
+        const adj = PercentTrue(185)
             ? adjectives[Math.floor(Math.random() * adjectives.length)]
             : adjectivesBad[Math.floor(Math.random() * adjectivesBad.length)]; // Formatting this way just because it's a long line
         
