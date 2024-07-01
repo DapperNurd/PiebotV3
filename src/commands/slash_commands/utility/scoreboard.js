@@ -1,27 +1,35 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, userMention } = require('discord.js');
-const { Table, piebotColor, currentTriviaSeason, currentTriviaDates, previousTriviaDates } = require('../../../extra.js');
+const { Table, piebotColor, currentTriviaSeason, triviaDatesByIndex } = require('../../../extra.js');
 const Canvas = require('@napi-rs/canvas');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('scoreboard')
         .setDescription('View the top players for trivia!')
-        .addBooleanOption(option =>
-            option.setName('previous')
+        .addIntegerOption(option =>
+            option.setName('season')
+                .setMinValue(1)
+                .setMaxValue(currentTriviaSeason)
                 .setDescription('Shows the scores from the previous trivia season!')
         ),
     async execute(interaction, client, promisePool) {
 
-        interaction.deferReply();
+        await interaction.deferReply();
 
         // Extra misc variables
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
 
         // Database handling
-        const msg = interaction.options.getBoolean("previous") ? "Global.previous_trivia" : "Discord.user";
-        const dates = interaction.options.getBoolean("previous") ? previousTriviaDates : currentTriviaDates;
+        let database = "Discord.user";
+        let dates = triviaDatesByIndex[currentTriviaSeason-1];
 
-        let [rows, fields] = await promisePool.execute(`SELECT * FROM ${msg} WHERE triviaPlayed != 0 ORDER BY triviaScore DESC, triviaPlayed ASC`);
+        const season = interaction.options.getInteger("season") ?? currentTriviaSeason;
+        if(season < currentTriviaSeason) { // if a manual season was entered
+            database = "Trivia.season_" + season;
+            dates = triviaDatesByIndex[season-1];
+        }
+
+        let [rows, fields] = await promisePool.execute(`SELECT * FROM ${database} WHERE triviaPlayed != 0 ORDER BY triviaScore DESC, triviaPlayed ASC`);
 
         // Button navigation
         const leftButton = new ButtonBuilder().setCustomId('left').setLabel('<').setStyle(ButtonStyle.Secondary);
@@ -37,14 +45,14 @@ module.exports = {
         // Embed building
         const embed = new EmbedBuilder()
             .setColor(piebotColor)
-            .setTitle(`Trivia Scoreboard`)
+            .setTitle(season < currentTriviaSeason ? 'Previous Trivia Scoreboard' : 'Trivia Scoreboard')
             // .setDescription("***[NOTE]** Cancel Button only available for 10 minutes after reminder creation...*")
             .setAuthor({
                 iconURL: client.user.displayAvatarURL(),
                 name: `${client.user.displayName} Trivia`
             })
             .setTimestamp()
-            .setDescription(dates)
+            .setDescription(`Season ${season}: ${dates}`)
             .setFooter({
                 iconURL: author.displayAvatarURL(),
                 text: `PiebotV3 by ${author.username}`
@@ -104,8 +112,7 @@ module.exports = {
                 if(index >= pageLimit) navButtonRow.components[1].setDisabled(true); // Disables the right button if on the last page of embeds
 
                 // Image building
-                canvas = Canvas.createCanvas(table.width, table.height);
-                context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
 
                 await LoadUserList(table, context, index);
                 
@@ -126,8 +133,7 @@ module.exports = {
                 if(index <= 0) navButtonRow.components[0].setDisabled(true); // Disables the left button if on the first page of embeds
 
                 // Image building
-                canvas = Canvas.createCanvas(table.width, table.height);
-                context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
 
                 await LoadUserList(table, context, index);
 
@@ -145,8 +151,8 @@ module.exports = {
             }
         });
  
-        collector.on('end', () => { // Collector on end function
-            replyMsg.edit({
+        collector.on('end', async () => { // Collector on end function
+            await replyMsg.edit({
                 embeds: [embed],
                 components: []
             }).catch(err => console.log('Error stats embed!'));

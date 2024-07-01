@@ -4,13 +4,14 @@ const Canvas = require('@napi-rs/canvas');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); // idk why but it is some weird thing with fetch v3
 
 const allowedGuesses = 2;
- 
 class InteractedUser { // This is for user interaction handling, so I can easily adjust how many guesses are allowed on trivia
-    constructor(member, modify = 0, createdAt = Date.now()) {
+    constructor(member, user, modify = 0) {
         this.member = member;
+        this.user = user;
         this.userName = this.member.displayName;
         this.guessesLeft = allowedGuesses + modify;
-        this.time = createdAt;
+        this.time = Date.now();
+        this.guessedCorrectly = false;
         this.scoredPoints = 0;
         this.attemptsMade = 0;
     }
@@ -22,7 +23,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     
     var useScore = (interaction == null || override); // This could cause issues where you override when interaction is null, but just don't ever call it like that lol
 
-    const triviaChannel = debugMode ? await client.channels.fetch('562136578265317388') : channel;
+    const triviaChannel = channel;
     // 562136578265317388 <- nurd server   |   pies of exile -> 459566179615506442
 
     if(interaction != null) { // This is true if the execute function is ran by a user command on discord, or through a function call through code... the sheduled trivia runs through a function call
@@ -109,7 +110,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             let user = interactedUsers.find(user => user.member === i.member)
 
             if(debugMode) { // basically if debug mde 
-                user = new InteractedUser(i.member);
+                user = new InteractedUser(i.member, i.user);
                 interactedUsers.push(user); // Adds a new user object to the array
             }
             else {
@@ -117,47 +118,35 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                     if(user.guessesLeft <= 0) return await i.editReply({ content: 'You have no guesses remaining!', ephemeral: true }); // Checks if the user is incldued in the already interacted users, and that it is not the close poll button
                 }
                 else {
-                    user = new InteractedUser(i.member);
-                    interactedUsers.push(user); // Adds a new user object to the array
-
-                    // putting it in here SHOULD make it only update this value once
-                    if(useScore) // increasing the triviaPlayed number... which is how many games the user has participated in
-                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                    user = new InteractedUser(i.member, i.user);
+                    interactedUsers.push(user); // Adds a new user object to the array                        
                 }
             }
-
+            
             user.time = Date.now(); // Updates time to when the latest guess was made
 
             if(answers[id-1] == trivia.correctAnswer) { // If the guessed answer is the correct answer
 
-                let scoreIncrement = 1; // Sets the score increment based on whether or not it's a user's first guess
+                guessed = true;
+                user.guessedCorrectly = true;
 
                 if(!firstTryGuessed && user.guessesLeft >= allowedGuesses) { // If the trivia has not been guessed first try by someone before, and the guessing user's first try guess IS the right one...
-                    scoreIncrement = 2;
                     firstTryGuessed = true;
-                    const msg = `${userMention(i.user.id)} guessed correctly on their first try!`;
-                    triviaEmbed.addFields([{ name: '\n', value: msg }]);
+                    triviaEmbed.addFields([{ name: '\n', value: '***Someone guessed correctly on their first try!***' }]);
                     await triviaPost.edit({ embeds: [triviaEmbed] }).catch(err => console.log('Error updating poll embed!')); 
                 }
 
-                let guessMsg = 'Correct answer'
-
-                if(useScore) {
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${i.user.id}','${i.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+${scoreIncrement};`);
-                }
-                guessMsg += `, you've earned ${scoreIncrement} point${scoreIncrement > 1 ? 's' : ''}`
-                user.scoredPoints += scoreIncrement;
+                user.guessesLeft -= allowedGuesses; // Ensures they have no more guesses available after getting it right
+                
                 await i.editReply({
-                    content: `${guessMsg}!`,
+                    content: 'Correct answer!',
                     ephemeral: true
                 });
-                user.guessesLeft-=allowedGuesses; // Ensures they have no more guesses available
             }
             else {
                 await i.editReply({ content: "Incorrect answer...", ephemeral: true });
             }
-            guessed = true; // Does not necessarily mean someone got it right, but that someone tried.
+
             user.guessesLeft--; // subtracts from the user's guesses
             user.attemptsMade++; // Adds an attempt to the user
         }
@@ -165,7 +154,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     });
 
     collector.on('end', async i => { // Collector on end function
-        const msg = !guessed ? `No one guessed... the correct answer was: ${correctID}) ${trivia.correctAnswer}` : `The correct answer was: ${correctID}) ${trivia.correctAnswer}`
+        const msg = !guessed ? `No one guessed correctly... the correct answer was: ${correctID}) ${trivia.correctAnswer}` : `The correct answer was: ${correctID}) ${trivia.correctAnswer}`
         triviaEmbed.addFields([
             { name: '\n', value: '\n' },
             { name: '\n', value: msg }
@@ -177,7 +166,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
         }).catch(err => console.log('Error updating poll embed!'));
 
         // Sending the final results
-        if(guessed) {
+        if(interactedUsers.length > 0) {
             // Initial embed construction
             const resultsEmbed = new EmbedBuilder()
                 .setColor(piebotColor)
@@ -193,17 +182,32 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                     text: `PiebotV3 by ${author.username}`
                 });
 
-            // key
-            //resultsEmbed.addFields([{name: '\n', value: '<:top:1228543895999086623> Top Guesser          <:quickest:1228543686321635348> Quickest Guesser', inline: true}]);
-
             interactedUsers = interactedUsers.sort((a, b) => { return a.time - b.time; }); // Sorts it by time 
+
+            let foundFirstGuesser = false;
+            interactedUsers.forEach(user => { // Updates all the values
+                promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                user.scoredPoints = 0;
+                if(user.guessedCorrectly) {
+                    if(user.attemptsMade == 1 && !foundFirstGuesser) {
+                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+2;`);
+                        foundFirstGuesser = true;
+                        user.scoredPoints = 2;
+                    }
+                    else {
+                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+1;`);
+                        user.scoredPoints = 1;
+                    }
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
+                }
+            });
 
             interactedUsers.forEach(user => {
                 user.time = FormatTime(user.time - startTime); // Formats the time
             });
     
-            const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1 && user.scoredPoints > 0); // They made one attempt and scored points
-            const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2 && user.scoredPoints > 0); // They took 2 attempts and scored points
+            const firstTry = interactedUsers.filter((user) => user.attemptsMade == 1 && user.guessedCorrectly); // They made one attempt and scored points
+            const secondTry = interactedUsers.filter((user) => user.attemptsMade == 2 && user.guessedCorrectly); // They took 2 attempts and scored points
             const didNotGet = interactedUsers.filter((user) => user.scoredPoints <= 0); // They did not score points
 
             const rowHeight = 45;
@@ -339,7 +343,7 @@ module.exports = {
     async execute(interaction, client, promisePool) {
         
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
-        const triviaChannel = await client.channels.fetch('459566179615506442'); //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+        const triviaChannel = interaction.channel; //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
 
         // User typed /trivia help
         if(interaction && interaction.options.getSubcommand() == "help") {
