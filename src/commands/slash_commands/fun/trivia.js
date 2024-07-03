@@ -160,7 +160,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             { name: '\n', value: msg }
         ]).setTimestamp(); // Changes the timestamp to when the trivia ended
 
-        await triviaPost.edit({
+        await triviaPost.edit({ // Removing buttons from trivia post
             embeds: [triviaEmbed],
             components: []
         }).catch(err => console.log('Error updating poll embed!'));
@@ -176,6 +176,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 })
                 .setDescription('<:top:1228543895999086623> Top Guesser          <:quickest:1228543686321635348> Quickest Guesser')
                 .setTitle('Results')
+                .addFields([{ name: '\n', value: `The correct answer was: ${correctID}) ${trivia.correctAnswer}` }])
                 .setTimestamp()
                 .setFooter({
                     iconURL: author.displayAvatarURL(),
@@ -185,22 +186,24 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             interactedUsers = interactedUsers.sort((a, b) => { return a.time - b.time; }); // Sorts it by time 
 
             let foundFirstGuesser = false;
-            interactedUsers.forEach(user => { // Updates all the values
-                promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
-                user.scoredPoints = 0;
-                if(user.guessedCorrectly) {
-                    if(user.attemptsMade == 1 && !foundFirstGuesser) {
-                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+2;`);
-                        foundFirstGuesser = true;
-                        user.scoredPoints = 2;
+            if(useScore) {
+                interactedUsers.forEach(user => { // Updates all the values
+                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaPlayed) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaPlayed=triviaPlayed+1;`);
+                    user.scoredPoints = 0;
+                    if(user.guessedCorrectly) {
+                        if(user.attemptsMade == 1 && !foundFirstGuesser) {
+                            promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+2;`);
+                            foundFirstGuesser = true;
+                            user.scoredPoints = 2;
+                        }
+                        else {
+                            promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+1;`);
+                            user.scoredPoints = 1;
+                        }
+                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
                     }
-                    else {
-                        promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaScore) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaScore=triviaScore+1;`);
-                        user.scoredPoints = 1;
-                    }
-                    promisePool.execute(`INSERT INTO Discord.user (userID,userName,triviaCorrect) VALUES ('${user.user.id}','${user.user.username}',1) ON DUPLICATE KEY UPDATE triviaCorrect=triviaCorrect+1;`);
-                }
-            });
+                });
+            }
 
             interactedUsers.forEach(user => {
                 user.time = FormatTime(user.time - startTime); // Formats the time
@@ -301,16 +304,11 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
             resultsEmbed.setImage("attachment://trivia_results.png")
 
-            // Embed updating/sending
-            await triviaPost.edit({
-                embeds: [triviaEmbed, resultsEmbed],
-                files: [attachment],
-                components: []
-            }).catch(async (err) => {
-                await interaction.channel.send({
-                    embeds: [resultsEmbed]
-                }).catch(err => console.log('Error updating trivia: could not send results!'));
-
+            await triviaChannel.send({
+                embeds: [resultsEmbed],
+                files: [attachment]
+            }).catch((err) => {
+                 console.log('Error updating trivia: could not send results!')
             });
         }
 
