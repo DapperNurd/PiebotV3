@@ -18,7 +18,8 @@ module.exports = {
             return element == client.user.id;
         });
 
-        if (!botID) {
+        // 1222612658478518314 is the WestonBanks guys id, banning from ok bcause he kept deleting and saying again
+        if (!botID && message.author.id != '1222612658478518314') {
             var msg = PercentTrue(10) ? "Ok" : "ok"; // 10% chance to send "Ok" instead of "ok"
             message.channel.send(msg);
 
