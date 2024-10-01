@@ -42,3 +42,8 @@ Scheduled trivia:
 
 ![image](https://github.com/DapperNurd/PiebotV3/assets/26912300/6307cd24-f49d-490f-abeb-0f021478be7d)
 ![image](https://github.com/DapperNurd/PiebotV3/assets/26912300/89335410-9d95-4436-9f76-3b8172a4ed75)
+
+
+OpenAI integration:
+
+![image](https://github.com/user-attachments/assets/10f5ad92-fab2-4e21-98f3-133eab98f7b0)
