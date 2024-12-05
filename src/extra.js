@@ -15,7 +15,7 @@ const triviaDatesByIndex = [
     'Jan 05, 2024 - Mar 31, 2024', // Season 1
     'Apr 01, 2024 - Jun 30, 2024', // Season 2
     'July 01, 2024 - Sept 30, 2024', // Season 3
-    'Oct 1, 2024 - Oct 31, 2024', // Season 4
+    'Oct 1, 2024 - Dec 31, 2024', // Season 4
 ];
 
 const piebotColor = '#be1a34';
