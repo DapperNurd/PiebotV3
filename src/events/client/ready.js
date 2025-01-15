@@ -19,7 +19,7 @@ const options = [
     },
     {
         type: ActivityType.Competing,
-        text: "Trivia",
+        text: "Trivia Season 5",
         status: "online"
     },
 ]
