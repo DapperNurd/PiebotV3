@@ -66,14 +66,15 @@ module.exports = {
 
                 const youtubeChannelID = interaction.options.getString('youtube');
                 const discordChannelID = interaction.options.getChannel('discord').id;
-                const discordChannelGuildID = interaction.options.getChannel('discord').guild.id;
                 const sendMessage = interaction.options.getString('message') ?? "";
 
                 const response = await axios
                     .get(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`)
                     .catch((err => { console.log("Error fetching youtube feed: " + err); return; })); // Returns if there is an error
                     
-                if(!response || !response.data) return; // Returns if there is no response or data
+                if(!response || !response.data) { // Returns if there is no response or data
+                    return await interaction.reply({ content: "There was an error fetching the youtube channel. Please check the channel ID and try again.", ephemeral: true });
+                };
 
                 if( response.data.pageInfo.totalResults <= 0 ) {
                     return await interaction.reply({ content: "This channel ID does not exist or is invalid. Please check your spelling and try again.", ephemeral: true });
