@@ -70,6 +70,8 @@ module.exports = {
                 const discordChannelID = interaction.options.getChannel('discord').id;
                 const sendMessage = interaction.options.getString('message') ?? "";
 
+                console.log(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`);
+
                 const response = await axios
                     .get(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`)
                     .catch((async (err) => { 
