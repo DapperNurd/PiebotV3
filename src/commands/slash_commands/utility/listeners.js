@@ -100,6 +100,8 @@ module.exports = {
                 await promisePool
                     .execute('INSERT INTO Global.youtube_listeners (youtube_channel_id, uploads_playlist_id, discord_channel_id, send_message, channel_img, created_by) VALUES (?, ?, ?, ?, ?, ?)', [youtubeChannelID, response.data.items[0].contentDetails.relatedPlaylists.uploads, discordChannelID, sendMessage, response.data.items[0].snippet.thumbnails.high.url, interaction.user.id])
                     .catch(err => { console.error("Error inserting youtube listener: ", err); });
+
+                console.log(`User ${interaction.user.displayName} created a youtube listener for channel: https://www.youtube.com/channel/${youtubeChannelID} in discord channel: #${interaction.options.getChannel('discord').name}.`);
                 
                 return await interaction.editReply({ content: `You have successfully created a youtube listener for channel: https://www.youtube.com/channel/${youtubeChannelID} in <#${discordChannelID}>.`, ephemeral: true });
             }

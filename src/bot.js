@@ -208,8 +208,6 @@ setInterval(async () => {
                 // Update the last seen video id in the database
                 promisePool.execute(`UPDATE Global.youtube_listeners SET last_seen_video_id = '${latest_video_id}' WHERE youtube_channel_id = '${listener.youtube_channel_id}' AND discord_channel_id = '${listener.discord_channel_id}'`)
                 .catch((err => { console.log("Error updating youtube listener: " + err); return; }));
-            
-                console.log("Updating last seen video id to latest video id: " + latest_video_id); // Logs that we are updating the last seen video id to the latest video id
             }
             else if(listener.last_seen_video_id != latest_video_id) { // New video found (last saved id is different from the latest id)
                 
