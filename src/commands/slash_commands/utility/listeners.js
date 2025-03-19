@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ChannelType, userMention } = require('discord.js');
 const { GetRandomInt } = require("../../../extra.js");
 const axios = require('axios');
 const { youtubeAPI } = process.env;
+const dns = require('dns');
 
 module.exports = {
     data: new SlashCommandBuilder()
