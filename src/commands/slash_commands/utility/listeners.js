@@ -70,10 +70,12 @@ module.exports = {
                 const discordChannelID = interaction.options.getChannel('discord').id;
                 const sendMessage = interaction.options.getString('message') ?? "";
 
-                console.log(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`);
-
                 const response = await axios
-                    .get(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`)
+                    .get(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`, {
+                        lookup: (hostname, options, callback) => {
+                          return dns.lookup(hostname, { family: 4 }, callback);
+                        }
+                      })
                     .catch((async (err) => { 
                         console.log("Error fetching youtube feed: " + err); 
                         return await interaction.editReply({ content: "There was an error fetching the youtube channel. Please check the channel ID and try again.", ephemeral: true });
