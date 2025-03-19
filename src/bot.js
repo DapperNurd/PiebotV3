@@ -7,8 +7,8 @@ const { piebotColor } = require('./extra.js');
 const schedule = require('node-schedule');
 // const mysql = require('mysql2/promise');
 const mysql = require('mysql2');
-const Parser = require('rss-parser'); // For parsing the youtube RSS feed
 const axios = require('axios');
+const dns = require('dns');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
 client.commands = new Collection();
@@ -180,7 +180,6 @@ setInterval(async () => {
 }, 5_000);
 
 // Youtube Notifcation Handling
-const parser = new Parser();
 setInterval(async () => {
 
     // Database fetching
@@ -192,7 +191,11 @@ setInterval(async () => {
 
         rows.forEach(async listener => { // Goes through each document, as clip
             const response = await axios
-                .get(`https://www.googleapis.com/youtube/v3/playlistItems?key=${youtubeAPI}&part=snippet&playlistId=${listener.uploads_playlist_id}`)
+                .get(`https://www.googleapis.com/youtube/v3/playlistItems?key=${youtubeAPI}&part=snippet&playlistId=${listener.uploads_playlist_id}`, {
+                    lookup: (hostname, options, callback) => {
+                        return dns.lookup(hostname, { family: 4 }, callback);
+                    }
+                })
                 .catch((err => { console.log("Error fetching youtube feed: " + err); return; })); // Returns if there is an error
             
             if(!response || !response.data) return; // Returns if there is no response or data
