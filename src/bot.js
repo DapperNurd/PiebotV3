@@ -201,7 +201,7 @@ setInterval(async () => {
 
             // console.log(`Latest video id: ${latest_video_id} | Last seen video id: ${listener.last_seen_video_id}`); // Logs the latest video id and the last seen video id from the database
 
-            if(listener.last_seen_video_id === -1) { // -1 means it was just added. If first added, we ignore and just set the latest id
+            if(listener.last_seen_video_id == -1) { // -1 means it was just added. If first added, we ignore and just set the latest id
                 // Update the last seen video id in the database
                 promisePool.execute(`UPDATE Global.youtube_listeners SET last_seen_video_id = '${latest_video_id}' WHERE youtube_channel_id = '${listener.youtube_channel_id}' AND discord_channel_id = '${listener.discord_channel_id}'`)
                 .catch((err => { console.log("Error updating youtube listener: " + err); return; }));
