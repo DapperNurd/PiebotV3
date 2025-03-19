@@ -72,7 +72,10 @@ module.exports = {
 
                 const response = await axios
                     .get(`https://www.googleapis.com/youtube/v3/channels?key=${youtubeAPI}&part=contentDetails,snippet&id=${youtubeChannelID}`)
-                    .catch((err => { console.log("Error fetching youtube feed: " + err); return; })); // Returns if there is an error
+                    .catch((async (err) => { 
+                        console.log("Error fetching youtube feed: " + err); 
+                        return await interaction.editReply({ content: "There was an error fetching the youtube channel. Please check the channel ID and try again.", ephemeral: true });
+                    })); // Returns if there is an error
                     
                 if(!response || !response.data) { // Returns if there is no response or data
                     return await interaction.editReply({ content: "There was an error fetching the youtube channel. Please check the channel ID and try again.", ephemeral: true });
