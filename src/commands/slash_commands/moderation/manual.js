@@ -1,12 +1,4 @@
 const { SlashCommandBuilder, ChannelType } = require('discord.js');
-const { GetRandomInt } = require("../../../extra.js");
-
-var yesOrNoResponses = ["Yep.", "Yes, definitely.", "Without a doubt.", "I believe so.", "Mhmm.",
-    "I wouldn't count on it.", "I don't think so.", "No way.", "Nah.", "Doubting it."]
-
-var middleResponses = ["Could you repeat that?", "I'm not sure...", "idk", "Can't answer right now.", "One more time?", "🤔"]
-
-var oddResponses = ["I'll let you know later.", "You know the answer to that already.", "Go bother someone else."]
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,7 +17,13 @@ module.exports = {
         ),
     async execute(interaction, client, promisePool) {
 
-        // There is no checking if the options were inputted, because they are both required
+        const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+        if(interaction.user.id !== author.id) {
+            return await interaction.reply({
+                content: "You do not have permission to use this command.",
+                ephemeral: true
+            });
+        }
 
         // Sends a reply just to validate the interaction
         await interaction.reply({

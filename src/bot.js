@@ -1,12 +1,14 @@
 require('dotenv').config();
-const { token, hostIP, userPW } = process.env;
-const { Client, Collection, GatewayIntentBits, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
+const { token, youtubeAPI, hostIP, userPW } = process.env;
+const { Client, Collection, GatewayIntentBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 const fs = require('fs');
 const chalk = require('chalk');
 const { piebotColor } = require('./extra.js');
 const schedule = require('node-schedule');
 // const mysql = require('mysql2/promise');
 const mysql = require('mysql2');
+const Parser = require('rss-parser'); // For parsing the youtube RSS feed
+const axios = require('axios');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
 client.commands = new Collection();
@@ -176,3 +178,73 @@ setInterval(async () => {
         })
     }
 }, 5_000);
+
+// Youtube Notifcation Handling
+const parser = new Parser();
+setInterval(async () => {
+
+    // Database fetching
+    let [rows, fields] = await promisePool.execute('SELECT * FROM Global.youtube_listeners');
+
+    if(rows.length <= 0) return; // Returns if no rows are found
+    else {
+        const bot_author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
+
+        rows.forEach(async listener => { // Goes through each document, as clip
+            const response = await axios
+                .get(`https://www.googleapis.com/youtube/v3/playlistItems?key=${youtubeAPI}&part=snippet&playlistId=${listener.uploads_playlist_id}`)
+                .catch((err => { console.log("Error fetching youtube feed: " + err); return; })); // Returns if there is an error
+            
+            if(!response || !response.data) return; // Returns if there is no response or data
+
+            let latest_video_id = response.data.items[0].snippet.resourceId.videoId; // Gets the latest video id from the feed
+
+            // console.log(`Latest video id: ${latest_video_id} | Last seen video id: ${listener.last_seen_video_id}`); // Logs the latest video id and the last seen video id from the database
+
+            if(listener.last_seen_video_id === -1) { // -1 means it was just added. If first added, we ignore and just set the latest id
+                // Update the last seen video id in the database
+                promisePool.execute(`UPDATE Global.youtube_listeners SET last_seen_video_id = '${latest_video_id}' WHERE youtube_channel_id = '${listener.youtube_channel_id}' AND discord_channel_id = '${listener.discord_channel_id}'`)
+                .catch((err => { console.log("Error updating youtube listener: " + err); return; }));
+            
+                console.log("Updating last seen video id to latest video id: " + latest_video_id); // Logs that we are updating the last seen video id to the latest video id
+            }
+            else if(listener.last_seen_video_id != latest_video_id) { // New video found (last saved id is different from the latest id)
+                
+                const { title, channelTitle, thumbnails, publishedAt } = response.data.items[0].snippet; // Gets the title, link, id and author from the latest video
+                const embed = new EmbedBuilder( // Creates an embed for the message
+                {
+                    title: title,
+                    url: `https://www.youtube.com/watch?v=${latest_video_id}`,
+                    timestamp: new Date(publishedAt),
+                    image: {
+                        url: thumbnails.high.url
+                    },
+                    author: {
+                        name: channelTitle,
+                        iconUrl: listener.channel_img, // Gets the channel image from the listener
+                        url: `https://www.youtube.com/channel/${listener.channel_id}` // Gets the channel link from the listener
+                    },
+                    footer: {
+                        iconURL: bot_author.displayAvatarURL(),
+                        text: `PiebotV3 by ${bot_author.username}`
+                    }
+                });
+
+                const channel = await client.channels
+                    .fetch(listener.discord_channel_id) // Fetches the channel to send the message to
+                    .catch((err => { console.log("Error fetching discord channel for youtube notification: " + err); return; }));
+
+                await channel
+                    .send({
+                        embeds: [embed], // Sends the embed to the channel
+                        content: listener.send_message // Pings the user who subscribed to the channel
+                    })
+                    .catch((err => { console.log("Error sending youtube notification: " + err); return; })); // Returns if there is an error
+
+                // Update the last seen video id in the database
+                promisePool.execute(`UPDATE Global.youtube_listeners SET last_seen_video_id = '${latest_video_id}' WHERE youtube_channel_id = '${listener.youtube_channel_id}' AND discord_channel_id = '${listener.discord_channel_id}'`)
+                    .catch((err => { console.log("Error updating youtube listener: " + err); return; }));
+            }
+        })
+    }
+}, 5 * 60_000);

@@ -1,8 +1,8 @@
 const chalk = require('chalk');
 const mysql = require('mysql2/promise');
+const fs = require('fs');
 
 const banIgnore = ['help', 'menu', 'stats', 'server', 'global'];
-const adminCommands = ['ban', 'unban'];
 
 module.exports = {
     name: 'interactionCreate',
@@ -19,6 +19,18 @@ module.exports = {
             let [rows, fields] = await promisePool.execute(`SELECT * FROM Discord.banned_user WHERE userID = '${interaction.user.id}'`);
             const userIsBanned = (rows.length > 0); // If there are any rows returned from the banned_user list associating with their id, the user is marked as banned
 
+            let modCommands = [];
+            const commandFolders = fs.readdirSync('./src/commands/slash_commands'); // Gets an array of strings of subfolders inside of the main commands folder
+            for (var folder of commandFolders) { // Goes through each subfolder
+                if(folder != "moderation") continue; // skips showing aliases and context_menu folders
+                
+                const commandFiles = fs.readdirSync(`./src/commands/slash_commands/${folder}`).filter(file => file.endsWith('.js')); // Gets an array of strings of the files in the folder of folder
+                for (var file of commandFiles) { // Goes through all files in the subfolder of folder
+                    file = file.replace(".js", ""); // Removes the ".js" ending on the command names
+                    modCommands.push(file); // Adds the command name to the string of names
+                }
+            }
+
             // Running of commands
             try {
                 if(userIsBanned && !banIgnore.includes(commandName)) { // If user is banned and the command does not ignore ban status
@@ -28,7 +40,7 @@ module.exports = {
                         ephemeral: true
                     });
                 }
-                else if(adminCommands.includes(commandName) && interaction.user.id != author.id) {
+                else if(modCommands.includes(commandName) && interaction.user.id != author.id) {
                     console.log(chalk.hex("#e8692a")(`[Bot Moderation]: ${interaction.user.displayName} tried using admin command /${commandName}`))
                     return await interaction.reply({
                         content: `You do not have permission to use this!`,
