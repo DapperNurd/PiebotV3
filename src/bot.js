@@ -223,7 +223,7 @@ setInterval(async () => {
                     author: {
                         name: channelTitle,
                         iconUrl: listener.channel_img, // Gets the channel image from the listener
-                        url: `https://www.youtube.com/channel/${listener.channel_id}` // Gets the channel link from the listener
+                        url: `https://www.youtube.com/channel/${listener.youtube_channel_id}` // Gets the channel link from the listener
                     },
                     footer: {
                         iconURL: bot_author.displayAvatarURL(),
