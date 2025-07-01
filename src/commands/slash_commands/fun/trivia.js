@@ -54,7 +54,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
         })
         .setTitle(trivia.question)
-        .setDescription(`${trivia.category}\n${trivia.difficulty.toUpperCase()} Difficulty`)
+        .setDescription(`Category: ${trivia.category}    |    Difficulty: ${trivia.difficulty.toUpperCase()}\n\n${"━".repeat(40)}`)
         .setTimestamp()
         .setFooter({
             iconURL: author.displayAvatarURL(),
@@ -64,16 +64,15 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     var correctID = -1;
 
     if(!useScore || override) {
-        const msg = override ? `Trivia overriden by ${userMention(interaction.user.id)}\nScoring is **enabled!**` : `Trivia started manually by ${userMention(interaction.user.id)}\nScording is **disabled!**`
+        const msg = override ? `Trivia overriden by ${userMention(interaction.user.id)}\nScoring is **enabled!**` : `Trivia started manually by ${userMention(interaction.user.id)}\nScoring is **disabled!**`
         triviaEmbed.addFields([
             { name: '\n', value: msg }
         ])
     }
     
-    for(i = 0; i < answers.length; i++) {
-        // var value = answers[i] == trivia.correctAnswer ? `CORRECT ANSWER: ${i+1})` : `${i+1})` // Displays which one is the correct answer... useful for debugging
+    for(let i = 0; i < answers.length; i++) {
         triviaEmbed.addFields([
-            { name: `${i+1}) ${answers[i]}`, value: '\n' }
+            { name: `${i+1}. ${answers[i]}`, value: '\n' }
         ])
         if(answers[i] == trivia.correctAnswer) correctID = i+1;
     }
@@ -109,9 +108,12 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
 
             let user = interactedUsers.find(user => user.member === i.member)
 
-            if(debugMode) { // basically if debug mde 
-                user = new InteractedUser(i.member, i.user);
-                interactedUsers.push(user); // Adds a new user object to the array
+            if(debugMode) { // basically if debug mode
+                if(!user) { // Only create a new user if one doesn't exist
+                    user = new InteractedUser(i.member, i.user);
+                    interactedUsers.push(user); // Adds a new user object to the array
+                }
+                // If user already exists, we'll use the existing user object
             }
             else {
                 if(user) {
@@ -139,12 +141,12 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 user.guessesLeft -= allowedGuesses; // Ensures they have no more guesses available after getting it right
                 
                 await i.editReply({
-                    content: 'Correct answer!',
+                    content: '✅ Correct answer!',
                     ephemeral: true
                 });
             }
             else {
-                await i.editReply({ content: `\`${answers.indexOf(trivia.correctAnswer)+1}) ${trivia.correctAnswer}\`  is incorrect...`, ephemeral: true });
+                await i.editReply({ content: `❌ "${answers[id-1]}" is incorrect.\nYou have ${user.guessesLeft} guess${user.guessesLeft !== 1 ? 'es' : ''} remaining!`, ephemeral: true });
             }
 
             user.guessesLeft--; // subtracts from the user's guesses
@@ -154,7 +156,9 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     });
 
     collector.on('end', async i => { // Collector on end function
-        const msg = !guessed ? `No one guessed correctly... the correct answer was: ${correctID}) ${trivia.correctAnswer}` : `The correct answer was: ${correctID}) ${trivia.correctAnswer}`
+        const msg = !guessed 
+            ? `TRIVIA COMPLETE\n${"━".repeat(20)}\n\nNo one guessed correctly...\nThe correct answer was: ${correctID}) ${trivia.correctAnswer}` 
+            : `TRIVIA COMPLETE\n${"━".repeat(20)}\n\nThe correct answer was: ${correctID}) ${trivia.correctAnswer}`;
         triviaEmbed.addFields([
             { name: '\n', value: '\n' },
             { name: '\n', value: msg }
