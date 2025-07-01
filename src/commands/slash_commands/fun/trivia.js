@@ -84,8 +84,6 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
     const fourButton = new ButtonBuilder().setCustomId('4').setLabel('4').setStyle(ButtonStyle.Danger);
     const row = new ActionRowBuilder().addComponents(oneButton, twoButton, threeButton, fourButton);
 
-    if(triviaChannel == null) return console.log("[TRIVIA ERROR]: Could not find pies_of_exile!");
-
     var triviaPost = await triviaChannel.send({
         embeds: [triviaEmbed],
         components: [row]
@@ -345,7 +343,7 @@ module.exports = {
     async execute(interaction, client, promisePool) {
         
         const author = await client.users.fetch("189510396569190401"); // Gets my (nurd) user from my id
-        const triviaChannel = interaction.channel; //          562136578265317388 <- nurd server | pies of exile -> 459566179615506442
+        const triviaChannel = interaction.channel; // This ensures we're using the channel where the command was executed
 
         // User typed /trivia help
         if(interaction && interaction.options.getSubcommand() == "help") {
