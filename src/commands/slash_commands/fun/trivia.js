@@ -144,7 +144,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 });
             }
             else {
-                await i.editReply({ content: "Incorrect answer...", ephemeral: true });
+                await i.editReply({ content: `\`${answers.indexOf(trivia.correctAnswer)+1}) ${trivia.correctAnswer}\`  is incorrect...`, ephemeral: true });
             }
 
             user.guessesLeft--; // subtracts from the user's guesses

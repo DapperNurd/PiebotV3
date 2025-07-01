@@ -10,13 +10,14 @@ const rarities = {
 
 const debugMode = 0;
 
-const currentTriviaSeason = 5;
+const currentTriviaSeason = 6;
 const triviaDatesByIndex = [
     'Jan 05, 2024 - Mar 31, 2024', // Season 1
     'Apr 01, 2024 - Jun 30, 2024', // Season 2
     'July 01, 2024 - Sept 30, 2024', // Season 3
     'Oct 1, 2024 - Jan 14, 2025', // Season 4
-    'Jan 15, 2025 - Feb 28, 2025', // Season 5
+    'Jan 15, 2025 - June 30, 2025...', // Season 5
+    'July 1, 2025 - ???' // Season 6
 ];
 
 const piebotColor = '#be1a34';
