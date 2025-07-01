@@ -54,7 +54,7 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
             name: `${client.user.displayName} Trivia Season ${currentTriviaSeason}`
         })
         .setTitle(trivia.question)
-        .setDescription(`Category: ${trivia.category}    |    Difficulty: ${trivia.difficulty.toUpperCase()}\n\n${"━".repeat(40)}`)
+        .setDescription(`Category: ${trivia.category} | Difficulty: ${trivia.difficulty.toUpperCase()}\n${"━".repeat(30)}`)
         .setTimestamp()
         .setFooter({
             iconURL: author.displayAvatarURL(),
