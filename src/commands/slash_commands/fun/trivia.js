@@ -144,7 +144,10 @@ async function StartTrivia(client, promisePool, channel, interaction, override) 
                 });
             }
             else {
-                await i.editReply({ content: `❌ "${answers[id-1]}" is incorrect.\nYou have ${user.guessesLeft} guess${user.guessesLeft !== 1 ? 'es' : ''} remaining!`, ephemeral: true });
+                let realGuessesLeft = user.guessesLeft - 1;
+                let remainingGuessesText = `You have ${realGuessesLeft} guess${user.realGuessesLeft > 1 ? "es" : ""} remaining!`;
+                if(realGuessesLeft < 1) remainingGuessesText = 'You have no guesses remaining!';
+                await i.editReply({ content: `❌ "${answers[id-1]}" is incorrect.\n${remainingGuessesText}`, ephemeral: true });
             }
 
             user.guessesLeft--; // subtracts from the user's guesses
